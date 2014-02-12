@@ -20,7 +20,7 @@ class Signer
 		$this->socialSecurityNumber = $ssn;
 		
 		$this->id = ApiConnector::createSigner($this->name, $this->onBehalfOf, $this->socialSecurityNumber);
-		if (!$this->id) throw new Exception('Penneo: Could not create the signer');
+		if (!$this->id) throw new \Exception('Penneo: Could not create the signer');
 	}
 
 	public function getId()

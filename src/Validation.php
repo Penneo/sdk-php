@@ -18,7 +18,7 @@ class Validation
 		$this->message = $message;
 		
 		$this->id = ApiConnector::createValidation($this->name, $this->email, $this->message);
-		if (!$this->id) throw new Exception('Penneo: Could not create the validation');
+		if (!$this->id) throw new \Exception('Penneo: Could not create the validation');
 	}
 
 	public function getId()

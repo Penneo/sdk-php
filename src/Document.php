@@ -19,7 +19,7 @@ class Document
 		$this->caseFile = $caseFile;
 	
 		$this->id = ApiConnector::createDocument($document, $title, $this->caseFile->getId(), $type, $metaData, $options);
-		if (!$this->id) throw new Exception('Penneo: Could not create the document');
+		if (!$this->id) throw new \Exception('Penneo: Could not create the document');
 	}
 	
 	public function getId()
