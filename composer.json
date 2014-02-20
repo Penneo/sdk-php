@@ -4,7 +4,9 @@
     "homepage": "https://penneo.com",
     "description": "Penneo SDK for PHP",
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "guzzle/guzzle": "3.8.*",
+        "davedevelopment/guzzle-wsse-auth-plugin": "1.*"
     },
     "autoload": {
         "psr-4": { "Penneo\\SDK\\": "src/" }

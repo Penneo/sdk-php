@@ -1,44 +1,60 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\ApiConnector;
+use Penneo\SDK\Entity;
 
-class Validation
+class Validation extends Entity
 {
-	protected $id;
+	protected static $propertyMapping = array(
+		'create' => array('name','email','emailText'),
+		'update' => array('name','email','emailText')
+	);
+	protected static $relativeUrl = 'validations';
+
 	protected $name;
 	protected $email;
-	protected $message;
-	
-	public function __construct($name, $email = null, $message = null)
-	{
-		if (!$name) return false;
-		$this->name = $name;
-		$this->email = $email;
-		$this->message = $message;
-		
-		$this->id = ApiConnector::createValidation($this->name, $this->email, $this->message);
-		if (!$this->id) throw new \Exception('Penneo: Could not create the validation');
-	}
+	protected $emailText;
+	protected $status;
 
-	public function getId()
+	public function getPdf()
 	{
-		return $this->id;
+		$data = parent::getAssets($this, 'pdf');
+		return base64_decode($data[0]);
+	}
+	
+	public function getLink()
+	{
+		$data = parent::getAssets($this, 'link');
+		return $data[0];
+	}
+	
+	public function send()
+	{
+		return parent::callAction($this, 'send');
 	}
 
 	public function getName()
 	{
 		return $this->name;
 	}
-
+	
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+	
 	public function getEmail()
 	{
 		return $this->email;
 	}
-
-	public function getMessage()
+	
+	public function setEmail($email)
 	{
-		return $this->message;
+		$this->email = $email;
 	}
-
+	
+	public function getStatus()
+	{
+		return $this->status;
 	}
+}

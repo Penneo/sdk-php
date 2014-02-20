@@ -1,20 +1,60 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\ApiConnector;
+use Penneo\SDK\Entity;
+use Penneo\SDK\Document;
 
-class CaseFile
+class CaseFile extends Entity
 {
-	protected $id;
-	
-	public function __construct($title, $metaData=null)
+	protected static $propertyMapping = array(
+		'create' => array('title','metaData'),
+		'update' => array('title','metaData')
+	);
+	protected static $relativeUrl = 'casefiles';
+
+	protected $title;
+	protected $metaData;
+	protected $status;
+	protected $created;
+	protected $signIteration;
+
+	public function getDocuments()
 	{
-		$this->id = ApiConnector::createCaseFile($title, $metaData);
-		if (!$this->id) throw new \Exception('Penneo: Could not create the case file');
+		return parent::getLinkedEntities($this, 'Penneo\SDK\Document');
 	}
 
-	public function getId()
+	public function getTitle()
 	{
-		return $this->id;
+		return $this->title;
+	}
+	
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+	
+	public function getMetaData()
+	{
+		return $this->metaData;
+	}
+	
+	public function setMetaData($meta)
+	{
+		$this->metaData = $meta;
+	}
+	
+	public function getStatus()
+	{
+		return $this->status;
+	}
+	
+	public function getCreatedAt()
+	{
+		return new \Datetime('@'.$this->created);
+	}
+	
+	public function getSignIteration()
+	{
+		return $this->signIteration;
 	}
 }

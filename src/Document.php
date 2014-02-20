@@ -1,46 +1,106 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\ApiConnector;
+use Penneo\SDK\Entity;
 use Penneo\SDK\CaseFile;
-use Penneo\SDK\Signer;
 
-class Document
+class Document extends Entity
 {
-	protected $id;
+	protected static $propertyMapping = array(
+		'create' => array(
+			'caseFileId' => 'caseFile->getId',
+			'title',
+			'metaData',
+			'options',
+			'type',
+			'@pdfFile'
+		),
+		'update' => array('title','metaData','options')
+	);
+	protected static $relativeUrl = 'documents';
+
+	protected $documentId;
+	protected $title;
+	protected $metaData;
+	protected $options;
+	protected $created;
+	protected $modified;
+	protected $completed;
+	protected $status;
+	protected $pdfFile;
+
 	protected $caseFile;
+	protected $type = 'attachment';
 
-	public function __construct($document, $title, CaseFile $caseFile=null, $type = 'signableDocument', $metaData=null, $options=null)
+
+	public function setCaseFile(CaseFile $caseFile)
 	{
-		if (!$caseFile) {
-			// Create a case file for the document to exist in.
-			$caseFile = new CaseFile($title);
-		}
 		$this->caseFile = $caseFile;
-	
-		$this->id = ApiConnector::createDocument($document, $title, $this->caseFile->getId(), $type, $metaData, $options);
-		if (!$this->id) throw new \Exception('Penneo: Could not create the document');
-	}
-	
-	public function getId()
-	{
-		return $this->id;
-	}
-	
-	public function addSigner(Signer $signer, $role=null, $conditions=null, $signOrder=null)
-	{
-		return ApiConnector::addSignerToDocument($this->id, $signer->getId(), $role, $conditions, $signOrder);
 	}
 
-	public function createSigningRequest(Signer $signer, $sendEmail=false, $emailText=null, $successUrl=null, $failUrl=null)
+	public function getPdf()
 	{
-		$options = array();
-		$options['deliverByEmail'] = $sendEmail;
-		if ($signer->getEmail()) $options['email'] = $signer->getEmail();
-		if ($emailText) $options['emailText'] = $emailText;
-		if ($successUrl) $options['successUrl'] = $successUrl;
-		if ($failUrl) $options['failUrl'] = $failUrl;
-		
-		return ApiConnector::getSigningRequest($signer->getId(), $this->caseFile->getId(), $options);
+		$data = parent::getAssets($this, 'pdf');
+		return base64_decode($data[0]);
+	}
+
+	public function makeSignable()
+	{
+		$this->type = 'signable';
+	}
+
+	public function setPdfFile($pdfFile)
+	{
+		$this->pdfFile = $pdfFile;
+	}
+
+	public function getDocumentId()
+	{
+		return $this->documentId;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	public function getMetaData()
+	{
+		return $this->metaData;
+	}
+
+	public function setMetaData($meta)
+	{
+		$this->metaData = $meta;
+	}
+
+	public function getCreatedAt()
+	{
+		return new \Datetime('@'.$this->created);
+	}
+
+	public function getModifiedAt()
+	{
+		return new \Datetime('@'.$this->modified);
+	}
+
+	public function getCompletedAt()
+	{
+		return new \Datetime('@'.$this->completed);
+	}
+
+	public function getStatus()
+	{
+		return $this->status;
+	}
+
+	public function getOptions()
+	{
+		return $this->options;
 	}
 }

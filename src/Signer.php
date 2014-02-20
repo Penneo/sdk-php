@@ -1,50 +1,22 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\ApiConnector;
+use Penneo\SDK\Entity;
 
-class Signer
+class Signer extends Entity
 {
-	protected $id;
+	protected static $propertyMapping = array(
+		'create' => array('name','socialSecurityNumber', 'onBehalfOf'),
+		'update' => array('name','socialSecurityNumber', 'onBehalfOf')
+	);
+	protected static $relativeUrl = 'signers';
+
 	protected $name;
-	protected $email;
-	protected $onBehalfOf;
 	protected $socialSecurityNumber;
-	
-	public function __construct($name, $email=null, $onBehalfOf=null, $ssn=null)
-	{
-		if (!$name) return false;
-		$this->name = $name;
-		$this->email = $email;
-		$this->onBehalfOf = $onBehalfOf;
-		$this->socialSecurityNumber = $ssn;
-		
-		$this->id = ApiConnector::createSigner($this->name, $this->onBehalfOf, $this->socialSecurityNumber);
-		if (!$this->id) throw new \Exception('Penneo: Could not create the signer');
-	}
+	protected $onBehalfOf;
 
-	public function getId()
+	public function getDocuments()
 	{
-		return $this->id;
-	}
-
-	public function getName()
-	{
-		return $this->name;
-	}
-
-	public function getEmail()
-	{
-		return $this->email;
-	}
-
-	public function getOnBehalfOf()
-	{
-		return $this->onBehalfOf;
-	}
-
-	public function getSocialSecurityNumber()
-	{
-		return $this->socialSecurityNumber;
+		return parent::getLinked($this, 'Penneo\SDK\Document');
 	}
 }
