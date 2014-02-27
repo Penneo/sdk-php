@@ -1,24 +1,39 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\Entity;
-
 class SignatureLine extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('role','signerId' => 'signer->getId'),
-		'update' => array('role')
+		'create' => array('role','conditions','signOrder'),
+		'update' => array('role','conditions','signOrder')
 	);
 	protected static $relativeUrl = 'signaturelines';
 
+	protected $document;
 	protected $signer;
 	protected $role;
-	protected $status;
-	protected $signTime;
+	protected $conditions;
+	protected $signOrder = 0;
+
+	public function __construct(Document $document)
+	{
+		$this->document = $document;
+	}
+
+	public function getParent()
+	{
+		return $this->document;
+	}
 
 	public function getSigner()
 	{
 		return $this->signer;
+	}
+	
+	public function setSigner(Signer $signer)
+	{
+		$this->signer = $signer;
+		return parent::linkEntity($this, $signer);
 	}
 	
 	public function getRole()
@@ -26,13 +41,28 @@ class SignatureLine extends Entity
 		return $this->role;
 	}
 	
-	public function getStatus()
+	public function setRole($role)
 	{
-		return $this->status;
+		$this->role = $role;
 	}
 	
-	public function getSignTime()
+	public function getConditions()
 	{
-		return $this->signTime;
+		return $this->conditions;
+	}
+	
+	public function setConditions($conditions)
+	{
+		$this->conditions = $conditions;
+	}
+	
+	public function getSignOrder()
+	{
+		return $this->signOrder;
+	}
+	
+	public function setSignOrder($signOrder)
+	{
+		$this->signOrder = $signOrder;
 	}
 }

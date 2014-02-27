@@ -1,9 +1,6 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\Entity;
-use Penneo\SDK\Document;
-
 class CaseFile extends Entity
 {
 	protected static $propertyMapping = array(
@@ -21,6 +18,16 @@ class CaseFile extends Entity
 	public function getDocuments()
 	{
 		return parent::getLinkedEntities($this, 'Penneo\SDK\Document');
+	}
+
+	public function getSigners()
+	{
+		return parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
+	}
+	
+	public function findSigner($id)
+	{
+		return parent::findLinkedEntity($this, 'Penneo\SDK\Signer', $id);
 	}
 
 	public function getTitle()

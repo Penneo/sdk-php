@@ -1,9 +1,6 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\Entity;
-use Penneo\SDK\CaseFile;
-
 class Document extends Entity
 {
 	protected static $propertyMapping = array(
@@ -36,6 +33,16 @@ class Document extends Entity
 	public function setCaseFile(CaseFile $caseFile)
 	{
 		$this->caseFile = $caseFile;
+	}
+
+	public function getSignatureLines()
+	{
+		return parent::getLinkedEntities($this, 'Penneo\SDK\SignatureLine');
+	}
+	
+	public function findSignatureLine($id)
+	{
+		return parent::findLinkedEntity($this, 'Penneo\SDK\SignatureLine', $id);
 	}
 
 	public function getPdf()

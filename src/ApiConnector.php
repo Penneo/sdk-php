@@ -40,6 +40,8 @@ class ApiConnector
 	public static function writeObject(Entity $object)
 	{
 		$data = $object->__getRequestData();
+		if ($data === null) return false;
+
 		if ($object->getId()) {
 			// Update request
 			$response = self::callServer($object->getRelativeUrl().'/'.$object->getId(), $data, 'put');
@@ -64,7 +66,8 @@ class ApiConnector
 	public static function callServer($url, $data=null, $method='get')
 	{
 		try {
-			$request = self::$client->$method($url, self::$headers, $data);
+			//$request = self::$client->$method($url, self::$headers, $data);
+			$request = self::$client->createRequest($method, $url, self::$headers, $data);
 			return $request->send();
 		} catch (\Exception $e) {
 			print($request->getResponse());
