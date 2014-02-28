@@ -28,6 +28,11 @@ class SigningRequest extends Entity
 		return $data[0];
 	}
 
+	public function send()
+	{
+		return parent::callAction($this, 'send');
+	}
+
 	public function getEmail()
 	{
 		return $this->email;

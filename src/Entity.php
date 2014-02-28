@@ -49,10 +49,10 @@ abstract class Entity
 			$query['order'] = rtrim($order, ',');
 		}
 
-		$response = ApiConnector::callServer($class::$relativeUrl, array('query' => $query));
+		$response = ApiConnector::callServer($class::$relativeUrl, null, 'get', array('query' => $query));
 		if (!$response)
 			throw new \Exception('Penneo: Internal problem encountered');
-			
+
 		$matches = $response->json();
 		$result = array();
 
