@@ -19,10 +19,14 @@ class ApiConnector
 	 * @param string $secret     Your Penneo API secret
 	 * @param string $endpoint   The API endpoint url. This defaults to the API sandbox.
 	 */
-	public static function initialize($key, $secret, $endpoint=null, $headers=null)
+	public static function initialize($key, $secret, $endpoint=null, $user=null, $headers=null)
 	{
-		if ($endpoint) self::$endpoint = $endpoint;
-		if ($headers) self::$headers = array_merge($headers, self::$headers);
+		if ($endpoint)
+			self::$endpoint = $endpoint;
+		if ($headers)
+			self::$headers = array_merge($headers, self::$headers);
+		if ($user)
+			self::$headers['penneo-api-user'] = intval($user);
 		
 		$wsse = new WsseAuthPlugin($key, $secret);
 		self::$client = new Client(self::$endpoint);
