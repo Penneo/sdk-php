@@ -55,6 +55,21 @@ class Validation extends Entity
 	
 	public function getStatus()
 	{
-		return $this->status;
+		switch ($this->status) {
+			case 0:
+				return 'new';
+			case 1:
+				return 'pending';
+			case 2:
+				return 'undeliverable';
+			case 3:
+				return 'deleted';
+			case 4:
+				return 'ready';
+			case 5:
+				return 'completed';
+		}
+	
+		return 'new';
 	}
 }
