@@ -29,8 +29,7 @@ class Document extends Entity
 	protected $caseFile;
 	protected $type = 'attachment';
 
-
-	public function setCaseFile(CaseFile $caseFile)
+	public function __construct(CaseFile $caseFile = null)
 	{
 		$this->caseFile = $caseFile;
 	}
