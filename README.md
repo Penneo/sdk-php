@@ -133,10 +133,10 @@ print('<a href="'.$myValidation->getLink().'">Validate now</a>');
 * [API documentation][docs-api] - Information about the Penneo API, methods and responses
 
 
-[docs-api]: https://penneo.com/api/docs
+[docs-api]: https://app.penneo.com/api/docs
 [casefile-docs]: docs/casefile.md
 [document-docs]: docs/document.md
 [signature-line-docs]: docs/signature-line.md
 [signer-docs]: docs/signer.md
-[signing-request-docs]: docs/siginig-request.md
+[signing-request-docs]: docs/signing-request.md
 [validation-docs]: docs/validation.md
