@@ -17,7 +17,10 @@ CaseFile::persist($myCaseFile);
 
 ## Sending a case file out for signing
 When the case file contains the relevant documents and signers, it has to be "send out for signing" before the signing process can begin. This is accomplished by calling the __send()__ method on the case file object.
-Once the case file is out for signing, documents and signers can no longer be added or removed.
+
+If you want to distribute the signing links yourself, use the __activate()__ method instead to activate the case file signing links.
+
+Once the case file has been sent or activated, documents and signers can no longer be added or removed.
 
 ## Retrieve existing case files
 There is several ways to retrieve case files from Penneo. Available methods for retrieving case files are:
@@ -51,7 +54,7 @@ $myCaseFile = CaseFile::find(271184);
 
 // Retrieve all case files that contains the word "the" in their title and sort descending on creation date
 $myCaseFiles = CaseFile::findByTitle(
-	'the',
+    'the',
 	array('created' => 'desc')
 );
 
