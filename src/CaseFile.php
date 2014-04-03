@@ -30,6 +30,11 @@ class CaseFile extends Entity
 		return parent::findLinkedEntity($this, 'Penneo\SDK\Signer', $id);
 	}
 
+	public function activate()
+	{
+		return parent::callAction($this, 'activate');
+	}
+
 	public function send()
 	{
 		return parent::callAction($this, 'send');
