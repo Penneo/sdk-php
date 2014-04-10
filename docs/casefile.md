@@ -17,10 +17,14 @@ CaseFile::persist($myCaseFile);
 
 ## Sending a case file out for signing
 When the case file contains the relevant documents and signers, it has to be "send out for signing" before the signing process can begin. This is accomplished by calling the __send()__ method on the case file object.
+You can delay the sending by setting the sendAt time using the __setSendAt()__ method on the case file object. This method takes a DateTime object as parameter.
 
 If you want to distribute the signing links yourself, use the __activate()__ method instead to activate the case file signing links.
 
 Once the case file has been sent or activated, documents and signers can no longer be added or removed.
+
+## Setting an expiry time on a case file
+A case file can be set to expire using the __expireAt()__ method on the object. When a case file is expired, the signers can no longer sign the case file documents. The __expireAt()__ method takes a DateTime object as parameter.
 
 ## Retrieve existing case files
 There is several ways to retrieve case files from Penneo. Available methods for retrieving case files are:
@@ -55,7 +59,7 @@ $myCaseFile = CaseFile::find(271184);
 // Retrieve all case files that contains the word "the" in their title and sort descending on creation date
 $myCaseFiles = CaseFile::findByTitle(
     'the',
-	array('created' => 'desc')
+    array('created' => 'desc')
 );
 
 // Retrieve case files from offset 10 until 110 ordered by title in ascending order

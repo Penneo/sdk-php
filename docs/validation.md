@@ -13,10 +13,12 @@ The process is best explained by an example:
 $myValidation = new Validation();
 
 // Set the details of the user you wish to validate.
+$myValidation->setTitle('My validation');
 $myValidation->setName('John Doe');
 $myValidation->setEmail('john@doe.com');
 
 // Define the content of the email
+$myValidation->setEmailSubject('Validation inquiry');
 $myValidation->setEmailText('Dear john. Please validate yourself using this link.');
 
 // Persist the new validation object
@@ -34,6 +36,7 @@ If you don't want Penneo to distribute your validation links, you can handle the
 $myValidation = new Validation();
 
 // Set the details of the user you wish to validate.
+$myValidation->setTitle('My validation');
 $myValidation->setName('John Doe');
 
 // Persist the new validation object
