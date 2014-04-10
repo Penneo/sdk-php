@@ -4,13 +4,16 @@ namespace Penneo\SDK;
 class CaseFile extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('title','metaData'),
+		'create' => array('title','metaData','sendAt','expireAt','visibilityMode'),
 		'update' => array('title','metaData')
 	);
 	protected static $relativeUrl = 'casefiles';
 
 	protected $title;
 	protected $metaData;
+	protected $sendAt;
+	protected $expireAt;
+	protected $visibilityMode;
 	protected $status;
 	protected $created;
 	protected $signIteration;
@@ -60,6 +63,36 @@ class CaseFile extends Entity
 		$this->metaData = $meta;
 	}
 	
+	public function getSendAt()
+	{
+		return new \DateTime('@'.$this->sendAt);
+	}
+	
+	public function setSendAt(\DateTime $sendAt)
+	{
+		$this->sendAt = $sendAt->getTimestamp();
+	}
+
+	public function getExpireAt()
+	{
+		return new \DateTime('@'.$this->expireAt);
+	}
+	
+	public function setExpireAt(\DateTime $expireAt)
+	{
+		$this->expireAt = $expireAt->getTimestamp();
+	}
+
+	public function getVisibilityMode()
+	{
+		return $this->visibilityMode;
+	}
+	
+	public function setVisibilityMode($visibilityMode)
+	{
+		$this->visibilityMode = $visibilityMode;
+	}
+
 	public function getStatus()
 	{
 		switch ($this->status) {
@@ -82,7 +115,7 @@ class CaseFile extends Entity
 	
 	public function getCreatedAt()
 	{
-		return new \Datetime('@'.$this->created);
+		return new \DateTime('@'.$this->created);
 	}
 	
 	public function getSignIteration()

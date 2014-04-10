@@ -8,6 +8,7 @@ class SigningRequest extends Entity
 	protected static $propertyMapping = array(
 		'update' => array(
 			'email',
+			'emailSubject',
 			'emailText',
 			'successUrl',
 			'failUrl',
@@ -17,6 +18,7 @@ class SigningRequest extends Entity
 	protected static $relativeUrl = 'signingrequests';
 
 	protected $email;
+	protected $emailSubject;
 	protected $emailText;
 	protected $status;
 	protected $rejectReason;
@@ -43,6 +45,16 @@ class SigningRequest extends Entity
 	public function setEmail($email)
 	{
 		$this->email = $email;
+	}
+	
+	public function getEmailSubject()
+	{
+		return $this->emailSubject;
+	}
+
+	public function setEmailSubject($emailSubject)
+	{
+		$this->emailSubject = $emailSubject;
 	}
 	
 	public function getEmailText()
