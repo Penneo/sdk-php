@@ -8,19 +8,23 @@ class SigningRequest extends Entity
 	protected static $propertyMapping = array(
 		'update' => array(
 			'email',
+			'emailSubject',
 			'emailText',
 			'successUrl',
-			'failUrl'
+			'failUrl',
+			'reminderInterval'
 		)
 	);
 	protected static $relativeUrl = 'signingrequests';
 
 	protected $email;
+	protected $emailSubject;
 	protected $emailText;
 	protected $status;
 	protected $rejectReason;
 	protected $successUrl;
 	protected $failUrl;
+	protected $reminderInterval;
 
 	public function getLink()
 	{
@@ -41,6 +45,16 @@ class SigningRequest extends Entity
 	public function setEmail($email)
 	{
 		$this->email = $email;
+	}
+	
+	public function getEmailSubject()
+	{
+		return $this->emailSubject;
+	}
+
+	public function setEmailSubject($emailSubject)
+	{
+		$this->emailSubject = $emailSubject;
 	}
 	
 	public function getEmailText()
@@ -96,5 +110,15 @@ class SigningRequest extends Entity
 	public function setFailUrl($url)
 	{
 		$this->failUrl = $url;
+	}
+	
+	public function getReminderInterval()
+	{
+		return $this->reminderInterval;
+	}
+	
+	public function setReminderInterval($interval)
+	{
+		$this->reminderInterval = $interval;
 	}
 }

@@ -6,13 +6,15 @@ use Penneo\SDK\Entity;
 class Validation extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('name','email','emailText'),
-		'update' => array('name','email','emailText')
+		'create' => array('title','name','email','emailSubject','emailText'),
+		'update' => array('title','name','email','emailSubject','emailText')
 	);
 	protected static $relativeUrl = 'validations';
 
+	protected $title;
 	protected $name;
 	protected $email;
+	protected $emailSubject;
 	protected $emailText;
 	protected $status;
 
@@ -33,6 +35,16 @@ class Validation extends Entity
 		return parent::callAction($this, 'send');
 	}
 
+	public function getTitle()
+	{
+		return $this->title;
+	}
+	
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
 	public function getName()
 	{
 		return $this->name;
@@ -51,6 +63,26 @@ class Validation extends Entity
 	public function setEmail($email)
 	{
 		$this->email = $email;
+	}
+	
+	public function getEmailSubject()
+	{
+		return $this->emailSubject;
+	}
+	
+	public function setEmailSubject($emailSubject)
+	{
+		$this->emailSubject = $emailSubject;
+	}
+	
+	public function getEmailText()
+	{
+		return $this->emailText;
+	}
+	
+	public function setEmailText($emailText)
+	{
+		$this->emailText = $emailText;
 	}
 	
 	public function getStatus()

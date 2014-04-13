@@ -82,8 +82,7 @@ $myCaseFile->setTitle('Demo case file');
 CaseFile::persist($myCaseFile);
 
 // Create a new signable document in this case file
-$myDocument = new Document();
-$myDocument->setCaseFile($myCaseFile);
+$myDocument = new Document($myCaseFile);
 $myDocument->setTitle('Demo document');
 $myDocument->setPdfFile('/path/to/pdfFile');
 $myDocument->makeSignable();
@@ -120,6 +119,7 @@ The result is a link to the Penneo validation page. The person in question must 
 ```php
 // Create a new validation
 $myValidation = new Validation();
+$myValidation->setTitle('My new validation');
 $myValidation->setName('John Doe');
 Validation::persist($myValidation);
 
