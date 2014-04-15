@@ -18,6 +18,12 @@ class CaseFile extends Entity
 	protected $created;
 	protected $signIteration;
 
+	public function __construct()
+	{
+		// Set default visibility mode
+		$this->visibilityMode = 0;
+	}
+
 	public function getDocuments()
 	{
 		return parent::getLinkedEntities($this, 'Penneo\SDK\Document');
