@@ -88,15 +88,18 @@ $myDocument->setPdfFile('/path/to/pdfFile');
 $myDocument->makeSignable();
 Document::persist($myDocument);
 
-// Create a new signature line on the document
-$mySignatureLine = new SignatureLine($myDocument);
-$mySignatureLine->setRole('MySignerRole');
-SignatureLine::persist($mySignatureLine);
-
 // Create a new signer that can sign documents in the case file
 $mySigner = new Signer($myCaseFile);
 $mySigner->setName('John Doe');
 Signer::persist($mySigner);
+
+// Create a new signature line on the document
+$mySignatureLine = new SignatureLine($myDocument);
+$mySignatureLine->setRole('MySignerRole');
+
+// Link the signer to the signature line
+$mySignatureLine->setSigner($mySigner);
+SignatureLine::persist($mySignatureLine);
 
 // Update the signing request for the new signer
 $mySigningRequest = $mySigner->getSigningRequest();
