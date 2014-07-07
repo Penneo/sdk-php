@@ -14,6 +14,7 @@ class SignatureLine extends Entity
 	protected $role;
 	protected $conditions;
 	protected $signOrder = 0;
+	protected $signedAt;
 
 	public function __construct(Document $document)
 	{
@@ -64,5 +65,10 @@ class SignatureLine extends Entity
 	public function setSignOrder($signOrder)
 	{
 		$this->signOrder = $signOrder;
+	}
+	
+	public function getSignedAt()
+	{
+		return new \DateTime('@'.$this->signedAt);
 	}
 }
