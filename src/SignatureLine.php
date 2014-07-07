@@ -69,6 +69,9 @@ class SignatureLine extends Entity
 	
 	public function getSignedAt()
 	{
-		return new \DateTime('@'.$this->signedAt);
+		if ($this->signedAt) {
+			return new \DateTime('@'.$this->signedAt);
+		}
+		return null;
 	}
 }
