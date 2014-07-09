@@ -34,6 +34,15 @@ class Document extends Entity
 		$this->caseFile = $caseFile;
 	}
 
+	public function getCaseFile()
+	{
+		if (!$this->caseFile) {
+			$caseFiles = parent::getLinkedEntities($this, 'Penneo\SDK\CaseFile');
+			$this->caseFile = $caseFiles[0];
+		}
+		return $this->caseFile;
+	}
+
 	public function getSignatureLines()
 	{
 		return parent::getLinkedEntities($this, 'Penneo\SDK\SignatureLine');

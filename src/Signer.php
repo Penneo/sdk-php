@@ -15,9 +15,14 @@ class Signer extends Entity
 	
 	protected $caseFile;
 
-	public function __construct(CaseFile $caseFile)
+	public function __construct($parent)
 	{
-		$this->caseFile = $caseFile;
+		$this->caseFile = null;
+		if ($parent instanceof CaseFile) {
+			$this->caseFile = $parent;
+		} elseif ($parent instanceof SignatureLine) {
+			$this->caseFile = $parent->getParent()->getCaseFile();
+		}
 	}
 
 	public function getParent()
@@ -40,7 +45,7 @@ class Signer extends Entity
 	{
 		$this->name = $name;
 	}
-	
+
 	public function getSocialSecurityNumber()
 	{
 		return $this->socialSecurityNumberPlain;
@@ -50,7 +55,7 @@ class Signer extends Entity
 	{
 		$this->socialSecurityNumberPlain = $ssn;
 	}
-	
+
 	public function getOnBehalfOf()
 	{
 		return $this->onBehalfOf;

@@ -14,6 +14,7 @@ class SignatureLine extends Entity
 	protected $role;
 	protected $conditions;
 	protected $signOrder = 0;
+	protected $signedAt;
 
 	public function __construct(Document $document)
 	{
@@ -27,6 +28,11 @@ class SignatureLine extends Entity
 
 	public function getSigner()
 	{
+		if (!$this->signer) {
+			$signers = parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
+			$this->signer = $signers[0];
+		}
+
 		return $this->signer;
 	}
 	
@@ -64,5 +70,13 @@ class SignatureLine extends Entity
 	public function setSignOrder($signOrder)
 	{
 		$this->signOrder = $signOrder;
+	}
+	
+	public function getSignedAt()
+	{
+		if ($this->signedAt) {
+			return new \DateTime('@'.$this->signedAt);
+		}
+		return null;
 	}
 }
