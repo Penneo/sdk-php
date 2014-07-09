@@ -28,6 +28,11 @@ class SignatureLine extends Entity
 
 	public function getSigner()
 	{
+		if (!$this->signer) {
+			$signers = parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
+			$this->signer = $signers[0];
+		}
+
 		return $this->signer;
 	}
 	

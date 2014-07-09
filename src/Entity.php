@@ -19,7 +19,7 @@ abstract class Entity
 		$object->id = $id;
 		if (!ApiConnector::readObject($object))
 			throw new \Exception('Penneo: Could not find the requested '.$class.' (id = '.$id.')');
-		
+
 		return $object;
 	}
 
