@@ -4,14 +4,15 @@ namespace Penneo\SDK;
 class Signer extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('name','socialSecurityNumberPlain','onBehalfOf'),
-		'update' => array('name','socialSecurityNumberPlain','onBehalfOf')
+		'create' => array('name','socialSecurityNumberPlain','vatin', 'onBehalfOf'),
+		'update' => array('name','socialSecurityNumberPlain','vatin', 'onBehalfOf')
 	);
 	protected static $relativeUrl = 'signers';
 
 	protected $name;
 	protected $socialSecurityNumberPlain;
 	protected $onBehalfOf;
+	protected $vatin;
 	
 	protected $caseFile;
 
@@ -54,6 +55,16 @@ class Signer extends Entity
 	public function setSocialSecurityNumber($ssn)
 	{
 		$this->socialSecurityNumberPlain = $ssn;
+	}
+
+	public function getVATIdentificationNumber()
+	{
+		return $this->vatin;
+	}
+
+	public function setVATIdentificationNumber($vatin)
+	{
+		$this->vatin = $vatin;
 	}
 
 	public function getOnBehalfOf()
