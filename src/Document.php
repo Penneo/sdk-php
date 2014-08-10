@@ -10,9 +10,15 @@ class Document extends Entity
 			'metaData',
 			'options',
 			'type',
-			'@pdfFile'
+			'@pdfFile',
+			'documentTypeId' => 'documentType->getId'
 		),
-		'update' => array('title','metaData','options')
+		'update' => array(
+			'title',
+			'metaData',
+			'options',
+			'documentTypeId' => 'documentType->getId'
+		)
 	);
 	protected static $relativeUrl = 'documents';
 
@@ -28,6 +34,7 @@ class Document extends Entity
 
 	protected $caseFile;
 	protected $type = 'attachment';
+	protected $documentType;
 
 	public function __construct(CaseFile $caseFile = null)
 	{
@@ -132,5 +139,19 @@ class Document extends Entity
 	public function getOptions()
 	{
 		return $this->options;
+	}
+
+	public function getDocumentType()
+	{
+		if ($this->id && !$this->documentType) {
+			$documentTypes = parent::getLinkedEntities($this, 'Penneo\SDK\DocumentType');
+			$this->documentType = $documentTypes[0];
+		}
+		return $this->documentType;
+	}
+
+	public function setDocumentType(DocumentType $type)
+	{
+		$this->documentType = $type;
 	}
 }

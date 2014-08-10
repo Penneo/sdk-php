@@ -70,7 +70,6 @@ class ApiConnector
 	public static function callServer($url, $data=null, $method='get', $options=array())
 	{
 		try {
-			//$request = self::$client->$method($url, self::$headers, $data);
 			$request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
 			return $request->send();
 		} catch (\Exception $e) {
