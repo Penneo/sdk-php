@@ -296,6 +296,9 @@ abstract class Entity
 				// This entry can not be parsed
 				return null;
 			}
+			if ($propValue === null) {
+				return null;
+			}
 		}
 		
 		return $propValue;

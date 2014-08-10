@@ -12,7 +12,8 @@ class SigningRequest extends Entity
 			'emailText',
 			'successUrl',
 			'failUrl',
-			'reminderInterval'
+			'reminderInterval',
+			'accessControl'
 		)
 	);
 	protected static $relativeUrl = 'signingrequests';
@@ -120,5 +121,15 @@ class SigningRequest extends Entity
 	public function setReminderInterval($interval)
 	{
 		$this->reminderInterval = $interval;
+	}
+	
+	public function getAccessControl()
+	{
+		return $this->accessControl;
+	}
+	
+	public function setAccessControl($accessControl)
+	{
+		return $this->accessControl = $accessControl;
 	}
 }
