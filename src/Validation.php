@@ -6,8 +6,24 @@ use Penneo\SDK\Entity;
 class Validation extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('title','name','email','emailSubject','emailText', 'successUrl'),
-		'update' => array('title','name','email','emailSubject','emailText', 'successUrl')
+		'create' => array(
+			'title',
+			'name',
+			'email',
+			'emailSubject',
+			'emailText',
+			'successUrl',
+			'customText'
+		),
+		'update' => array(
+			'title',
+			'name',
+			'email',
+			'emailSubject',
+			'emailText',
+			'successUrl',
+			'customText'
+		)
 	);
 	protected static $relativeUrl = 'validations';
 
@@ -17,6 +33,7 @@ class Validation extends Entity
 	protected $emailSubject;
 	protected $emailText;
 	protected $successUrl;
+	protected $customText;
 	protected $status;
 
 	public function getPdf()
@@ -94,6 +111,16 @@ class Validation extends Entity
 	public function setSuccessUrl($url)
 	{
 		$this->successUrl = $url;
+	}
+	
+	public function getCustomText()
+	{
+		return $this->customText;
+	}
+	
+	public function setCustomText($text)
+	{
+		$this->customText = $text;
 	}
 
 	public function getStatus()
