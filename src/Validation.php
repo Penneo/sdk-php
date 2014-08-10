@@ -13,6 +13,7 @@ class Validation extends Entity
 			'emailSubject',
 			'emailText',
 			'successUrl',
+			'reminderInterval',
 			'customText'
 		),
 		'update' => array(
@@ -22,6 +23,7 @@ class Validation extends Entity
 			'emailSubject',
 			'emailText',
 			'successUrl',
+			'reminderInterval',
 			'customText'
 		)
 	);
@@ -33,6 +35,7 @@ class Validation extends Entity
 	protected $emailSubject;
 	protected $emailText;
 	protected $successUrl;
+	protected $reminderInterval;
 	protected $customText;
 	protected $status;
 
@@ -112,7 +115,17 @@ class Validation extends Entity
 	{
 		$this->successUrl = $url;
 	}
+
+	public function getReminderInterval()
+	{
+		return $this->reminderInterval;
+	}
 	
+	public function setReminderInterval($interval)
+	{
+		$this->reminderInterval = $interval;
+	}
+
 	public function getCustomText()
 	{
 		return $this->customText;
