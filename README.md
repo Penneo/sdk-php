@@ -66,7 +66,7 @@ Every signable document must have at least one signature line. Think of it as th
 A signer object represents the person that signs.
 * [SigningRequests][signing-request-docs]
 Think of the signing request as being the instructions for the signer on what to sign. It can either be the formal letter accompanying the document, the yellow post-its showing where to sign, or both.
-* [Case file templates][templates-docs]
+* [Case file templates][template-docs]
 Instead of specifying the mapping between documents and signers explicitly, it is possible to use one of the many pre-defined case file templates provided by Penneo.
 
 ### Identity validation
@@ -147,4 +147,5 @@ print('<a href="'.$myValidation->getLink().'">Validate now</a>');
 [signature-line-docs]: docs/signature-line.md
 [signer-docs]: docs/signer.md
 [signing-request-docs]: docs/signing-request.md
+[template-docs]: docs/templates.md
 [validation-docs]: docs/validation.md
