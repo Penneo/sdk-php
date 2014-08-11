@@ -71,6 +71,14 @@ $myCaseFiles = CaseFile::findBy(
 );
 ```
 
+## Deleting a case file
+A case file can be completely deleted from Penneos document store as long as it is in the _new_ state. As soon as it is send out, a delete request will only cause its status to be changed to _deleted_. A case file is deleted like so:
+
+```php
+// Delete case file
+CaseFile::delete($myCaseFile);
+```
+
 ## Retrieving linked objects
 A case file contains both signer and document objects. These objects can be retrieved using the following methods:
 

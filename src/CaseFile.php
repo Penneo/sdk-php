@@ -36,7 +36,7 @@ class CaseFile extends Entity
 		$this->visibilityMode = 0;
 	}
 
-	public function getCaseFileTypes()
+	public function getCaseFileTemplates()
 	{
 		return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileType', 'casefile/casefiletypes');
 	}
@@ -167,7 +167,7 @@ class CaseFile extends Entity
 		return $this->signIteration;
 	}
 
-	public function getCaseFileType()
+	public function getCaseFileTemplate()
 	{
 		if ($this->id && !$this->caseFileType) {
 			$caseFileTypes = parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileType');
@@ -176,8 +176,8 @@ class CaseFile extends Entity
 		return $this->caseFileType;
 	}
 
-	public function setCaseFileType(CaseFileType $type)
+	public function setCaseFileTemplate(CaseFileTemplate $template)
 	{
-		$this->caseFileType = $type;
+		$this->caseFileType = $template;
 	}
 }
