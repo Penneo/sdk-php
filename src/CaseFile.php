@@ -38,7 +38,7 @@ class CaseFile extends Entity
 
 	public function getCaseFileTemplates()
 	{
-		return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileType', 'casefile/casefiletypes');
+		return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileTemplate', 'casefile/casefiletypes');
 	}
 	
 	public function getDocumentTypes()
@@ -170,7 +170,7 @@ class CaseFile extends Entity
 	public function getCaseFileTemplate()
 	{
 		if ($this->id && !$this->caseFileType) {
-			$caseFileTypes = parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileType');
+			$caseFileTypes = parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileTemplate');
 			$this->caseFileType = $caseFileTypes[0];
 		}
 		return $this->caseFileType;
