@@ -4,14 +4,25 @@ namespace Penneo\SDK;
 class Signer extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('name','socialSecurityNumberPlain','onBehalfOf'),
-		'update' => array('name','socialSecurityNumberPlain','onBehalfOf')
+		'create' => array(
+			'name',
+			'socialSecurityNumberPlain',
+			'vatin',
+			'onBehalfOf'
+		),
+		'update' => array(
+			'name',
+			'socialSecurityNumberPlain',
+			'vatin',
+			'onBehalfOf'
+		)
 	);
 	protected static $relativeUrl = 'signers';
 
 	protected $name;
 	protected $socialSecurityNumberPlain;
 	protected $onBehalfOf;
+	protected $vatin;
 	
 	protected $caseFile;
 
@@ -56,6 +67,16 @@ class Signer extends Entity
 		$this->socialSecurityNumberPlain = $ssn;
 	}
 
+	public function getVATIdentificationNumber()
+	{
+		return $this->vatin;
+	}
+
+	public function setVATIdentificationNumber($vatin)
+	{
+		$this->vatin = $vatin;
+	}
+
 	public function getOnBehalfOf()
 	{
 		return $this->onBehalfOf;
@@ -64,5 +85,20 @@ class Signer extends Entity
 	public function setOnBehalfOf($onBehalfOf)
 	{
 		$this->onBehalfOf = $onBehalfOf;
+	}
+
+	public function addSignerType(SignerType $type)
+	{
+		return parent::linkEntity($this, $type);
+	}
+
+	public function removeSignerType(SignerType $type)
+	{
+		return parent::unlinkEntity($this, $type);
+	}
+
+	public function getSignerTypes()
+	{
+		return parent::getLinkedEntities($this, 'Penneo\SDK\SignerType');
 	}
 }

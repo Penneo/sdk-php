@@ -133,14 +133,16 @@ abstract class Entity
 		return $object;
 	}
 
-	public static function getLinkedEntities(Entity $parent, $type)
+	public static function getLinkedEntities(Entity $parent, $type, $url = null)
 	{
-		$url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl;
+		if ($url == null) {
+			$url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl;
+		}
 
 		$response = ApiConnector::callServer($url);
 		if (!$response)
 			throw new \Exception('Penneo: Internal problem encountered');
-			
+
 		$matches = $response->json();
 		$result = array();
 
@@ -292,6 +294,9 @@ abstract class Entity
 				$propValue = $propValue->$bit();
 			} else {
 				// This entry can not be parsed
+				return null;
+			}
+			if ($propValue === null) {
 				return null;
 			}
 		}

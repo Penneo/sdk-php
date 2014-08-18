@@ -54,6 +54,8 @@ ApiConnector::initialize('apiKeyHere','apiSecretHere', $endpoint, $customerId);
 The endpoint url can point to either the sandbox (for testing) or the live system. Both endpoint urls are available on request.
 
 ### Document signing
+* [Folders][folder-docs]
+Folder objects are containers for case file objects.
 * [Case files][casefile-docs]
 The case file object is a container used to bundle documents and signers. Every signing process starts with a case file.
 * [Documents][document-docs]
@@ -64,6 +66,8 @@ Every signable document must have at least one signature line. Think of it as th
 A signer object represents the person that signs.
 * [SigningRequests][signing-request-docs]
 Think of the signing request as being the instructions for the signer on what to sign. It can either be the formal letter accompanying the document, the yellow post-its showing where to sign, or both.
+* [Case file templates][template-docs]
+Instead of specifying the mapping between documents and signers explicitly, it is possible to use one of the many pre-defined case file templates provided by Penneo.
 
 ### Identity validation
 * [Validations][validation-docs]
@@ -137,9 +141,11 @@ print('<a href="'.$myValidation->getLink().'">Validate now</a>');
 
 
 [docs-api]: https://app.penneo.com/api/docs
+[folder-docs]: docs/folder.md
 [casefile-docs]: docs/casefile.md
 [document-docs]: docs/document.md
 [signature-line-docs]: docs/signature-line.md
 [signer-docs]: docs/signer.md
 [signing-request-docs]: docs/signing-request.md
+[template-docs]: docs/templates.md
 [validation-docs]: docs/validation.md

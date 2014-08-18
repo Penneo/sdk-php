@@ -28,6 +28,9 @@ Validation::persist($myValidation);
 $myValidation->send();
 ```
 
+### Reminder emails
+When using Penneo to distribute validation links, it is also possible to have Penneo remind the person regularly by email, until the he/she completes the validation. To set up a reminder, just use the __setReminderInterval()__ method to set the number of days between reminders.
+
 ## Distributing the validation link yourself
 If you don't want Penneo to distribute your validation links, you can handle the process yourself. All you need to do is to fetch the link from the validation object:
 
@@ -50,6 +53,30 @@ $myLink = $myValidation->getLink();
 ```
 
 Note that the validation link won't be active until you call the __send()__ method on the validation object.
+
+## Customizing the validation process
+When the user completes the validation process, the signer is redirected to the default Penneo success page. You can choose to use your own custom status pages instead. All you need to do is pass the urls to the validation object like so:
+
+```php
+// Set the url for the custom success page
+$myValidation->setSuccessUrl('http://go/here/on/success');
+
+// Store the changes to the validation object
+Validation::persist($myValidation);
+```
+
+It is also possible to change the default explanatory text provided on the validation web-page to better fit your companies or customers validation use case. You can set a custom text like so:
+
+```php
+// Set the url for the custom success page
+$myValidation->setCustomText('Here is my custom text<br>Please validate yourself!');
+
+// Store the changes to the validation object
+Validation::persist($myValidation);
+```
+
+The custom text can't contain any HTML tags, except for the <br> tag.
+
 
 ## Retrieving the validation document
 Once the validation is completed (when __getStatus()__ returns _completed_), the resulting validation document can be retrieved:

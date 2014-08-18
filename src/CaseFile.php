@@ -4,8 +4,19 @@ namespace Penneo\SDK;
 class CaseFile extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('title','metaData','sendAt','expireAt','visibilityMode'),
-		'update' => array('title','metaData')
+		'create' => array(
+			'title',
+			'metaData',
+			'sendAt',
+			'expireAt',
+			'visibilityMode',
+			'caseFileTypeId' => 'caseFileType->getId'
+		),
+		'update' => array(
+			'title',
+			'metaData',
+			'caseFileTypeId' => 'caseFileType->getId'
+		)
 	);
 	protected static $relativeUrl = 'casefiles';
 
@@ -17,11 +28,33 @@ class CaseFile extends Entity
 	protected $status;
 	protected $created;
 	protected $signIteration;
+	protected $caseFileType;
 
 	public function __construct()
 	{
 		// Set default visibility mode
 		$this->visibilityMode = 0;
+	}
+
+	public function getCaseFileTemplates()
+	{
+		return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileTemplate', 'casefile/casefiletypes');
+	}
+	
+	public function getDocumentTypes()
+	{
+		if (!$this->id) {
+			return array();
+		}
+		return parent::getLinkedEntities($this, 'Penneo\SDK\DocumentType', 'casefiles/'.$this->id.'/documenttypes');
+	}
+
+	public function getSignerTypes()
+	{
+		if (!$this->id) {
+			return array();
+		}
+		return parent::getLinkedEntities($this, 'Penneo\SDK\SignerType', 'casefiles/'.$this->id.'/signertypes');
 	}
 
 	public function getDocuments()
@@ -37,6 +70,11 @@ class CaseFile extends Entity
 	public function findSigner($id)
 	{
 		return parent::findLinkedEntity($this, 'Penneo\SDK\Signer', $id);
+	}
+
+	public function getErrors()
+	{
+		return parent::getAssets($this, 'errors');
 	}
 
 	public function activate()
@@ -127,5 +165,19 @@ class CaseFile extends Entity
 	public function getSignIteration()
 	{
 		return $this->signIteration;
+	}
+
+	public function getCaseFileTemplate()
+	{
+		if ($this->id && !$this->caseFileType) {
+			$caseFileTypes = parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileTemplate');
+			$this->caseFileType = $caseFileTypes[0];
+		}
+		return $this->caseFileType;
+	}
+
+	public function setCaseFileTemplate(CaseFileTemplate $template)
+	{
+		$this->caseFileType = $template;
 	}
 }

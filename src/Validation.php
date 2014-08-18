@@ -6,8 +6,26 @@ use Penneo\SDK\Entity;
 class Validation extends Entity
 {
 	protected static $propertyMapping = array(
-		'create' => array('title','name','email','emailSubject','emailText'),
-		'update' => array('title','name','email','emailSubject','emailText')
+		'create' => array(
+			'title',
+			'name',
+			'email',
+			'emailSubject',
+			'emailText',
+			'successUrl',
+			'reminderInterval',
+			'customText'
+		),
+		'update' => array(
+			'title',
+			'name',
+			'email',
+			'emailSubject',
+			'emailText',
+			'successUrl',
+			'reminderInterval',
+			'customText'
+		)
 	);
 	protected static $relativeUrl = 'validations';
 
@@ -16,6 +34,9 @@ class Validation extends Entity
 	protected $email;
 	protected $emailSubject;
 	protected $emailText;
+	protected $successUrl;
+	protected $reminderInterval;
+	protected $customText;
 	protected $status;
 
 	public function getPdf()
@@ -84,7 +105,37 @@ class Validation extends Entity
 	{
 		$this->emailText = $emailText;
 	}
+
+	public function getSuccessUrl()
+	{
+		return $this->successUrl;
+	}
 	
+	public function setSuccessUrl($url)
+	{
+		$this->successUrl = $url;
+	}
+
+	public function getReminderInterval()
+	{
+		return $this->reminderInterval;
+	}
+	
+	public function setReminderInterval($interval)
+	{
+		$this->reminderInterval = $interval;
+	}
+
+	public function getCustomText()
+	{
+		return $this->customText;
+	}
+	
+	public function setCustomText($text)
+	{
+		$this->customText = $text;
+	}
+
 	public function getStatus()
 	{
 		switch ($this->status) {
