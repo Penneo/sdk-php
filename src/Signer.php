@@ -101,4 +101,9 @@ class Signer extends Entity
 	{
 		return parent::getLinkedEntities($this, 'Penneo\SDK\SignerType');
 	}
+	
+	public function getEventLog()
+	{
+		return parent::getLinkedEntities($this, 'Penneo\SDK\LogEntry');
+	}
 }
