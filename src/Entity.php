@@ -240,12 +240,12 @@ abstract class Entity
 	{
 		foreach ($data as $key => $val) {
 			if (property_exists($this, $key)) {
-				$this->$key = $this->parseObjects($val);
+				$this->$key = $this->parseObjects($val, $this);
 			}
 		}
 	}
 
-	private function parseObjects($data)
+	private function parseObjects($data, $parent)
 	{
 		// If we don't have an array, we are done.
 		if (!is_array($data)) {
@@ -255,7 +255,7 @@ abstract class Entity
 		// Check if we an object
 		if (isset($data['sdkClassName'])) {
 			$class = 'Penneo\SDK\\'.$data['sdkClassName'];
-			$obj = new $class;
+			$obj = new $class($parent);
 			$obj->__fromArray($data);
 			return $obj;
 		}
@@ -263,7 +263,7 @@ abstract class Entity
 		// If we reach this point, parse all objects in the array.
 		$parsedArray = array();
 		foreach ($data as $key => $element) {
-			$parsedArray[$key] = $this->parseObjects($element);
+			$parsedArray[$key] = $this->parseObjects($element, $parent);
 		}
 		
 		return $parsedArray;
