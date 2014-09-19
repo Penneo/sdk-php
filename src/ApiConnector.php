@@ -11,6 +11,7 @@ class ApiConnector
 	static protected $headers = array('Content-type' => 'application/json');
 	static protected $lastError;
 	static protected $client;
+	static protected $debug = false;
 	
 	/**
 	 * Initialize the API connector class.
@@ -32,7 +33,12 @@ class ApiConnector
 		self::$client = new Client(self::$endpoint);
 		self::$client->getEventDispatcher()->addSubscriber($wsse);
 	}
-	
+
+	public static function enableDebug()
+	{
+		self::$debug = true;
+	}
+
 	public static function readObject(Entity $object)
 	{
 		$response = self::callServer($object->getRelativeUrl().'/'.$object->getId());
@@ -73,7 +79,9 @@ class ApiConnector
 			$request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
 			return $request->send();
 		} catch (\Exception $e) {
-			print($request->getResponse());
+			if (self::$debug) {
+				print($request->getResponse());
+			}
 			return false;
 		}
 	}
