@@ -10,11 +10,13 @@ class SignatureLine extends Entity
 	protected static $relativeUrl = 'signaturelines';
 
 	protected $document;
-	protected $signer;
+	protected $signer = null;
 	protected $role;
 	protected $conditions;
 	protected $signOrder = 0;
 	protected $signedAt;
+	
+	protected $signerId = null;
 
 	public function __construct(Document $document)
 	{
@@ -28,9 +30,15 @@ class SignatureLine extends Entity
 
 	public function getSigner()
 	{
-		if (!$this->signer) {
-			$signers = parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
-			$this->signer = $signers[0];
+		if ($this->signer == null) {
+			if ($this->signerId !== null) {
+				// Retrieve signer from signer id
+				$this->signer = $this->document->getCaseFile()->findSigner($this->signerId);
+			} else {
+				// Retrieve signer from API
+				$signers = parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
+				$this->signer = $signers[0];
+			}
 		}
 
 		return $this->signer;

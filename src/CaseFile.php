@@ -29,6 +29,9 @@ class CaseFile extends Entity
 	protected $created;
 	protected $signIteration;
 	protected $caseFileType;
+	
+	protected $documents = null;
+	protected $signers = null;
 
 	public function __construct()
 	{
@@ -59,16 +62,30 @@ class CaseFile extends Entity
 
 	public function getDocuments()
 	{
+		if ($this->documents !== null) {
+			return $this->documents;
+		}
 		return parent::getLinkedEntities($this, 'Penneo\SDK\Document');
 	}
 
 	public function getSigners()
 	{
+		if ($this->signers !== null) {
+			return $this->signers;
+		}
 		return parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
 	}
 	
 	public function findSigner($id)
 	{
+		if ($this->signers !== null) {
+			foreach ($this->signers as $signer) {
+				if ($signer->getId() == $id) {
+					return $signer;
+				}
+			}
+			return null;
+		}
 		return parent::findLinkedEntity($this, 'Penneo\SDK\Signer', $id);
 	}
 

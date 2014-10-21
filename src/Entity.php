@@ -238,11 +238,35 @@ abstract class Entity
 	
 	public function __fromArray(array $data)
 	{
-		foreach($data as $key => $val) {
+		foreach ($data as $key => $val) {
 			if (property_exists($this, $key)) {
-				$this->$key = $val;
+				$this->$key = $this->parseObjects($val, $this);
 			}
 		}
+	}
+
+	private function parseObjects($data, $parent)
+	{
+		// If we don't have an array, we are done.
+		if (!is_array($data)) {
+			return $data;
+		}
+
+		// Check if we an object
+		if (isset($data['sdkClassName'])) {
+			$class = 'Penneo\SDK\\'.$data['sdkClassName'];
+			$obj = new $class($parent);
+			$obj->__fromArray($data);
+			return $obj;
+		}
+
+		// If we reach this point, parse all objects in the array.
+		$parsedArray = array();
+		foreach ($data as $key => $element) {
+			$parsedArray[$key] = $this->parseObjects($element, $parent);
+		}
+		
+		return $parsedArray;
 	}
 
 	public function __getRequestData()
