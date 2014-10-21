@@ -36,6 +36,8 @@ class Document extends Entity
 	protected $type = 'attachment';
 	protected $documentType;
 
+	protected $signatureLines = null;
+
 	public function __construct(CaseFile $caseFile = null)
 	{
 		$this->caseFile = $caseFile;
@@ -52,11 +54,22 @@ class Document extends Entity
 
 	public function getSignatureLines()
 	{
+		if ($this->signatureLines !== null) {
+			return $this->signatureLines;
+		}
 		return parent::getLinkedEntities($this, 'Penneo\SDK\SignatureLine');
 	}
 	
 	public function findSignatureLine($id)
 	{
+		if ($this->signatureLines !== null) {
+			foreach ($this->signatureLines as $signatureLine) {
+				if ($signatureLine->getId() == $id) {
+					return $signatureLine;
+				}
+			}
+			return null;
+		}
 		return parent::findLinkedEntity($this, 'Penneo\SDK\SignatureLine', $id);
 	}
 

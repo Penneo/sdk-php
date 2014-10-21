@@ -100,10 +100,10 @@ Signer::persist($mySigner);
 // Create a new signature line on the document
 $mySignatureLine = new SignatureLine($myDocument);
 $mySignatureLine->setRole('MySignerRole');
+SignatureLine::persist($mySignatureLine);
 
 // Link the signer to the signature line
 $mySignatureLine->setSigner($mySigner);
-SignatureLine::persist($mySignatureLine);
 
 // Update the signing request for the new signer
 $mySigningRequest = $mySigner->getSigningRequest();

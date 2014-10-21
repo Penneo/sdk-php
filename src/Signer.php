@@ -25,6 +25,7 @@ class Signer extends Entity
 	protected $vatin;
 	
 	protected $caseFile;
+	protected $signingRequest = null;
 
 	public function __construct($parent)
 	{
@@ -43,6 +44,9 @@ class Signer extends Entity
 
 	public function getSigningRequest()
 	{
+		if ($this->signingRequest) {
+			return $this->signingRequest;
+		}
 		$requests = parent::getLinkedEntities($this, 'Penneo\SDK\SigningRequest');
 		return $requests[0];
 	}
