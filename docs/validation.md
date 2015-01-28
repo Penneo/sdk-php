@@ -53,6 +53,7 @@ $myValidation->send();
 $myLink = $myValidation->getLink();
 
 // Define the content of the email if you would like to send emails through Penneo as well
+$myValidation->setEmail('john@doe.com');
 $myValidation->setEmailSubject('Validation inquiry');
 $myValidation->setEmailText('Dear john. Please validate yourself using this link.');
 
