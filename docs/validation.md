@@ -49,10 +49,10 @@ Validation::persist($myValidation);
 // As the email content isn't defined, nothing will be sent
 $myValidation->send();
 
-// Retrieve the validation link
+// Retrieve the validation link that you would like to distribute
 $myLink = $myValidation->getLink();
 
-// Define the content of the email if you would like to send emails through Penneo as well
+// In case you would like to re-send the validation request from Penneo at a later point, you need to set the email details
 $myValidation->setEmail('john@doe.com');
 $myValidation->setEmailSubject('Validation inquiry');
 $myValidation->setEmailText('Dear john. Please validate yourself using this link.');
