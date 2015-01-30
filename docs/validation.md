@@ -46,10 +46,20 @@ $myValidation->setName('John Doe');
 Validation::persist($myValidation);
 
 // Activate the validation object
+// As the email content isn't defined, nothing will be sent
 $myValidation->send();
 
-// Retrieve the validation link
+// Retrieve the validation link that you would like to distribute
 $myLink = $myValidation->getLink();
+
+// In case you would like to re-send the validation request from Penneo at a later point, you need to set the email details
+$myValidation->setEmail('john@doe.com');
+$myValidation->setEmailSubject('Validation inquiry');
+$myValidation->setEmailText('Dear john. Please validate yourself using this link.');
+
+// Persist the new validation object
+Validation::persist($myValidation);
+
 ```
 
 Note that the validation link won't be active until you call the __send()__ method on the validation object.
