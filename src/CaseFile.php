@@ -10,12 +10,13 @@ class CaseFile extends Entity
 			'sendAt',
 			'expireAt',
 			'visibilityMode',
-			'caseFileTypeId' => 'caseFileType->getId'
+			'caseFileTypeId' => 'caseFileType->getId',
 		),
 		'update' => array(
 			'title',
 			'metaData',
-			'caseFileTypeId' => 'caseFileType->getId'
+			'caseFileTypeId' => 'caseFileType->getId',
+			'visibilityMode',
 		)
 	);
 	protected static $relativeUrl = 'casefiles';
