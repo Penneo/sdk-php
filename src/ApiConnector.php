@@ -12,6 +12,7 @@ class ApiConnector
 	static protected $lastError;
 	static protected $client;
 	static protected $debug = false;
+	static protected $throwExceptions = false;
 	
 	/**
 	 * Initialize the API connector class.
@@ -37,6 +38,11 @@ class ApiConnector
 	public static function enableDebug()
 	{
 		self::$debug = true;
+	}
+
+	public static function throwExceptions($value)
+	{
+		self::$throwExceptions = (bool) $value;
 	}
 
 	public static function readObject(Entity $object)
@@ -79,6 +85,9 @@ class ApiConnector
 			$request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
 			return $request->send();
 		} catch (\Exception $e) {
+            if (self::$throwExceptions) {
+                throw $e;
+            }
 			if (self::$debug) {
 				print($request->getResponse());
 			}
