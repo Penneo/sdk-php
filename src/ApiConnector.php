@@ -85,9 +85,9 @@ class ApiConnector
 			$request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
 			return $request->send();
 		} catch (\Exception $e) {
-            if (self::$throwExceptions) {
-                throw $e;
-            }
+			if (self::$throwExceptions) {
+				throw $e;
+			}
 			if (self::$debug) {
 				print($request->getResponse());
 			}
