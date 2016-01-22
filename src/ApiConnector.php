@@ -41,8 +41,6 @@ class ApiConnector
 
 		if ($user) {
 			self::$headers['penneo-api-user'] = intval($user);
-		} else {
-			unset(self::$headers['penneo-api-user']);
 		}
 
 		$wsse = new WsseAuthPlugin($key, $secret);
