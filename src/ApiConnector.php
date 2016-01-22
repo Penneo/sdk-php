@@ -7,13 +7,22 @@ use Penneo\SDK\Entity;
 
 class ApiConnector
 {
-	static protected $endpoint = 'https://sandbox.penneo.com/api/v1';
-	static protected $headers = array('Content-type' => 'application/json');
+	static protected $endpoint;
+	static protected $headers;
 	static protected $lastError;
 	static protected $client;
 	static protected $debug = false;
 	static protected $throwExceptions = false;
 	
+	protected static function getDefaultEndpoint()
+	{
+		return 'https://sandbox.penneo.com/api/v1';
+	}
+
+	protected static function getDefaultHeaders()
+	{
+		return array('Content-type' => 'application/json');
+	}
 	/**
 	 * Initialize the API connector class.
 	 *
@@ -21,15 +30,21 @@ class ApiConnector
 	 * @param string $secret     Your Penneo API secret
 	 * @param string $endpoint   The API endpoint url. This defaults to the API sandbox.
 	 */
-	public static function initialize($key, $secret, $endpoint=null, $user=null, $headers=null)
+	public static function initialize($key, $secret, $endpoint=null, $user=null, array $headers=null)
 	{
-		if ($endpoint)
-			self::$endpoint = $endpoint;
-		if ($headers)
+		self::$endpoint = $endpoint ?: self::getDefaultEndpoint();
+
+		self::$headers = self::getDefaultHeaders();
+		if ($headers) {
 			self::$headers = array_merge($headers, self::$headers);
-		if ($user)
+		}
+
+		if ($user) {
 			self::$headers['penneo-api-user'] = intval($user);
-		
+		} else {
+			unset(self::$headers['penneo-api-user']);
+		}
+
 		$wsse = new WsseAuthPlugin($key, $secret);
 		self::$client = new Client(self::$endpoint);
 		self::$client->getEventDispatcher()->addSubscriber($wsse);
