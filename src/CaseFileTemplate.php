@@ -3,18 +3,18 @@ namespace Penneo\SDK;
 
 class CaseFileTemplate extends Entity
 {
-	protected static $relativeUrl = 'casefiletype';
+    protected static $relativeUrl = 'casefiletype';
 
-	protected $name;
-	protected $documentTypes;
+    protected $name;
+    protected $documentTypes;
 
-	public function getName()
-	{
-		return $this->name;
-	}
-	
-	public function getDocumentTypes()
-	{
-		return $this->documentTypes;
-	}
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function getDocumentTypes()
+    {
+        return $this->documentTypes;
+    }
 }

@@ -1,0 +1,30 @@
+{
+    "variables": {
+        "dev_version": "{{env `DEV_VERSION`}}_dev",
+        "docker_image_name": "{{env `DOCKER_IMAGE_NAME`}}"
+    },
+    "builders": [
+        {
+            "type": "docker",
+            "image": "debian:jessie",
+            "commit": true,
+            "pull": false
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "{{template_dir}}/provision.sh"
+        }
+    ],
+    "post-processors": [
+        [
+            {
+                "type": "docker-tag",
+                "repository": "{{user `docker_image_name`}}",
+                "tag": "{{user `dev_version`}}",
+                "force": true
+            }
+        ]
+    ]
+}

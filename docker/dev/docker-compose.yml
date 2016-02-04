@@ -1,0 +1,6 @@
+sdk-php:
+  image: "${DOCKER_IMAGE_NAME}:${DEV_VERSION}_dev"
+  command: "/bin/bash"
+  volumes:
+    - ../../:/app/data/
+    - ~/.composer:/root/.composer
