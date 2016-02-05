@@ -7,7 +7,7 @@ Scenario: Read message template
   | id | title | subject | message      |
   |  1 | ABC   | test    | test message |
   When I retrieve message template 1
-  Then a GET request should be sent to "/templates/1"
+  Then a GET request should be sent to "/casefile/message/templates/1"
    And entity property "title" should contain "ABC"
    And entity property "subject" should contain "test"
    And entity property "message" should contain "test message"
@@ -17,7 +17,7 @@ Scenario: Store a message template
   | title        | subject   | message      |
   | New template | A subject | Some message |
   When I persist the message template
-  Then a POST request should be sent to "/templates"
+  Then a POST request should be sent to "/casefile/message/templates"
    And the request body should contain:
    """
    {
@@ -35,7 +35,7 @@ Scenario: Update a message template
    And I retrieve message template 1
   When I set entity property "title" to "Another title"
    And I persist message template 1
-  Then a PUT request should be sent to "/templates/1"
+  Then a PUT request should be sent to "/casefile/message/templates/1"
    And the request body should contain:
    """
    {
@@ -51,5 +51,5 @@ Scenario: Delete a message template
   |  1 | ABC   | test    | test message |
    And I retrieve message template 1
   When I delete the message template 1
-  Then a DELETE request should be sent to "/templates/1"
+  Then a DELETE request should be sent to "/casefile/message/templates/1"
    And entity property "id" should be undefined

@@ -15,7 +15,7 @@ class MessageTemplate extends Entity
             'message'
         )
     );
-    protected static $relativeUrl = 'templates';
+    protected static $relativeUrl = 'casefile/message/templates';
 
     protected $title;
     protected $subject;
