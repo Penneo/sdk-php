@@ -3,12 +3,23 @@
     "type": "library",
     "homepage": "https://penneo.com",
     "description": "Penneo SDK for PHP",
+    "autoload": {
+        "psr-4": {
+            "Penneo\\SDK\\": "src/",
+            "Penneo\\SDK\\Tests\\": "features/Context/"
+        }
+    },
     "require": {
         "php": ">=5.3.0",
         "guzzle/guzzle": "3.8.*",
         "davedevelopment/guzzle-wsse-auth-plugin": "1.*"
     },
-    "autoload": {
-        "psr-4": { "Penneo\\SDK\\": "src/" }
+    "require-dev": {
+        "behat/behat": "^3.0",
+        "phpunit/phpunit": "~5.0",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }

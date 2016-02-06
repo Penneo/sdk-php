@@ -1,0 +1,5 @@
+sdk-php:
+  image: "${DOCKER_IMAGE_NAME}:${DEV_VERSION}_dev"
+  volumes:
+    - ../../:/app/data/
+    - ~/.composer:/root/.composer
