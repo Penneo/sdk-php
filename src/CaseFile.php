@@ -3,6 +3,9 @@ namespace Penneo\SDK;
 
 class CaseFile extends Entity
 {
+    const DISPLAY_MODE_TABBED  = 0;
+    const DISPLAY_MODE_FLOW    = 1;
+
     protected static $propertyMapping = array(
         'create' => array(
             'title',
@@ -10,13 +13,19 @@ class CaseFile extends Entity
             'sendAt',
             'expireAt',
             'visibilityMode',
+            'documentDisplayMode',
             'caseFileTypeId' => 'caseFileType->getId',
+            'sensitiveData',
+            'reference',
         ),
         'update' => array(
             'title',
             'metaData',
             'caseFileTypeId' => 'caseFileType->getId',
             'visibilityMode',
+            'documentDisplayMode',
+            'sensitiveData',
+            'reference',
         )
     );
     protected static $relativeUrl = 'casefiles';
@@ -26,6 +35,9 @@ class CaseFile extends Entity
     protected $sendAt;
     protected $expireAt;
     protected $visibilityMode;
+    protected $documentDisplayMode;
+    protected $reference;
+    protected $sensitiveData;
     protected $status;
     protected $created;
     protected $signIteration;
@@ -38,6 +50,8 @@ class CaseFile extends Entity
     {
         // Set default visibility mode
         $this->visibilityMode = 0;
+        $this->sensitiveData = false;
+        $this->documentDisplayMode = self::DISPLAY_MODE_TABBED;
     }
 
     public function getCaseFileTemplates()
@@ -155,6 +169,52 @@ class CaseFile extends Entity
         $this->visibilityMode = $visibilityMode;
     }
 
+    /**
+     * Set documentDisplayMode
+     *
+     * @param integer $documentDisplayMode
+     * @return CaseFile
+     */
+    public function setDocumentDisplayMode($documentDisplayMode)
+    {
+        $this->documentDisplayMode = $documentDisplayMode;
+
+        return $this;
+    }
+
+    /**
+     * Get documentDisplayMode
+     *
+     * @return integer
+     */
+    public function getDocumentDisplayMode()
+    {
+        return $this->documentDisplayMode;
+    }
+
+    /**
+     * Set sensitiveData
+     *
+     * @param boolean $sensitive
+     * @return CaseFile
+     */
+    public function setSensitiveData($sensitive)
+    {
+        $this->sensitiveData = $sensitive;
+
+        return $this;
+    }
+
+    /**
+     * Get sensitiveData
+     *
+     * @return boolean
+     */
+    public function getSensitiveData()
+    {
+        return $this->sensitiveData;
+    }
+
     public function getStatus()
     {
         switch ($this->status) {
@@ -174,7 +234,30 @@ class CaseFile extends Entity
     
         return 'deleted';
     }
-    
+
+    /**
+     * Set reference
+     *
+     * @param string $reference
+     * @return CaseFile
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
+
+        return $this;
+    }
+
+    /**
+     * Get reference
+     *
+     * @return string
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
     public function getCreatedAt()
     {
         return new \DateTime('@'.$this->created);
