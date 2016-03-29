@@ -20,6 +20,7 @@ class Signer extends Entity
     protected static $relativeUrl = 'signers';
 
     protected $name;
+    protected $validatedName;
     protected $socialSecurityNumberPlain;
     protected $onBehalfOf;
     protected $vatin;
@@ -59,6 +60,11 @@ class Signer extends Entity
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    public function getValidatedName()
+    {
+        return $this->validatedName;
     }
 
     public function getSocialSecurityNumber()
