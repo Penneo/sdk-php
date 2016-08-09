@@ -41,14 +41,14 @@ In order to use the SDK, you will have to authenticate against the Penneo API. A
 
 ```php
 // Initialize the connection to the API
-ApiConnector::initialize('apiKeyHere', 'apiSecretHere', $endpoint);
+Penneo\SDK\ApiConnector::initialize('apiKeyHere', 'apiSecretHere', $endpoint);
 ```
 
 If you have a reseller account, you can carry out operations on behalf of one of your customers, by specifying the customer id as well:
 
 ```php
 // Initialize the connection to the API as customer
-ApiConnector::initialize('apiKeyHere','apiSecretHere', $endpoint, $customerId);
+Penneo\SDK\ApiConnector::initialize('apiKeyHere','apiSecretHere', $endpoint, $customerId);
 ```
 
 The endpoint url can point to either the sandbox (for testing) or the live system. Both endpoint urls are available on request.
@@ -80,6 +80,8 @@ In this example, we show how to create a document with a single signer.
 The link to the Penneo signing portal, where the actual signing takes place, is printed as a result.
 
 ```php
+namespace Penneo\SDK;
+
 // Create a new case file
 $myCaseFile = new CaseFile();
 $myCaseFile->setTitle('Demo case file');
@@ -124,6 +126,8 @@ In this example we demontrate, how to validate a person from his/her electronic 
 The result is a link to the Penneo validation page. The person in question must follow the link and complete some actions in order to be validated.
 
 ```php
+namespace Penneo\SDK;
+
 // Create a new validation
 $myValidation = new Validation();
 $myValidation->setTitle('My new validation');
