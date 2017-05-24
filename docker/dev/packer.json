@@ -22,8 +22,7 @@
             {
                 "type": "docker-tag",
                 "repository": "{{user `docker_image_name`}}",
-                "tag": "{{user `dev_version`}}",
-                "force": true
+                "tag": "{{user `dev_version`}}"
             }
         ]
     ]
