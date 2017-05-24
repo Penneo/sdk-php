@@ -85,6 +85,9 @@ In this example, we show how to create a document with a single signer.
 The link to the Penneo signing portal, where the actual signing takes place, is printed as a result.
 
 ```php
+<?php
+require 'vendor/autoload.php';
+
 namespace Penneo\SDK;
 
 // Create a new case file
@@ -131,6 +134,9 @@ In this example we demontrate, how to validate a person from his/her electronic 
 The result is a link to the Penneo validation page. The person in question must follow the link and complete some actions in order to be validated.
 
 ```php
+<?php
+require 'vendor/autoload.php';
+
 namespace Penneo\SDK;
 
 // Create a new validation
