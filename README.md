@@ -26,10 +26,16 @@ Next, update your project's composer.json file to include the SDK:
 }
 ```
 
-After installing, you need to require Composer's autoloader:
+After installing, you need to require Composer's autoloader before calling any SDK functions e.g.:
 
 ```php
+<?php
+
 require 'vendor/autoload.php';
+
+// Call SDK functions here..
+
+?>
 ```
 You can find out more on how to install Composer, configure autoloading, and other best-practices for defining dependencies at [getcomposer.org](http://getcomposer.org).
 
@@ -80,7 +86,10 @@ In this example, we show how to create a document with a single signer.
 The link to the Penneo signing portal, where the actual signing takes place, is printed as a result.
 
 ```php
+<?php
 namespace Penneo\SDK;
+
+require 'vendor/autoload.php';
 
 // Create a new case file
 $myCaseFile = new CaseFile();
@@ -126,7 +135,10 @@ In this example we demontrate, how to validate a person from his/her electronic 
 The result is a link to the Penneo validation page. The person in question must follow the link and complete some actions in order to be validated.
 
 ```php
+<?php
 namespace Penneo\SDK;
+
+require 'vendor/autoload.php';
 
 // Create a new validation
 $myValidation = new Validation();
