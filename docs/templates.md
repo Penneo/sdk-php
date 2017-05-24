@@ -16,6 +16,8 @@ $availableTemplates = $myCaseFile->getCaseFileTemplates();
 // Assign the first list item as the case file template
 $myCaseFile->setCaseFileTemplate($availableTemplates[0]);
 
+// Save
+Casefile::persist($myCaseFile);
 ```
 
 ### Adding documents
@@ -30,6 +32,9 @@ $availableDocumentTypes = $myCaseFile->getDocumentTypes();
 
 // Lets just assign the first type available
 $myDocument->setDocumentType($availableDocumentTypes[0]);
+
+// Save
+Document::persist($myDocument);
 ```
 
 ### Adding signers
@@ -43,7 +48,7 @@ $mySigner = new Signer($myCaseFile);
 $availableSignerTypes = $myCaseFile->getSignerTypes();
 
 // Lets just assign the first type available
-$mySigner->setSignerType($availableSignerTypes[0]);
+$mySigner->addSignerType($availableSignerTypes[0]);
 ```
 
 ## Sending the case file out for signing
