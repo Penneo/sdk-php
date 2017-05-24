@@ -26,10 +26,15 @@ Next, update your project's composer.json file to include the SDK:
 }
 ```
 
-After installing, you need to require Composer's autoloader:
+After installing, you need to require Composer's autoloader before calling any SDK functions e.g.:
 
 ```php
+<?php
 require 'vendor/autoload.php';
+
+// Call SDK functions here..
+
+?>
 ```
 You can find out more on how to install Composer, configure autoloading, and other best-practices for defining dependencies at [getcomposer.org](http://getcomposer.org).
 
