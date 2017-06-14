@@ -123,7 +123,6 @@ class ApiConnector
     public static function callServer($url, $data = null, $method = 'get', $options = array())
     {
         try {
-            $request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
             self::$logger->debug('request', [
                 'method'  => $method,
                 'url'     => $url,
@@ -131,6 +130,7 @@ class ApiConnector
                 'data'    => $data,
                 'options' => $options,
             ]);
+            $request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
             return $request->send();
         } catch (\Exception $e) {
             $message  = null;
