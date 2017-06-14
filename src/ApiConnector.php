@@ -123,24 +123,37 @@ class ApiConnector
     public static function callServer($url, $data = null, $method = 'get', $options = array())
     {
         try {
-            self::$logger->debug("$method $url", [
-                'method'  => $method,
-                'url'     => $url,
-                'headers' => self::$headers,
-                'data'    => $data,
-                'options' => $options,
-            ]);
+            self::$logger->debug(
+                'request',
+                [
+                    'method'  => $method,
+                    'url'     => $url,
+                    'headers' => self::$headers,
+                    'data'    => $data,
+                    'options' => $options,
+                ]
+            );
             $request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
-            return $request->send();
+            $response = $request->send();
+            if ($response instanceof Response) {
+                self::$logger->debug('response', [
+                    'method' => $method,
+                    'url'    => $url,
+                    'raw'    => $response->getMessage()
+                ]);
+            }
+            return $response;
         } catch (\Exception $e) {
             $message  = null;
             $response = $request->getResponse();
             if ($response instanceof Response) {
                 $message = $response->getMessage();
+                self::$logger->error('response', [
+                    'method' => $method,
+                    'url'    => $url,
+                    'raw'    => $message
+                ]);
             }
-            self::$logger->error("$method $url", [
-                'data' => $message,
-            ]);
             if (self::$throwExceptions) {
                 throw $e;
             }
