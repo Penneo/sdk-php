@@ -123,7 +123,7 @@ class ApiConnector
     public static function callServer($url, $data = null, $method = 'get', $options = array())
     {
         try {
-            self::$logger->debug('request', [
+            self::$logger->debug("$method $url", [
                 'method'  => $method,
                 'url'     => $url,
                 'headers' => self::$headers,
@@ -139,7 +139,7 @@ class ApiConnector
                 $message = $response->getMessage();
             }
             self::$logger->error("$method $url", [
-                'body' => $message,
+                'data' => $message,
             ]);
             if (self::$throwExceptions) {
                 throw $e;
