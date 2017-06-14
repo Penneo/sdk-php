@@ -2,7 +2,12 @@
 namespace Penneo\SDK;
 
 use Guzzle\Http\Client;
+use Guzzle\Http\Message\Response;
+
 use Atst\Guzzle\Http\Plugin\WsseAuthPlugin;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 use Penneo\SDK\Entity;
 
 class ApiConnector
@@ -11,8 +16,13 @@ class ApiConnector
     static protected $headers;
     static protected $lastError;
     static protected $client;
+
+    /**
+     * @deprecated Use setLogger()
+     */
     static protected $debug = false;
     static protected $throwExceptions = false;
+    static protected $logger;
     
     protected static function getDefaultEndpoint()
     {
@@ -23,6 +33,7 @@ class ApiConnector
     {
         return array('Content-type' => 'application/json');
     }
+
     /**
      * Initialize the API connector class.
      *
@@ -46,16 +57,23 @@ class ApiConnector
         $wsse = new WsseAuthPlugin($key, $secret);
         self::$client = new Client(self::$endpoint);
         self::$client->getEventDispatcher()->addSubscriber($wsse);
+        self::$logger = new NullLogger();
     }
 
     public static function enableDebug()
     {
+        trigger_error(__FUNCTION__ . ' is deprecated. Use setLogger(Psr\Log\LoggerInterface $logger)');
         self::$debug = true;
     }
 
     public static function throwExceptions($value)
     {
         self::$throwExceptions = (bool) $value;
+    }
+
+    public static function setLogger(LoggerInterface $logger)
+    {
+        self::$logger = $logger;
     }
 
     public static function readObject(Entity $object)
@@ -106,13 +124,28 @@ class ApiConnector
     {
         try {
             $request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
+            self::$logger->debug('request', [
+                'method'  => $method,
+                'url'     => $url,
+                'headers' => self::$headers,
+                'data'    => $data,
+                'options' => $options,
+            ]);
             return $request->send();
         } catch (\Exception $e) {
+            $message  = null;
+            $response = $request->getResponse();
+            if ($response instanceof Response) {
+                $message = $response->getMessage();
+            }
+            self::$logger->error("$method $url", [
+                'body' => $message,
+            ]);
             if (self::$throwExceptions) {
                 throw $e;
             }
             if (self::$debug) {
-                print($request->getResponse());
+                print($message);
             }
             return false;
         }
