@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [1.7.0] - 2017-08-01
+### Added
+- [\#27] Signing requests can now be updated with the `enableInsecureSigning` flag
+
 ## [1.6.0] - 2017-06-13
 ### Added
 - [\#25] Logging request and response bodies for API calls
@@ -30,4 +34,5 @@ Penneo\SDK\ApiConnector::setLogger(new MyLogger());
 <!-- [1.5.0]: https://github.com/Penneo/sdk-php/compare/1.4.0...1.5.0 -->
 
 [comment]: # (Issue Links)
+[\#27]: https://github.com/Penneo/sdk-php/issues/27
 [\#25]: https://github.com/Penneo/sdk-php/issues/25
