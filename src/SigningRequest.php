@@ -13,7 +13,8 @@ class SigningRequest extends Entity
             'successUrl',
             'failUrl',
             'reminderInterval',
-            'accessControl'
+            'accessControl',
+            'enableInsecureSigning'
         )
     );
     protected static $relativeUrl = 'signingrequests';
@@ -26,6 +27,8 @@ class SigningRequest extends Entity
     protected $successUrl;
     protected $failUrl;
     protected $reminderInterval;
+    protected $accessControl;
+    protected $enableInsecureSigning;
 
     public function getLink()
     {
@@ -131,5 +134,15 @@ class SigningRequest extends Entity
     public function setAccessControl($accessControl)
     {
         return $this->accessControl = $accessControl;
+    }
+    
+    public function getEnableInsecureSigning()
+    {
+        return $this->enableInsecureSigning;
+    }
+    
+    public function setEnableInsecureSigning($enableInsecureSigning)
+    {
+        $this->enableInsecureSigning = $enableInsecureSigning;
     }
 }
