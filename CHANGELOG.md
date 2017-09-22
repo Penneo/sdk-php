@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [1.8.0] - 2017-09-22
+### Added
+- [\#29] Case files can now be create and updated with the `disableNotificationsOwner` flag
+
 ## [1.7.0] - 2017-08-01
 ### Added
 - [\#27] Signing requests can now be updated with the `enableInsecureSigning` flag
@@ -30,9 +34,12 @@ Penneo\SDK\ApiConnector::setLogger(new MyLogger());
 
 [comment]: # (Build Comparison Links)
 
-[unreleased]: https://github.com/Penneo/sdk-php/compare/1.5.0...HEAD
-<!-- [1.5.0]: https://github.com/Penneo/sdk-php/compare/1.4.0...1.5.0 -->
+[unreleased]: https://github.com/Penneo/sdk-php/compare/1.8.0...HEAD
+[1.8.0]: https://github.com/Penneo/sdk-php/compare/1.7.0...1.8.0
+[1.7.0]: https://github.com/Penneo/sdk-php/compare/1.6.0...1.7.0
+[1.6.0]: https://github.com/Penneo/sdk-php/compare/1.5.0...1.6.0
 
 [comment]: # (Issue Links)
+[\#29]: https://github.com/Penneo/sdk-php/issues/29
 [\#27]: https://github.com/Penneo/sdk-php/issues/27
 [\#25]: https://github.com/Penneo/sdk-php/issues/25

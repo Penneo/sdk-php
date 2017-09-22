@@ -16,6 +16,7 @@ class CaseFile extends Entity
             'documentDisplayMode',
             'caseFileTypeId' => 'caseFileType->getId',
             'sensitiveData',
+            'disableNotificationsOwner',
             'reference',
         ),
         'update' => array(
@@ -24,6 +25,7 @@ class CaseFile extends Entity
             'caseFileTypeId' => 'caseFileType->getId',
             'visibilityMode',
             'documentDisplayMode',
+            'disableNotificationsOwner',
             'sensitiveData',
             'reference',
         )
@@ -38,6 +40,7 @@ class CaseFile extends Entity
     protected $documentDisplayMode;
     protected $reference;
     protected $sensitiveData;
+    protected $disableNotificationsOwner;
     protected $status;
     protected $created;
     protected $signIteration;
@@ -51,6 +54,7 @@ class CaseFile extends Entity
         // Set default visibility mode
         $this->visibilityMode = 0;
         $this->sensitiveData = false;
+        $this->disableNotificationsOwner = false;
         $this->documentDisplayMode = self::DISPLAY_MODE_TABBED;
     }
 
@@ -213,6 +217,29 @@ class CaseFile extends Entity
     public function getSensitiveData()
     {
         return $this->sensitiveData;
+    }
+
+    /**
+     * Set disableNotificationsOwner
+     *
+     * @param boolean $disableNotificationsOwner
+     * @return CaseFile
+     */
+    public function setDisableNotificationsOwner($disableNotificationsOwner)
+    {
+        $this->disableNotificationsOwner = $disableNotificationsOwner;
+
+        return $this;
+    }
+
+    /**
+     * Get disableNotificationsOwner
+     *
+     * @return boolean
+     */
+    public function getDisableNotificationsOwner()
+    {
+        return $this->disableNotificationsOwner;
     }
 
     public function getStatus()
