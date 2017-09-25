@@ -1,7 +1,7 @@
 <?php
 namespace Penneo\SDK;
 
-class Recipient extends Entity
+class CopyRecipient extends Entity
 {
     protected static $propertyMapping = array(
         'create' => array(
