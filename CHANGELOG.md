@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.9.0] - 2017-09-25
 ### Added
-- [\#31] Create recipients for the signed documents
+- [\#31] Create copy recipients for the signed documents
 
 ## [1.8.0] - 2017-09-22
 ### Added
