@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [1.9.1] - 2017-10-24
+### Fixed
+- [\#33] Updated `psr/log` dependency
+
 ## [1.9.0] - 2017-09-25
 ### Added
 - [\#31] Create copy recipients for the signed documents
