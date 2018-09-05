@@ -34,6 +34,41 @@ $mySigningRequest->send();
 ### Reminder emails
 When using Penneo to distribute signing links, it is also possible to have Penneo remind the signers regularly by email, until the signer either signs or rejects to sign. To set up a reminder, just use the __setReminderInterval()__ method to set the number of days between reminders.
 
+### Customizing email messages
+
+The following types of emails are sent to the signer based on the status of the signing request:
+
+1. Initial email containing the singing request link
+2. Reminder to the signer
+3. Case file completed notification to the signer
+
+The emails can also be configured as follows:
+
+```php
+// Specify the content of the email
+$mySigningRequest->setEmailSubject('Contract for signing');
+$mySigningRequest->setEmailText('Dear john. Please sign the contract.');
+
+// Specify the content of the reminder email
+$mySigningRequest->setReminderEmailSubject('Reminder for Contract for signing');
+$mySigningRequest->setReminderEmailText('Dear john. This is to remind you to please sign the contract.');
+
+// Specify the content of the completed email
+$mySigningRequest->setCompletedEmailSubject('Case file signed');
+$mySigningRequest->setCompletedEmailText('All parties have now signed and the case file is completed');
+
+// Store the changes to the signing request
+SigningRequest::persist($mySigningRequest);
+```
+
+### Using html in the emails
+You can use html instead of plain texts to completely configure the emails, provided that email customization is allowed for your account. Please get in touch with support@penneo.com if you want to enable this.
+
+```php
+// NOTE: Your Penneo account must allow email customizations
+$mySigningRequest->setEmailFomat('html');
+```
+
 ## Distributing the signing link yourself
 If you don't want Penneo to distribute your signing links, you can handle the process yourself. All you need to do is to fetch the link from the signing request object:
 

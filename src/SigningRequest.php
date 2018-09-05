@@ -10,6 +10,11 @@ class SigningRequest extends Entity
             'email',
             'emailSubject',
             'emailText',
+            'reminderEmailSubject',
+            'reminderEmailText',
+            'completedEmailSubject',
+            'completedEmailText',
+            'emailFormat',
             'successUrl',
             'failUrl',
             'reminderInterval',
@@ -22,6 +27,11 @@ class SigningRequest extends Entity
     protected $email;
     protected $emailSubject;
     protected $emailText;
+    protected $reminderEmailSubject;
+    protected $reminderEmailText;
+    protected $completedEmailSubject;
+    protected $completedEmailText;
+    protected $emailFormat;
     protected $status;
     protected $rejectReason;
     protected $successUrl;
@@ -71,6 +81,46 @@ class SigningRequest extends Entity
         $this->emailText = $emailText;
     }
     
+    public function getReminderEmailSubject()
+    {
+        return $this->reminderEmailSubject;
+    }
+
+    public function setReminderEmailSubject($reminderEmailSubject)
+    {
+        $this->reminderEmailSubject = $reminderEmailSubject;
+    }
+
+    public function getReminderEmailText()
+    {
+        return $this->reminderEmailText;
+    }
+
+    public function setReminderEmailText($reminderEmailText)
+    {
+        $this->reminderEmailText = $reminderEmailText;
+    }
+
+    public function getCompletedEmailSubject()
+    {
+        return $this->completedEmailSubject;
+    }
+
+    public function setCompletedEmailSubject($completedEmailSubject)
+    {
+        $this->completedEmailSubject = $completedEmailSubject;
+    }
+
+    public function getCompletedEmailText()
+    {
+        return $this->completedEmailText;
+    }
+
+    public function setCompletedEmailText($completedEmailText)
+    {
+        $this->completedEmailText = $completedEmailText;
+    }
+
     public function getStatus()
     {
         switch ($this->status) {
@@ -96,6 +146,16 @@ class SigningRequest extends Entity
         return $this->rejectReason;
     }
     
+    public function getEmailFormat()
+    {
+        return $this->emailFormat;
+    }
+
+    public function setEmailFormat($format)
+    {
+        $this->emailFormat = $format;
+    }
+
     public function getSuccessUrl()
     {
         return $this->successUrl;

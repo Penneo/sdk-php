@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [1.10.0] - 2018-09-05
+### Added
+- [\#37] Configure reminders and completed emails for signing requests.
+
 ## [1.9.1] - 2017-10-24
 ### Fixed
 - [\#33] Updated `psr/log` dependency
