@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- [\#39] Add a way of specifying extra GET parameters with the model classes' getLinkedEntity() method
 
 ### Changed
 

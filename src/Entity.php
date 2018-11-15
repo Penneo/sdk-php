@@ -144,10 +144,23 @@ abstract class Entity
         return $entity;
     }
 
-    public static function getLinkedEntities(Entity $parent, $type, $url = null)
+    /**
+     * @param Entity $parent
+     * @param string $type        Full class path of the linked entity type
+     * @param null   $url         Force the use of a certain URL instead of the auto-detected one
+     * @param array  $extraParams Extra params to be added to the url; must be a associative array of GET params
+     *
+     * @return array|bool
+     * @throws \Exception
+     */
+    public static function getLinkedEntities(Entity $parent, $type, $url = null, array $extraParams = array())
     {
         if ($url == null) {
-            $url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl;
+            $url = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl;
+        }
+
+        if ($extraParams) {
+            $url .= '?' . http_build_query($extraParams);
         }
 
         $entities = self::getEntities($type, $url, $parent);
