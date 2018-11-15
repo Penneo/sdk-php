@@ -2,11 +2,11 @@
 
 namespace Penneo\SDK\Tests;
 
-use Guzzle\Tests\Http\Server;
 use Penneo\SDK\ApiConnector;
 
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use GuzzleHttp\Tests\Server;
 
 /**
  * Defines application features from the specific context.
@@ -20,7 +20,7 @@ class SdkContext extends AbstractContext
     {
         self::$server = new Server();
         self::$server->start();
-        ApiConnector::initialize('apiKeyHere', 'apiSecretHere', self::$server->getUrl());
+        ApiConnector::initialize('apiKeyHere', 'apiSecretHere', Server::$url);
     }
 
     /**
@@ -48,7 +48,7 @@ class SdkContext extends AbstractContext
 
         // Check that the request was generated correctly
         $this->assertEquals($method, $request->getMethod());
-        $this->assertEquals($path, $request->getPath());
+        $this->assertEquals($path, $request->getUri()->getPath());
     }
 
     /**

@@ -2,6 +2,7 @@
 namespace Penneo\SDK;
 
 use Penneo\SDK\ApiConnector;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class Entity
 {
@@ -59,7 +60,7 @@ abstract class Entity
             throw new \Exception('Penneo: Internal problem encountered');
         }
 
-        $matches = $response->json();
+        $matches = self::parseResponse($response);
         $result = array();
 
         foreach ($matches as $match) {
@@ -165,7 +166,7 @@ abstract class Entity
             return false;
         }
 
-        $data = $response->json();
+        $data = self::parseResponse($response);
         if (!$data) {
             return null;
         }
@@ -187,7 +188,7 @@ abstract class Entity
             return false;
         }
 
-        $dataSets = $response->json();
+        $dataSets = self::parseResponse($response);
         $entities = [];
 
         foreach ($dataSets as $data) {
@@ -236,7 +237,7 @@ abstract class Entity
             throw new \Exception('Penneo: Internal problem encountered fetching assets: '.$assetName);
         }
 
-        $assets = $response->json();
+        $assets = self::parseResponse($response);
         $result = array();
 
         foreach ($assets as $asset) {
@@ -272,6 +273,11 @@ abstract class Entity
         }
         
         $object->id = null;
+    }
+
+    private static function parseResponse(ResponseInterface $response)
+    {
+        return json_decode((string) $response->getBody(), true);
     }
 
     public function __getMapping()
@@ -362,7 +368,7 @@ abstract class Entity
             }
         }
 
-        return json_encode($data);
+        return $data;
     }
     
     public function __getPropertyValue($property)

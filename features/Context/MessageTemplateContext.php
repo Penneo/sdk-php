@@ -59,8 +59,9 @@ class MessageTemplateContext extends AbstractContext
     public function iPersistMessageTemplate($id = null)
     {
         if ($id === null) {
-            $this->preparePostResponse($this->newTemplateData);
             $template = $this->newTemplate;
+            $this->setEntity($template);
+            $this->preparePostResponse($this->newTemplateData);
         } else {
             $this->preparePutResponse();
             $template = $this->templates[$id];

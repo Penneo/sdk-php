@@ -12,7 +12,7 @@ class Message
             return array();
         }
         
-        return $response->json();
+        return json_decode((string) $response->getBody(), true);
     }
 
     public static function delete($id)

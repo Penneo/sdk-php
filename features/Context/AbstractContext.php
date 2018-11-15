@@ -2,26 +2,32 @@
 
 namespace Penneo\SDK\Tests;
 
-use Guzzle\Http\Message\Response;
-
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Behat\Event\SuiteEvent;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Tests\Server;
+use Penneo\SDK\Entity;
 
 /**
  * Defines application features from the specific context.
  */
 class AbstractContext extends \PHPUnit_Framework_TestCase implements Context, SnippetAcceptingContext
 {
+    /** @var Server */
     protected static $server;
     protected static $requests;
     protected static $response;
+    /** @var Entity */
     protected static $entity;
 
     /**
      * Helper methods
      */
 
+    /**
+     * @return Request
+     */
     protected function getLastRequest()
     {
         return self::$requests[0];
@@ -100,7 +106,7 @@ class AbstractContext extends \PHPUnit_Framework_TestCase implements Context, Sn
 
     protected function flushServer()
     {
-        self::$requests = self::$server->getReceivedRequests(true);
+        self::$requests = self::$server->received();
         self::$server->flush();
     }
 

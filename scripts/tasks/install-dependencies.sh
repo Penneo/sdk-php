@@ -6,4 +6,5 @@ cd "${SCRIPT_DIR}/../../"
 
 # Update composer and install dependencies
 composer selfupdate
-composer install --no-interaction
+# Prefer source is needed to get the guzzle test client
+composer install --no-interaction --prefer-source

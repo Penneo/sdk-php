@@ -1,10 +1,13 @@
 <?php
 namespace Penneo\SDK;
 
-use Guzzle\Http\Client;
-use Guzzle\Http\Message\Response;
-
-use Atst\Guzzle\Http\Plugin\WsseAuthPlugin;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -15,6 +18,7 @@ class ApiConnector
     static protected $endpoint;
     static protected $headers;
     static protected $lastError;
+    /** @var Client */
     static protected $client;
 
     /**
@@ -22,6 +26,7 @@ class ApiConnector
      */
     static protected $debug = false;
     static protected $throwExceptions = false;
+    /** @var LoggerInterface */
     static protected $logger;
     
     protected static function getDefaultEndpoint()
@@ -54,9 +59,13 @@ class ApiConnector
             self::$headers['penneo-api-user'] = intval($user);
         }
 
-        $wsse = new WsseAuthPlugin($key, $secret);
-        self::$client = new Client(self::$endpoint);
-        self::$client->getEventDispatcher()->addSubscriber($wsse);
+        $wsseHandler = new WSSEHandler($key, $secret);
+        $handlerStack = HandlerStack::create();
+        $handlerStack->push(Middleware::mapRequest(function (RequestInterface $request) use ($wsseHandler) {
+            return $wsseHandler->addAuthHeaders($request);
+        }));
+
+        self::$client = new Client(['base_uri' => self::$endpoint, 'handler' => $handlerStack]);
         self::$logger = new NullLogger();
     }
 
@@ -105,7 +114,7 @@ class ApiConnector
             if ($response === false) {
                 return false;
             }
-            $object->__fromJson($response->getBody(true));
+            $object->__fromJson((string) $response->getBody(true));
         }
         
         return true;
@@ -120,6 +129,15 @@ class ApiConnector
         return true;
     }
 
+    /**
+     * @param        $url
+     * @param mixed  $data    Will be encoded as JSON
+     * @param string $method
+     * @param array  $options
+     *
+     * @return bool|mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public static function callServer($url, $data = null, $method = 'get', $options = array())
     {
         try {
@@ -133,27 +151,36 @@ class ApiConnector
                     'options' => $options,
                 ]
             );
-            $request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
-            $response = $request->send();
+
+            if ($data && !isset($options[RequestOptions::JSON])) {
+                $options[RequestOptions::JSON] = $data;
+            }
+            $options[RequestOptions::HEADERS] = isset($options[RequestOptions::HEADERS]) ?
+                $options[RequestOptions::HEADERS] : [];
+            $options[RequestOptions::HEADERS] += self::$headers;
+
+            $response = self::$client->request($method, $url, $options);
+
             if ($response instanceof Response) {
                 self::$logger->debug('response', [
                     'method' => $method,
                     'url'    => $url,
-                    'raw'    => $response->getMessage()
+                    'raw'    => (string) $response->getBody()
                 ]);
             }
             return $response;
         } catch (\Exception $e) {
             $message  = null;
-            $response = $request->getResponse();
-            if ($response instanceof Response) {
-                $message = $response->getMessage();
+
+            if ($e instanceof RequestException && $e->hasResponse()) {
+                $message = (string) $e->getResponse()->getBody();
                 self::$logger->error('response', [
                     'method' => $method,
                     'url'    => $url,
                     'raw'    => $message
                 ]);
             }
+
             if (self::$throwExceptions) {
                 throw $e;
             }
