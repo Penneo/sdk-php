@@ -15,7 +15,10 @@ class DocumentType extends Entity
     {
         return $this->name;
     }
-    
+
+    /**
+     * @return SignerType[]
+     */
     public function getSignerTypes()
     {
         return $this->signerTypes;

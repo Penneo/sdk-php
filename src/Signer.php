@@ -38,11 +38,17 @@ class Signer extends Entity
         }
     }
 
+    /**
+     * @return CaseFile|null
+     */
     public function getParent()
     {
         return $this->caseFile;
     }
 
+    /**
+     * @return SigningRequest
+     */
     public function getSigningRequest()
     {
         if ($this->signingRequest) {
@@ -107,11 +113,17 @@ class Signer extends Entity
         return parent::unlinkEntity($this, $type);
     }
 
+    /**
+     * @return SignerType[]
+     */
     public function getSignerTypes()
     {
         return parent::getLinkedEntities($this, 'Penneo\SDK\SignerType');
     }
-    
+
+    /**
+     * @return LogEntry[]
+     */
     public function getEventLog()
     {
         return parent::getLinkedEntities($this, 'Penneo\SDK\LogEntry');

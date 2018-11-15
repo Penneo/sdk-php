@@ -59,11 +59,17 @@ class CaseFile extends Entity
         $this->documentDisplayMode = self::DISPLAY_MODE_TABBED;
     }
 
+    /**
+     * @return CaseFileTemplate[]
+     */
     public function getCaseFileTemplates()
     {
         return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileTemplate', 'casefile/casefiletypes');
     }
-    
+
+    /**
+     * @return DocumentType[]
+     */
     public function getDocumentTypes()
     {
         if (!$this->id) {
@@ -72,6 +78,9 @@ class CaseFile extends Entity
         return parent::getLinkedEntities($this, 'Penneo\SDK\DocumentType', 'casefiles/'.$this->id.'/documenttypes');
     }
 
+    /**
+     * @return SignerType[]
+     */
     public function getSignerTypes()
     {
         if (!$this->id) {
@@ -80,6 +89,9 @@ class CaseFile extends Entity
         return parent::getLinkedEntities($this, 'Penneo\SDK\SignerType', 'casefiles/'.$this->id.'/signertypes');
     }
 
+    /**
+     * @return Document[]|bool|null
+     */
     public function getDocuments()
     {
         if ($this->documents !== null) {
@@ -88,6 +100,9 @@ class CaseFile extends Entity
         return parent::getLinkedEntities($this, 'Penneo\SDK\Document');
     }
 
+    /**
+     * @return Signer|bool|null
+     */
     public function getSigners()
     {
         if ($this->signers !== null) {
@@ -95,7 +110,10 @@ class CaseFile extends Entity
         }
         return parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
     }
-    
+
+    /**
+     * @return CopyRecipient|bool|null
+     */
     public function getCopyRecipients()
     {
         if ($this->copyRecipients !== null) {
@@ -104,6 +122,11 @@ class CaseFile extends Entity
         return parent::getLinkedEntities($this, 'Penneo\SDK\Recipient');
     }
 
+    /**
+     * @param $id
+     *
+     * @return Signer|null|false
+     */
     public function findSigner($id)
     {
         if ($this->signers !== null) {
@@ -117,6 +140,11 @@ class CaseFile extends Entity
         return parent::findLinkedEntity($this, 'Penneo\SDK\Signer', $id);
     }
 
+    /**
+     * @param $id
+     *
+     * @return false|null|CopyRecipient
+     */
     public function findCopyRecipient($id)
     {
         if ($this->copyRecipients !== null) {
@@ -317,6 +345,9 @@ class CaseFile extends Entity
         return $this->signIteration;
     }
 
+    /**
+     * @return CaseFileTemplate
+     */
     public function getCaseFileTemplate()
     {
         if ($this->id && !$this->caseFileType) {

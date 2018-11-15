@@ -10,6 +10,11 @@ abstract class Entity
     );
     protected static $relativeUrl;
 
+    /**
+     * @param $id
+     *
+     * @return static
+     */
     public static function find($id)
     {
         $class = get_called_class();
@@ -22,11 +27,24 @@ abstract class Entity
         return $object;
     }
 
+    /**
+     * @return static[]
+     * @throws \Exception
+     */
     public static function findAll()
     {
         return self::findBy(array());
     }
-    
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param null       $limit
+     * @param null       $offset
+     *
+     * @return static[]
+     * @throws \Exception
+     */
     public static function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
     {
         $class = get_called_class();
@@ -68,7 +86,14 @@ abstract class Entity
         
         return $result;
     }
-    
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return static[]
+     * @throws \Exception
+     */
     public static function findOneBy(array $criteria, array $orderBy = null)
     {
         return self::findBy($criteria, $orderBy, 1);
@@ -130,6 +155,13 @@ abstract class Entity
         throw new \BadMethodCallException('Unexisting method: '.$method.$by);
     }
 
+    /**
+     * @param Entity $parent
+     * @param        $type
+     * @param        $id
+     *
+     * @return static|false|null
+     */
     public static function findLinkedEntity(Entity $parent, $type, $id)
     {
         $url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl.'/'.$id;

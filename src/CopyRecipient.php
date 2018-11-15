@@ -24,6 +24,9 @@ class CopyRecipient extends Entity
         $this->caseFile = $caseFile;
     }
 
+    /**
+     * @return CaseFile
+     */
     public function getParent()
     {
         return $this->caseFile;

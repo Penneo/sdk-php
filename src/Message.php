@@ -5,6 +5,12 @@ use Penneo\SDK\ApiConnector;
 
 class Message
 {
+    /**
+     * @param int $limit
+     *
+     * @return Message[]
+     * @throws \Exception
+     */
     public static function retrieve($limit = 10)
     {
         $response = ApiConnector::callServer('messages/'.$limit);
