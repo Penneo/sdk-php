@@ -16,7 +16,7 @@ class Folder extends Entity
      * @param int      $perPage Does nothing if $page is null
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getCaseFiles($page = null, $perPage = PHP_INT_MAX)
     {

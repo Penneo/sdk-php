@@ -1,8 +1,6 @@
 <?php
 namespace Penneo\SDK;
 
-use Penneo\SDK\ApiConnector;
-
 abstract class Entity
 {
     protected $id;
@@ -18,7 +16,7 @@ abstract class Entity
         $object = new $class();
         $object->id = $id;
         if (!ApiConnector::readObject($object)) {
-            throw new \Exception('Penneo: Could not find the requested '.$class.' (id = '.$id.')');
+            throw new Exception('Penneo: Could not find the requested '.$class.' (id = '.$id.')');
         }
 
         return $object;
@@ -36,10 +34,10 @@ abstract class Entity
         // Build query array
         $query = $criteria;
         if ($limit !== null) {
-            $query['limit'] = intval($limit);
+            $query['limit'] = (int) $limit;
         }
         if ($offset !== null) {
-            $query['offset'] = intval($offset);
+            $query['offset'] = (int) $offset;
         }
 
         // Build order by parameters.
@@ -56,7 +54,7 @@ abstract class Entity
 
         $response = ApiConnector::callServer($class::$relativeUrl, null, 'get', array('query' => $query));
         if (!$response) {
-            throw new \Exception('Penneo: Internal problem encountered');
+            throw new Exception('Penneo: Internal problem encountered');
         }
 
         $matches = $response->json();
@@ -96,7 +94,7 @@ abstract class Entity
         }
 
         if (empty($arguments)) {
-            throw \InvalidArgumentException('The method '.$method.$by.' requires parameters');
+            throw new \InvalidArgumentException('The method '.$method.$by.' requires parameters');
         }
 
         $fieldName = lcfirst($by);
@@ -138,7 +136,7 @@ abstract class Entity
 
         $entity = self::getEntity($type, $url, $parent);
         if ($entity === false) {
-            throw new \Exception('Penneo: Internal problem encountered');
+            throw new Exception('Penneo: Internal problem encountered');
         }
 
         return $entity;
@@ -146,26 +144,26 @@ abstract class Entity
 
     /**
      * @param Entity $parent
-     * @param string $type        Full class path of the linked entity type
-     * @param null   $url         Force the use of a certain URL instead of the auto-detected one
-     * @param array  $extraParams Extra params to be added to the url; must be a associative array of GET params
+     * @param string $type      Full class path of the linked entity type
+     * @param null   $url       Force the use of a certain URL instead of the auto-detected one
+     * @param array  $getParams Extra params to be added to the url; must be a associative array of GET params
      *
      * @return array|bool
-     * @throws \Exception
+     * @throws Exception
      */
-    public static function getLinkedEntities(Entity $parent, $type, $url = null, array $extraParams = array())
+    public static function getLinkedEntities(Entity $parent, $type, $url = null, array $getParams = array())
     {
         if ($url == null) {
             $url = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl;
         }
 
-        if ($extraParams) {
-            $url .= '?' . http_build_query($extraParams);
+        if ($getParams) {
+            $url .= '?' . http_build_query($getParams);
         }
 
         $entities = self::getEntities($type, $url, $parent);
         if ($entities === false) {
-            throw new \Exception('Penneo: Internal problem encountered');
+            throw new Exception('Penneo: Internal problem encountered');
         }
 
         return $entities;
@@ -222,7 +220,7 @@ abstract class Entity
 
         $response = ApiConnector::callServer($url, null, 'LINK');
         if (!$response) {
-            throw new \Exception('Penneo: Internal problem encountered');
+            throw new Exception('Penneo: Internal problem encountered');
         }
     
         return true;
@@ -234,7 +232,7 @@ abstract class Entity
 
         $response = ApiConnector::callServer($url, null, 'UNLINK');
         if (!$response) {
-            throw new \Exception('Penneo: Internal problem encountered');
+            throw new Exception('Penneo: Internal problem encountered');
         }
     
         return true;
@@ -246,7 +244,7 @@ abstract class Entity
 
         $response = ApiConnector::callServer($url);
         if (!$response) {
-            throw new \Exception('Penneo: Internal problem encountered fetching assets: '.$assetName);
+            throw new Exception('Penneo: Internal problem encountered fetching assets: '.$assetName);
         }
 
         $assets = $response->json();
@@ -265,7 +263,7 @@ abstract class Entity
         
         $response = ApiConnector::callServer($url, null, 'patch');
         if (!$response) {
-            throw new \Exception('Penneo: Internal problem encountered calling action: '.$actionName);
+            throw new Exception('Penneo: Internal problem encountered calling action: '.$actionName);
         }
             
         return true;
@@ -274,14 +272,14 @@ abstract class Entity
     public static function persist(Entity $object)
     {
         if (!ApiConnector::writeObject($object)) {
-            throw new \Exception('Penneo: Could not persist the '.get_class($object));
+            throw new Exception('Penneo: Could not persist the '.get_class($object));
         }
     }
     
     public static function delete(Entity $object)
     {
         if (!ApiConnector::deleteObject($object)) {
-            throw new \Exception('Penneo: Could not delete the '.get_class($object));
+            throw new Exception('Penneo: Could not delete the '.get_class($object));
         }
         
         $object->id = null;
