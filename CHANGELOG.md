@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - [\#39] Add a way of specifying extra GET parameters with the model classes' getLinkedEntity() method
 - [\#39] Add paging parameters to Folder::getCaseFiles()
+- [\#39] Change the minimum required php version from 5.3 to 5.4
 
 ### Changed
 
