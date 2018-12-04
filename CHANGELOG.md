@@ -4,15 +4,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Fixed
+
+## [1.11.0] - 2018-12-04
+### Added
 - [\#39] Add a way of specifying extra GET parameters with the model classes' getLinkedEntity() method
 - [\#39] Add paging parameters to Folder::getCaseFiles()
 - [\#39] Methods will now throw Penneo\Exception instead of \Exception
 - [\#39] Change the minimum required php version from 5.3 to 5.4
 - [\#39] Add ext-json to the composer requirements
-
-### Changed
-
-### Fixed
 
 ## [1.10.0] - 2018-09-05
 ### Added
@@ -51,13 +54,16 @@ Penneo\SDK\ApiConnector::setLogger(new MyLogger());
 
 [comment]: # (Build Comparison Links)
 
-[unreleased]: https://github.com/Penneo/sdk-php/compare/1.9.0...HEAD
+[unreleased]: https://github.com/Penneo/sdk-php/compare/1.11.0...HEAD
+[1.11.0]: https://github.com/Penneo/sdk-php/compare/1.10.0...1.11.0
+[1.10.0]: https://github.com/Penneo/sdk-php/compare/1.9.0...1.10.0
 [1.9.0]: https://github.com/Penneo/sdk-php/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/Penneo/sdk-php/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/Penneo/sdk-php/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/Penneo/sdk-php/compare/1.5.0...1.6.0
 
 [comment]: # (Issue Links)
+[\#39]: https://github.com/Penneo/sdk-php/issues/39
 [\#31]: https://github.com/Penneo/sdk-php/issues/31
 [\#29]: https://github.com/Penneo/sdk-php/issues/29
 [\#27]: https://github.com/Penneo/sdk-php/issues/27
