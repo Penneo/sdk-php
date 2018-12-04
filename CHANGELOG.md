@@ -7,7 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+## [1.11.1] - 2018-12-04
 ### Fixed
+- [\#39] Paging wasn't working properly for case files that belong to a folder
 
 ## [1.11.0] - 2018-12-04
 ### Added
