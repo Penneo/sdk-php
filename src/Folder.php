@@ -20,7 +20,7 @@ class Folder extends Entity
      */
     public function getCaseFiles($page = null, $perPage = PHP_INT_MAX)
     {
-        $paging = $page !== null ? array('page' => $perPage, 'per_page' => $perPage) : array();
+        $paging = $page !== null ? array('page' => $page, 'per_page' => $perPage) : array();
 
         return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFile', null, $paging);
     }
