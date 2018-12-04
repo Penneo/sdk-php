@@ -43,6 +43,9 @@ class Document extends Entity
         $this->caseFile = $caseFile;
     }
 
+    /**
+     * @return CaseFile
+     */
     public function getCaseFile()
     {
         if (!$this->caseFile) {
@@ -52,6 +55,9 @@ class Document extends Entity
         return $this->caseFile;
     }
 
+    /**
+     * @return SignatureLine[]
+     */
     public function getSignatureLines()
     {
         if ($this->signatureLines !== null) {
@@ -59,7 +65,12 @@ class Document extends Entity
         }
         return parent::getLinkedEntities($this, 'Penneo\SDK\SignatureLine');
     }
-    
+
+    /**
+     * @param $id
+     *
+     * @return SignatureLine|false
+     */
     public function findSignatureLine($id)
     {
         if ($this->signatureLines !== null) {
@@ -154,6 +165,9 @@ class Document extends Entity
         return $this->options;
     }
 
+    /**
+     * @return DocumentType
+     */
     public function getDocumentType()
     {
         if ($this->id && !$this->documentType) {

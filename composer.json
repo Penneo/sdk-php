@@ -10,10 +10,11 @@
         }
     },
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.0",
         "guzzle/guzzle": "3.8.*",
         "davedevelopment/guzzle-wsse-auth-plugin": "1.*",
-        "psr/log": "~1.0"
+        "psr/log": "~1.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "behat/behat": "^3.0",

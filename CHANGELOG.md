@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- [\#39] Add a way of specifying extra GET parameters with the model classes' getLinkedEntity() method
+- [\#39] Add paging parameters to Folder::getCaseFiles()
+- [\#39] Methods will now throw Penneo\Exception instead of \Exception
+- [\#39] Change the minimum required php version from 5.3 to 5.4
+- [\#39] Add ext-json to the composer requirements
 
 ### Changed
 

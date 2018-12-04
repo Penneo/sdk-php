@@ -28,6 +28,10 @@ for ($caseFile in $caseFiles) {
 	print($caseFile->getName();
 }
 
+// Paginate over case files in a folder
+$page2 = $myFolder->getCaseFiles(2, 10);
+$page3 = $myFolder->getCaseFiles(3, 10);
+
 // Now, remove that same case file again
 $myFolder->removeCaseFile($caseFile1);
 

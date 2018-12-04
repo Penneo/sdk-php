@@ -11,9 +11,18 @@ class Folder extends Entity
 
     protected $title;
 
-    public function getCaseFiles()
+    /**
+     * @param int|null $page    Page numbers start at 1
+     * @param int      $perPage Does nothing if $page is null
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getCaseFiles($page = null, $perPage = PHP_INT_MAX)
     {
-        return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFile');
+        $paging = $page !== null ? array('page' => $perPage, 'per_page' => $perPage) : array();
+
+        return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFile', null, $paging);
     }
 
     public function addCaseFile(CaseFile $caseFile)

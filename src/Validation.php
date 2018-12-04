@@ -155,7 +155,10 @@ class Validation extends Entity
     
         return 'new';
     }
-    
+
+    /**
+     * @return LogEntry[]
+     */
     public function getEventLog()
     {
         return parent::getLinkedEntities($this, 'Penneo\SDK\LogEntry');

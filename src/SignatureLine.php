@@ -28,6 +28,9 @@ class SignatureLine extends Entity
         return $this->document;
     }
 
+    /**
+     * @return Signer
+     */
     public function getSigner()
     {
         if ($this->signer == null) {

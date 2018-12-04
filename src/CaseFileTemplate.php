@@ -12,7 +12,10 @@ class CaseFileTemplate extends Entity
     {
         return $this->name;
     }
-    
+
+    /**
+     * @return DocumentType[]
+     */
     public function getDocumentTypes()
     {
         return $this->documentTypes;
