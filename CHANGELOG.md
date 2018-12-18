@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+## [1.12.0] - 2018-12-18
+### Added
+- [\#44] Language can be specified for the case file using the `setLanguage()` method
+- [\#44] Get the case file Id using the `getId()` method
+
 ## [1.11.1] - 2018-12-04
 ### Fixed
 - [\#39] Paging wasn't working properly for case files that belong to a folder
