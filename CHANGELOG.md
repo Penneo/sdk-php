@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-## [1.12.0] - 2018-12-18
+## [1.12.1] - 2018-12-18
 ### Added
 - [\#44] Language can be specified for the case file using the `setLanguage()` method
 - [\#44] Get the case file Id using the `getId()` method

@@ -204,7 +204,7 @@ class CaseFile extends Entity
         $this->language = $language;
     }
 
-    Public function getMetaData()
+    public function getMetaData()
     {
         return $this->metaData;
     }
