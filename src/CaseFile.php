@@ -9,6 +9,7 @@ class CaseFile extends Entity
     protected static $propertyMapping = array(
         'create' => array(
             'title',
+            'language',
             'metaData',
             'sendAt',
             'expireAt',
@@ -21,6 +22,7 @@ class CaseFile extends Entity
         ),
         'update' => array(
             'title',
+            'language',
             'metaData',
             'caseFileTypeId' => 'caseFileType->getId',
             'visibilityMode',
@@ -33,6 +35,7 @@ class CaseFile extends Entity
     protected static $relativeUrl = 'casefiles';
 
     protected $title;
+    protected $language;
     protected $metaData;
     protected $sendAt;
     protected $expireAt;
@@ -45,7 +48,7 @@ class CaseFile extends Entity
     protected $created;
     protected $signIteration;
     protected $caseFileType;
-    
+
     protected $documents = null;
     protected $signers = null;
     protected $copyRecipients = null;
@@ -173,31 +176,49 @@ class CaseFile extends Entity
         return parent::callAction($this, 'send');
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getTitle()
     {
         return $this->title;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
     }
-    
-    public function getMetaData()
+
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    public function setLanguage($language)
+    {
+        if (!in_array($language, ['en', 'da', 'sv', 'no'])) {
+            return;
+        }
+        $this->language = $language;
+    }
+
+    Public function getMetaData()
     {
         return $this->metaData;
     }
-    
+
     public function setMetaData($meta)
     {
         $this->metaData = $meta;
     }
-    
+
     public function getSendAt()
     {
         return new \DateTime('@'.$this->sendAt);
     }
-    
+
     public function setSendAt(\DateTime $sendAt)
     {
         $this->sendAt = $sendAt->getTimestamp();
@@ -207,7 +228,7 @@ class CaseFile extends Entity
     {
         return new \DateTime('@'.$this->expireAt);
     }
-    
+
     public function setExpireAt(\DateTime $expireAt)
     {
         $this->expireAt = $expireAt->getTimestamp();
@@ -217,7 +238,7 @@ class CaseFile extends Entity
     {
         return $this->visibilityMode;
     }
-    
+
     public function setVisibilityMode($visibilityMode)
     {
         $this->visibilityMode = $visibilityMode;
@@ -308,7 +329,7 @@ class CaseFile extends Entity
             case 5:
                 return 'completed';
         }
-    
+
         return 'deleted';
     }
 
@@ -339,7 +360,7 @@ class CaseFile extends Entity
     {
         return new \DateTime('@'.$this->created);
     }
-    
+
     public function getSignIteration()
     {
         return $this->signIteration;
