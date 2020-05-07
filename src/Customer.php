@@ -38,7 +38,7 @@ class Customer extends Entity
     {
         if ($this->emailSignature === null) {
             // Try to retrieve the email signature from the backend.
-            $url = self::$relativeUrl.'/'.$this->getId().'/emailsignature';
+            $url = self::$relativeUrl.'/'.$this->getId().'/email-signature';
             $this->emailSignature = self::getEntity('Penneo\SDK\EmailSignature', $url, $this);
         }
 
