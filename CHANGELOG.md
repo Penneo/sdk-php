@@ -4,9 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- PN-382 EmailSignature methods added to EmailSignature entity, to support our automatic data-hydrators
 
 ### Changed
+
+## [1.14.0] - 2020-05-25
+- PN-382 fix - Added missing Customer method `setEmailSignature()`
+
+## [1.13.0] - 2020-05-11 
+- PN-382 EmailSignature methods added to EmailSignature entity, to support our automatic data-hydrators
 - PN-382 Endpoint to fetch e-mail signature from signing service updated to reflect corret URL
 
 ## [1.12.1] - 2018-12-18
