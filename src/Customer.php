@@ -46,6 +46,14 @@ class Customer extends Entity
     }
 
     /**
+     * @param EmailSignature $emailSignature
+     */
+    public function setEmailSignature(EmailSignature $emailSignature)
+    {
+        $this->emailSignature = $emailSignature;
+    }
+
+    /**
      * Set name
      *
      * @param string $name
