@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
+## [1.15.0] - 2020-07-15
+- Added request ids to relevant log messages
 
 ## [1.14.0] - 2020-05-25
 - PN-382 fix - Added missing Customer method `setEmailSignature()`

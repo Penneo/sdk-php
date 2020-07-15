@@ -8,8 +8,6 @@ use Atst\Guzzle\Http\Plugin\WsseAuthPlugin;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-use Penneo\SDK\Entity;
-
 class ApiConnector
 {
     /**
@@ -142,7 +140,9 @@ class ApiConnector
             $request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
             $response = $request->send();
             if ($response instanceof Response) {
-                self::$logger->debug('response', [
+                // some logging implementation might not print the context, we put the request id in the log message
+                // because it is important and we want to make sure it gets seen
+                self::$logger->debug('response requestId=' . $response->getHeader('X-Penneo-Request-Id'), [
                     'method' => $method,
                     'url'    => $url,
                     'raw'    => $response->getMessage()
@@ -154,7 +154,7 @@ class ApiConnector
             $response = $request->getResponse();
             if ($response instanceof Response) {
                 $message = $response->getMessage();
-                self::$logger->error('response', [
+                self::$logger->error('response requestId=' . $response->getHeader('X-Penneo-Request-Id'), [
                     'method' => $method,
                     'url'    => $url,
                     'raw'    => $message
