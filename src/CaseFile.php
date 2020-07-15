@@ -18,6 +18,7 @@ class CaseFile extends Entity
             'caseFileTypeId' => 'caseFileType->getId',
             'sensitiveData',
             'disableNotificationsOwner',
+            'disableEmailAttachments',
             'reference',
         ),
         'update' => array(
@@ -28,6 +29,7 @@ class CaseFile extends Entity
             'visibilityMode',
             'documentDisplayMode',
             'disableNotificationsOwner',
+            'disableEmailAttachments',
             'sensitiveData',
             'reference',
         )
@@ -54,6 +56,8 @@ class CaseFile extends Entity
     protected $sensitiveData;
     /** @var bool */
     protected $disableNotificationsOwner;
+    /** @var bool */
+    protected $disableEmailAttachments = false;
     /** @var int */
     protected $status;
     /** @var int */
@@ -328,6 +332,39 @@ class CaseFile extends Entity
     public function getDisableNotificationsOwner()
     {
         return $this->disableNotificationsOwner;
+    }
+
+    /**
+     * With this setting on, emails sent to signers and the case file owner when the case file gets finalized
+     * will not have the signed PDF files attached.
+     *
+     * Using this feature together with CopyRecipients is not support, the case file owner will receive warning emails
+     * stating that Copy Recipient emails could not be sent.
+     *
+     * Warning: You can only read this value if using the '/v2' and up versions of the base API URL.
+     *
+     * @return bool
+     */
+    public function getDisableEmailAttachments()
+    {
+        return $this->disableEmailAttachments;
+    }
+
+    /**
+     * With this setting on, emails sent to signers and the case file owner when the case file gets finalized
+     * will not have the signed PDF files attached.
+     *
+     * Using this feature together with CopyRecipients is not support, the case file owner will receive warning emails
+     * stating that Copy Recipient emails could not be sent.
+     *
+     * @param bool $disableEmailAttachments
+     * @return CaseFile
+     */
+    public function setDisableEmailAttachments($disableEmailAttachments)
+    {
+        $this->disableEmailAttachments = $disableEmailAttachments;
+
+        return $this;
     }
 
     public function getStatus()
