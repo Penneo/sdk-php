@@ -12,6 +12,11 @@ use Penneo\SDK\Entity;
 
 class ApiConnector
 {
+    /**
+     * We should always keep this up to date. The '>=' is to allow for human error.
+     */
+    const VERSION = '>=v1.15.0';
+
     static protected $endpoint;
     static protected $headers;
     static protected $lastError;
@@ -45,10 +50,11 @@ class ApiConnector
     {
         self::$endpoint = $endpoint ?: self::getDefaultEndpoint();
 
-        self::$headers = self::getDefaultHeaders();
-        if ($headers) {
-            self::$headers = array_merge($headers, self::$headers);
-        }
+        self::$headers = array_merge(
+            $headers ?: [],
+            self::getDefaultHeaders(),
+            self::getSpecificHeaders($key, $headers)
+        );
 
         if ($user) {
             self::$headers['penneo-api-user'] = (int) $user;
@@ -167,5 +173,24 @@ class ApiConnector
     public static function getLastError()
     {
         return self::$lastError;
+    }
+
+    /**
+     * @param string     $key
+     * @param array|null $headers
+     *
+     * @return array<string, string>
+     */
+    private static function getSpecificHeaders($key, array $headers = null)
+    {
+        $keyPart = substr($key, 0, 8);
+        $setUserAgent = $headers && array_key_exists('User-Agent', $headers) ?
+            $headers['User-Agent'] : 'n/a';
+        $version = self::VERSION;
+
+        return [
+            // this helps us identify API users if we spot incorrect usage of the API or if we discover potential errors
+            'User-Agent' => "penneo/penneo-sdk-php v:${version} key:${keyPart} ua:${setUserAgent}"
+        ];
     }
 }
