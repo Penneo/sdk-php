@@ -34,23 +34,40 @@ class CaseFile extends Entity
     );
     protected static $relativeUrl = 'casefiles';
 
+    /** @var string */
     protected $title;
+    /** @var string */
     protected $language;
+    /** @var string */
     protected $metaData;
+    /** @var int */
     protected $sendAt;
+    /** @var int */
     protected $expireAt;
+    /** @var int */
     protected $visibilityMode;
+    /** @var int */
     protected $documentDisplayMode;
+    /** @var string */
     protected $reference;
+    /** @var bool */
     protected $sensitiveData;
+    /** @var bool */
     protected $disableNotificationsOwner;
+    /** @var int */
     protected $status;
+    /** @var int */
     protected $created;
+    /** @var int */
     protected $signIteration;
+    /** @var CaseFileTemplate|null */
     protected $caseFileType;
 
+    /** @var Document[]|null */
     protected $documents = null;
+    /** @var Signer[]|null */
     protected $signers = null;
+    /** @var CopyRecipient[]|null */
     protected $copyRecipients = null;
 
     public function __construct()
