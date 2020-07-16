@@ -6,6 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
+## [1.15.0] - 2020-07-15
+- Added request ids to relevant log messages
+- PN-638 Added support for setting and unsetting the `disableEmailAttachments` flag for CaseFile objects
+
+With this flag set, the emails signers and the case file owner get when case files are finalized will not include the signed PDF files.
+
+Note: you must use a `/v2` endpoint to support this, for example: `https://sandbox.penneo.com/api/v2`.
+
 
 ## [1.14.0] - 2020-05-25
 - PN-382 fix - Added missing Customer method `setEmailSignature()`

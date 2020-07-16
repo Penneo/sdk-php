@@ -42,6 +42,11 @@ You can find out more on how to install Composer, configure autoloading, and oth
 ## Documentation
 This section documents the different objects available through the SDK and how to use them. 
 
+
+### Problems in production?
+You should add a logger by calling `ApiConnector::setLogger()`. If you contact support, please include any relevant `requestIds` you find in the logs.
+
+
 ### Authentication
 In order to use the SDK, you will have to authenticate against the Penneo API. Authentication is done in a single line of code, using your Penneo API credentials:
 

@@ -3,6 +3,7 @@
     "type": "library",
     "homepage": "https://penneo.com",
     "description": "Penneo SDK for PHP",
+    "license": "Apache",
     "autoload": {
         "psr-4": {
             "Penneo\\SDK\\": "src/",
