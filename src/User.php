@@ -10,7 +10,7 @@ class User extends Entity
 
     public static function getActiveUser()
     {
-        $url = '/user';
+        $url = 'user';
         return self::getEntity('Penneo\SDK\User', $url, null);
     }
 

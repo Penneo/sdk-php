@@ -75,7 +75,7 @@ abstract class Entity
             throw new Exception('Penneo: Internal problem encountered');
         }
 
-        $matches = $response->json();
+        $matches = json_decode($response->getBody()->getContents(), true);
         $result = array();
 
         foreach ($matches as $match) {
@@ -208,7 +208,7 @@ abstract class Entity
             return false;
         }
 
-        $data = $response->json();
+        $data = json_decode($response->getBody()->getContents(), true);
         if (!$data) {
             return null;
         }
@@ -226,11 +226,11 @@ abstract class Entity
     public static function getEntities($type, $url, Entity $parent = null)
     {
         $response = ApiConnector::callServer($url);
-        if ($response === false) {
+        if (!$response) {
             return false;
         }
 
-        $dataSets = $response->json();
+        $dataSets = json_decode($response->getBody()->getContents(), true);
         $entities = [];
 
         foreach ($dataSets as $data) {
@@ -279,7 +279,7 @@ abstract class Entity
             throw new Exception('Penneo: Internal problem encountered fetching assets: '.$assetName);
         }
 
-        $assets = $response->json();
+        $assets = json_decode($response->getBody()->getContents(), true);
         $result = array();
 
         foreach ($assets as $asset) {

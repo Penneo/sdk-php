@@ -1,10 +1,13 @@
 <?php
 namespace Penneo\SDK;
 
-use Guzzle\Http\Client;
-use Guzzle\Http\Message\Response;
-
-use Atst\Guzzle\Http\Plugin\WsseAuthPlugin;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -13,40 +16,47 @@ class ApiConnector
     /**
      * We should always keep this up to date. The '>=' is to allow for human error.
      */
-    const VERSION = '>=v1.15.0';
+    private const VERSION = '>=v2.0.0';
 
+    /** @var string */
     static protected $endpoint;
+    /** @var mixed[] */
     static protected $headers;
-    static protected $lastError;
+    /** @var Client */
     static protected $client;
 
-    /**
-     * @deprecated Use setLogger()
-     */
-    static protected $debug = false;
+    /** @var bool */
     static protected $throwExceptions = false;
+    /** @var LoggerInterface */
     static protected $logger;
     
-    protected static function getDefaultEndpoint()
+    protected static function getDefaultEndpoint(): string
     {
-        return 'https://sandbox.penneo.com/api/v1';
+        return 'https://sandbox.penneo.com/api/v1/';
     }
 
-    protected static function getDefaultHeaders()
+    protected static function getDefaultHeaders(): array
     {
-        return array('Content-type' => 'application/json');
+        return ['Content-type' => 'application/json'];
     }
 
     /**
      * Initialize the API connector class.
      *
-     * @param string $key        Your Penneo API key
-     * @param string $secret     Your Penneo API secret
-     * @param string $endpoint   The API endpoint url. This defaults to the API sandbox.
+     * @param string      $key      Your Penneo API key
+     * @param string      $secret   Your Penneo API secret
+     * @param string|null $endpoint The API endpoint url. This defaults to the API sandbox.
+     * @param int|null    $user
+     * @param array|null  $headers  Will be passed on to Guzzle
      */
-    public static function initialize($key, $secret, $endpoint = null, $user = null, array $headers = null)
-    {
-        self::$endpoint = $endpoint ?: self::getDefaultEndpoint();
+    public static function initialize(
+        string $key,
+        string $secret,
+        string $endpoint = null,
+        int $user = null,
+        array $headers = null
+    ): void {
+        self::$endpoint = self::fixEndpoint($endpoint ?: self::getDefaultEndpoint());
 
         self::$headers = array_merge(
             $headers ?: [],
@@ -55,27 +65,28 @@ class ApiConnector
         );
 
         if ($user) {
-            self::$headers['penneo-api-user'] = (int) $user;
+            self::$headers['penneo-api-user'] = $user;
         }
 
-        $wsse = new WsseAuthPlugin($key, $secret);
-        self::$client = new Client(self::$endpoint);
-        self::$client->getEventDispatcher()->addSubscriber($wsse);
+
+        $wsse = new WsseMiddleware($key, $secret);
+        $handler = HandlerStack::create();
+        $handler->push(Middleware::mapRequest(function (RequestInterface $request) use ($wsse) {
+            return $wsse->authorize($request);
+        }));
+        self::$client = new Client([
+            'base_uri' => self::$endpoint,
+            'handler' => $handler,
+        ]);
         self::$logger = new NullLogger();
     }
 
-    public static function enableDebug()
+    public static function throwExceptions(bool $value): void
     {
-        trigger_error(__FUNCTION__ . ' is deprecated. Use setLogger(Psr\Log\LoggerInterface $logger)');
-        self::$debug = true;
+        self::$throwExceptions = $value;
     }
 
-    public static function throwExceptions($value)
-    {
-        self::$throwExceptions = (bool) $value;
-    }
-
-    public static function setLogger(LoggerInterface $logger)
+    public static function setLogger(LoggerInterface $logger): void
     {
         self::$logger = $logger;
     }
@@ -86,7 +97,7 @@ class ApiConnector
         if ($response === false) {
             return false;
         }
-        $object->__fromJson($response->getBody(true));
+        $object->__fromJson($response->getBody()->getContents());
         return true;
     }
 
@@ -124,7 +135,7 @@ class ApiConnector
         return true;
     }
 
-    public static function callServer($url, $data = null, $method = 'get', $options = array())
+    public static function callServer($url, $data = null, $method = 'get', $options = array()): ?Response
     {
         try {
             self::$logger->debug(
@@ -137,42 +148,42 @@ class ApiConnector
                     'options' => $options,
                 ]
             );
-            $request = self::$client->createRequest($method, $url, self::$headers, $data, $options);
-            $response = $request->send();
+
+            $response = self::$client->request(
+                $method,
+                $url,
+                $options + [
+                    RequestOptions::HEADERS => self::$headers,
+                    RequestOptions::BODY => $data,
+                ]
+            );
+
             if ($response instanceof Response) {
                 // some logging implementation might not print the context, we put the request id in the log message
                 // because it is important and we want to make sure it gets seen
-                self::$logger->debug('response requestId=' . $response->getHeader('X-Penneo-Request-Id'), [
-                    'method' => $method,
-                    'url'    => $url,
-                    'raw'    => $response->getMessage()
-                ]);
+                self::$logger->debug(
+                    'response requestId=' . implode('', $response->getHeader('X-Penneo-Request-Id')),
+                    ['method' => $method, 'url' => $url]
+                );
             }
             return $response;
-        } catch (\Exception $e) {
-            $message  = null;
-            $response = $request->getResponse();
-            if ($response instanceof Response) {
-                $message = $response->getMessage();
-                self::$logger->error('response requestId=' . $response->getHeader('X-Penneo-Request-Id'), [
-                    'method' => $method,
-                    'url'    => $url,
-                    'raw'    => $message
-                ]);
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            if ($response) {
+                $body = $response->getBody();
+                $message = $body ? $body->getContents() : null;
+                self::$logger->error(
+                    'response requestId=' . implode('', $response->getHeader('X-Penneo-Request-Id')),
+                    ['method' => $method, 'url' => $url, 'raw' => $message]
+                );
             }
+
             if (self::$throwExceptions) {
                 throw $e;
             }
-            if (self::$debug) {
-                print($message);
-            }
-            return false;
-        }
-    }
 
-    public static function getLastError()
-    {
-        return self::$lastError;
+            return null;
+        }
     }
 
     /**
@@ -181,7 +192,7 @@ class ApiConnector
      *
      * @return array<string, string>
      */
-    private static function getSpecificHeaders($key, array $headers = null)
+    private static function getSpecificHeaders(string $key, array $headers = null): array
     {
         $keyPart = substr($key, 0, 8);
         $setUserAgent = $headers && array_key_exists('User-Agent', $headers) ?
@@ -192,5 +203,14 @@ class ApiConnector
             // this helps us identify API users if we spot incorrect usage of the API or if we discover potential errors
             'User-Agent' => "penneo/penneo-sdk-php v:${version} key:${keyPart} ua:${setUserAgent}"
         ];
+    }
+
+    private static function fixEndpoint(string $uri): string
+    {
+        if ($uri !== '' && $uri[strlen($uri) - 1] !== '/') {
+            return $uri . '/';
+        }
+
+        return $uri;
     }
 }

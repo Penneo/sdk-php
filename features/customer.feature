@@ -46,5 +46,5 @@ Scenario: Read customer branding logo
 Scenario: Read customer email signature
   Given I retrieve customer 1
   When I retrieve customer 1 email signature
-  Then a GET request should be sent to "/customers/1/emailsignature"
+  Then a GET request should be sent to "/customers/1/email-signature"
    And entity property "html" should contain "<p>Best regards</p><p>Acme Inc</p>"
