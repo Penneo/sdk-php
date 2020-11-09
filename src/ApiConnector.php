@@ -19,16 +19,16 @@ class ApiConnector
     private const VERSION = '>=v2.0.0';
 
     /** @var string */
-    static protected $endpoint;
+    protected static $endpoint;
     /** @var mixed[] */
-    static protected $headers;
+    protected static $headers;
     /** @var Client */
-    static protected $client;
+    protected static $client;
 
     /** @var bool */
-    static protected $throwExceptions = false;
+    protected static $throwExceptions = false;
     /** @var LoggerInterface */
-    static protected $logger;
+    protected static $logger;
     
     protected static function getDefaultEndpoint(): string
     {

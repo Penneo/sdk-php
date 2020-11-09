@@ -57,5 +57,4 @@ class EmailSignature extends Entity
     {
         return $this->html;
     }
-
 }
