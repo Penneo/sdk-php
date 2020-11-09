@@ -1,36 +1,17 @@
 language: php
 
-sudo: false
-
-services:
-  - docker
-
-# env:
-#   - DOCKER_COMPOSE_VERSION=1.5.2
-
-# before_install:
-#   # Install docker-compose
-#   - sudo rm /usr/local/bin/docker-compose
-#   - curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` > docker-compose
-#   - chmod +x docker-compose
-#   - sudo mv docker-compose /usr/local/bin
-#   # Install packer
-#   - wget https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip -O /tmp/packer.zip
-#   - sudo unzip /tmp/packer.zip -d /usr/local/bin/
+php:
+  - '7.2'
+  - '7.3'
+  - '7.4'
 
 before_script:
-  # Create docker environments
-  - scripts/tasks/docker-cache.sh dev
-  # Install dependencies
-  - scripts/run.sh travis run --rm sdk-php /app/data/scripts/tasks/install-dependencies.sh
+  - composer install --no-interaction
 
 script:
-  # Run the linter
-  - scripts/run.sh travis run --rm sdk-php /app/data/scripts/tasks/lint.sh
-  # Run tests
-  - scripts/run.sh travis run --rm sdk-php /app/data/scripts/tasks/run-tests.sh
+  - ./bin/phpcs --standard=PSR2 -p ./src ./features
+  - ./bin/behat -f progress
 
 cache:
   directories:
     - $HOME/.composer/cache
-    - docker/cache
