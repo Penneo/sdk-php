@@ -6,6 +6,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
+## [2.0.0] - 2020-11-06
+### Changed
+- PHP 7.2 is now required.
+
+### Breaking changes
+- Moved from guzzle/guzzle to guzzlehttp/guzzle, all guzzle options sent to ApiConnector::initialize() should be updated.
+- Removed ApiConnector::getLastError(). Use setLogger() instead.
+- Removed ApiConnector::enableDebug(). Use setLogger() instead.
+
+
 ## [1.15.0] - 2020-07-15
 - Added request ids to relevant log messages
 - PN-638 Added support for setting and unsetting the `disableEmailAttachments` flag for CaseFile objects

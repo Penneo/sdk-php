@@ -2,19 +2,21 @@
 
 namespace Penneo\SDK\Tests;
 
-use Guzzle\Http\Message\Response;
-
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Behat\Event\SuiteEvent;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Assert;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Defines application features from the specific context.
  */
 class AbstractContext extends \PHPUnit_Framework_TestCase implements Context, SnippetAcceptingContext
 {
-    protected static $server;
-    protected static $requests;
+    /** @var BootlegServer|null */
+    private static $server;
+    /** @var RequestInterface */
+    private static $requests;
     protected static $response;
     protected static $entity;
 
@@ -22,7 +24,7 @@ class AbstractContext extends \PHPUnit_Framework_TestCase implements Context, Sn
      * Helper methods
      */
 
-    protected function getLastRequest()
+    protected function getLastRequest(): RequestInterface
     {
         return self::$requests[0];
     }
@@ -49,59 +51,65 @@ class AbstractContext extends \PHPUnit_Framework_TestCase implements Context, Sn
         self::$entity->$setter($value);
     }
 
-    protected function prepareGetResponse($data)
+    protected function prepareGetResponse(string $data): void
     {
-        self::$response = new Response(
-            200,
-            [
-                'Content-Length' => strlen($data)
-            ],
-            $data
-        );
-
-        self::$server->enqueue([self::$response]);
+        $this->prepareResponse(200, $data);
     }
 
-    protected function preparePostResponse($data)
+    protected function preparePostResponse(string $data): void
     {
-        $encodedData = json_encode($data);
-        self::$response = new Response(
-            201,
-            [
-                'Location' => self::$entity->getRelativeUrl().'/'.$data['id'],
-                'Content-Length' => strlen($encodedData)
-            ],
-            $encodedData
-        );
-        self::$server->enqueue([self::$response]);
+        $this->prepareResponse(201, $data);
+
+//        $encodedData = json_encode($data);
+//
+//        self::$response = new Response(
+//            201,
+//            [
+//                'Location' => self::$entity->getRelativeUrl().'/'.$data['id'],
+//                'Content-Length' => strlen($encodedData)
+//            ],
+//            $encodedData
+//        );
+//        self::$server->enqueue([self::$response]);
     }
 
     protected function preparePutResponse()
     {
-        self::$response = new Response(
-            204,
-            [
-                'Content-Length' => 0
-            ]
-        );
-        self::$server->enqueue([self::$response]);
+        $this->prepareResponse(204, '');
     }
 
     protected function prepareDeleteResponse()
     {
-        self::$response = new Response(
-            204,
-            [
-                'Content-Length' => 0
-            ]
-        );
-        self::$server->enqueue([self::$response]);
+        $this->prepareResponse(204, '');
     }
 
     protected function flushServer()
     {
-        self::$requests = self::$server->getReceivedRequests(true);
-        self::$server->flush();
+        Assert::assertNotNull(self::$server);
+
+        self::$requests = self::$server->readRequests();
+//        self::$server->flush();
+    }
+
+    protected static function startBootlegServer(): void
+    {
+        Assert::assertNull(self::$server);
+        self::$server = new BootlegServer();
+    }
+
+    protected static function stopBootlegServer(): void
+    {
+        Assert::assertNotNull(self::$server);
+
+        self::$server->close();
+        self::$server = null;
+    }
+
+    protected static function getServerUrl(): string
+    {
+        Assert::assertNotNull(self::$server);
+
+        return self::$server->getUrl();
     }
 
     private function toCamelCase($field)
@@ -109,5 +117,13 @@ class AbstractContext extends \PHPUnit_Framework_TestCase implements Context, Sn
         $words  = explode('_', $field);
         $field  = implode('', array_map('ucfirst', $words));
         return $field;
+    }
+
+    private function prepareResponse(int $status, $data): void
+    {
+        Assert::assertNotNull(self::$server);
+
+        self::$response = new Response($status, ['Content-Length' => strlen($data)], $data);
+        self::$server->enqueueResponse($status, $data);
     }
 }

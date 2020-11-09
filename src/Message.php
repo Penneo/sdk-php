@@ -18,11 +18,11 @@ class Message
             return array();
         }
         
-        return $response->json();
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     public static function delete($id)
     {
-        return (bool) ApiConnector::callServer('message/'.$id, null, 'delete');
+        return ApiConnector::callServer('message/'.$id, null, 'delete') !== null;
     }
 }
