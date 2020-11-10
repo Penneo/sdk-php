@@ -23,16 +23,14 @@ class BootlegServer
         $this->requestFile  = new JsonArrayFile($this->makeFile());
 
         $portNumber         = $this->getRandomPort();
+        $address            = "127.0.0.1:$portNumber";
         $this->handle       = $this->runHttpServer(
-            $portNumber,
+            $address,
             (string) $this->requestFile,
             (string) $this->responseFile
         );
 
-        $this->url = sprintf(
-            "http://localhost:%s/bootleg_server.php/",
-            $portNumber
-        );
+        $this->url = "http://$address/bootleg_server.php/";
     }
 
     public function getUrl(): string
@@ -82,17 +80,16 @@ class BootlegServer
     }
 
     /**
-     * @param int    $portNumber
-     *
+     * @param string $address
      * @param string $requestFile
      * @param string $responseFile
      *
      * @return resource
      */
-    private function runHttpServer(int $portNumber, string $requestFile, string $responseFile)
+    private function runHttpServer(string $address, string $requestFile, string $responseFile)
     {
         $handle = proc_open(
-            "php -S 0.0.0.0:$portNumber",
+            PHP_BINARY . " -S " . escapeshellarg($address),
             [
                 ['file', '/dev/null', 'r'], // stdin
                 ['file', '/dev/null', 'w'], // stdout
@@ -124,7 +121,7 @@ class BootlegServer
 
     private function getRandomPort(): int
     {
-        return range(6666, 7000)[random_int(0, 7000 - 6666)];
+        return range(16666, 17000)[random_int(0, 17000 - 16666)];
     }
 
     private function makeFile(): string

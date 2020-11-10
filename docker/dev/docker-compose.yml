@@ -1,6 +1,0 @@
-sdk-php:
-  image: "${DOCKER_IMAGE_NAME}:${DEV_VERSION}_dev"
-  command: "app/data/scripts/run-daemon.sh"
-  volumes:
-    - ../../:/app/data/
-    - ~/.composer:/root/.composer
