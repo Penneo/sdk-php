@@ -6,6 +6,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
+## [2.1.0] - 2020-11-11
+### Added
+- Added support for specifying which type of SSN signers should validate as.
+```
+$signer->setSocialSecurityNumber($ssn, $ssnType); // $ssnType is optional here, and defaults to 'legacy'
+$signer->setSsnType($ssnType); // or set it like this
+
+$ssType = $signer->getSsnType();
+```
+Not setting the SSN type is now deprecated, and will throw an error in the next major version.
+See https://app.penneo.com/api/v1/signers/ssn-types for info on permitted values.
+
 ## [2.0.0] - 2020-11-06
 ### Changed
 - PHP 7.2 is now required.

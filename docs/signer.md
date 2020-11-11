@@ -16,7 +16,7 @@ $mySigner->setName('John Doe');
 $mySigner->setOnBehalfOf('Acme Corporation');
 
 // Set the optional social security number
-$mySigner->setSocialSecurityNumber('0101501111');
+$mySigner->setSocialSecurityNumber('0101501111', 'dk:cpr');
 
 // Set the optional VAT identification number
 $mySigner->setVATIdentificationNumber('12345678');
@@ -24,6 +24,8 @@ $mySigner->setVATIdentificationNumber('12345678');
 // Finally, persist the new object
 Signer::persist($mySigner);
 ```
+
+The supported values for SSN Type can be found here: https://app.penneo.com/api/v1/signers/ssn-types.
 
 ## Retrieving the signing request
 Every time you create a new signer, a signing request is also generated for the new signer. After persisting the new signer object, you can retrieve the signing request like so:

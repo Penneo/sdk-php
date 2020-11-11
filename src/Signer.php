@@ -8,12 +8,14 @@ class Signer extends Entity
         'create' => array(
             'name',
             'socialSecurityNumberPlain',
+            'ssnType',
             'vatin',
             'onBehalfOf'
         ),
         'update' => array(
             'name',
             'socialSecurityNumberPlain',
+            'ssnType',
             'vatin',
             'onBehalfOf'
         )
@@ -26,6 +28,8 @@ class Signer extends Entity
     protected $validatedName;
     /** @var string|null */
     protected $socialSecurityNumberPlain;
+    /** @var string */
+    protected $ssnType = 'legacy';
     /** @var string|null */
     protected $onBehalfOf;
     /** @var string|null */
@@ -89,9 +93,24 @@ class Signer extends Entity
         return $this->socialSecurityNumberPlain;
     }
 
-    public function setSocialSecurityNumber(string $ssn)
+    public function setSocialSecurityNumber(string $ssn, string $ssnType = 'legacy')
     {
         $this->socialSecurityNumberPlain = $ssn;
+        $this->ssnType = $ssnType;
+    }
+
+    /**
+     *
+     * @param string $ssnType
+     */
+    public function setSsnType(string $ssnType): void
+    {
+        $this->ssnType = $ssnType;
+    }
+
+    public function getSsnType(): string
+    {
+        return $this->ssnType;
     }
 
     public function getVATIdentificationNumber(): ?string
