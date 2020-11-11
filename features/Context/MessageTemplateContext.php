@@ -3,7 +3,6 @@
 namespace Penneo\SDK\Tests;
 
 use Penneo\SDK\MessageTemplate;
-
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 
@@ -49,7 +48,7 @@ class MessageTemplateContext extends AbstractContext
 
         $this->templates[$id] = MessageTemplate::find($id);
         $this->setEntity($this->templates[$id]);
-        
+
         $this->flushServer();
     }
 

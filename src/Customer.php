@@ -1,12 +1,13 @@
 <?php
+
 namespace Penneo\SDK;
 
 class Customer extends Entity
 {
-    const STATUS_DEMO        =  0;
-    const STATUS_PAYING      =  1;
-    const STATUS_CANCELLED   =  2;
-    const STATUS_UNKNOWN     = 99;
+    public const STATUS_DEMO        =  0;
+    public const STATUS_PAYING      =  1;
+    public const STATUS_CANCELLED   =  2;
+    public const STATUS_UNKNOWN     = 99;
 
     protected static $relativeUrl = 'customers';
 
@@ -27,8 +28,8 @@ class Customer extends Entity
     {
         if ($this->branding === null) {
             // Try to retrieve the branding from the backend.
-            $url = self::$relativeUrl.'/'.$this->getId().'/branding';
-            $this->branding = self::getEntity('Penneo\SDK\CustomerBranding', $url, $this);
+            $url = self::$relativeUrl . '/' . $this->getId() . '/branding';
+            $this->branding = self::getEntity(CustomerBranding::class, $url, $this);
         }
 
         return $this->branding;
@@ -38,8 +39,8 @@ class Customer extends Entity
     {
         if ($this->emailSignature === null) {
             // Try to retrieve the email signature from the backend.
-            $url = self::$relativeUrl.'/'.$this->getId().'/email-signature';
-            $this->emailSignature = self::getEntity('Penneo\SDK\EmailSignature', $url, $this);
+            $url = self::$relativeUrl . '/' . $this->getId() . '/email-signature';
+            $this->emailSignature = self::getEntity(EmailSignature::class, $url, $this);
         }
 
         return $this->emailSignature;
@@ -62,7 +63,7 @@ class Customer extends Entity
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -85,7 +86,7 @@ class Customer extends Entity
     public function setAddress($address)
     {
         $this->address = $address;
-    
+
         return $this;
     }
 
@@ -108,7 +109,7 @@ class Customer extends Entity
     public function setZip($zip)
     {
         $this->zip = $zip;
-    
+
         return $this;
     }
 
@@ -131,7 +132,7 @@ class Customer extends Entity
     public function setCity($city)
     {
         $this->city = $city;
-    
+
         return $this;
     }
 
@@ -154,7 +155,7 @@ class Customer extends Entity
     public function setActive($active)
     {
         $this->active = $active;
-    
+
         return $this;
     }
 
@@ -177,7 +178,7 @@ class Customer extends Entity
     public function setDeactivateAt($deactivateAt)
     {
         $this->deactivateAt = $deactivateAt->getTimestamp();
-    
+
         return $this;
     }
 
@@ -188,7 +189,7 @@ class Customer extends Entity
      */
     public function getDeactivateAt()
     {
-        return new \DateTime('@'.$this->deactivateAt);
+        return new \DateTime('@' . $this->deactivateAt);
     }
 
     /**
@@ -200,7 +201,7 @@ class Customer extends Entity
     public function setVatin($vatin)
     {
         $this->vatin = $vatin;
-    
+
         return $this;
     }
 

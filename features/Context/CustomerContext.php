@@ -3,7 +3,6 @@
 namespace Penneo\SDK\Tests;
 
 use Penneo\SDK\Customer;
-
 use Behat\Gherkin\Node\TableNode;
 
 /**
@@ -69,7 +68,7 @@ class CustomerContext extends AbstractContext
         $this->prepareGetResponse($this->customerData[$id]);
 
         $this->customers[$id] = Customer::find($id);
-        
+
         $this->setEntity($this->customers[$id]);
 
         $this->flushServer();
@@ -85,7 +84,7 @@ class CustomerContext extends AbstractContext
         $this->prepareGetResponse($this->emailSignatureData[$id]);
 
         $this->setEntity($customer->getEmailSignature());
-        
+
         $this->flushServer();
     }
 
@@ -99,7 +98,7 @@ class CustomerContext extends AbstractContext
         $this->prepareGetResponse($this->brandingData[$id]);
 
         $this->branding = $customer->getBranding();
-        
+
         $this->setEntity($this->branding);
 
         $this->flushServer();
@@ -114,7 +113,7 @@ class CustomerContext extends AbstractContext
         $this->prepareGetResponse($this->imageData[$imageId]);
 
         $this->logoUrl = $this->branding->getLogoUrl();
-        
+
         $this->flushServer();
     }
 

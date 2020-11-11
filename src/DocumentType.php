@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class DocumentType extends Entity
@@ -23,17 +24,17 @@ class DocumentType extends Entity
     {
         return $this->signerTypes;
     }
-    
+
     public function getLowerLimit()
     {
         return $this->lowerLimit;
     }
-    
+
     public function getUpperLimit()
     {
         return $this->upperLimit;
     }
-    
+
     public function getOptions()
     {
         return json_decode($this->options);

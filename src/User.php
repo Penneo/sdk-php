@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class User extends Entity
@@ -11,7 +12,7 @@ class User extends Entity
     public static function getActiveUser()
     {
         $url = 'user';
-        return self::getEntity('Penneo\SDK\User', $url, null);
+        return self::getEntity(User::class, $url, null);
     }
 
     /**
@@ -33,7 +34,7 @@ class User extends Entity
     public function setFullName($fullName)
     {
         $this->fullName = trim($fullName);
-    
+
         return $this;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 abstract class Entity
@@ -21,7 +22,7 @@ abstract class Entity
         $object = new $class();
         $object->id = $id;
         if (!ApiConnector::readObject($object)) {
-            throw new Exception('Penneo: Could not find the requested '.$class.' (id = '.$id.')');
+            throw new Exception('Penneo: Could not find the requested ' . $class . ' (id = ' . $id . ')');
         }
 
         return $object;
@@ -48,7 +49,7 @@ abstract class Entity
     public static function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
     {
         $class = get_called_class();
-    
+
         // Build query array
         $query = $criteria;
         if ($limit !== null) {
@@ -63,8 +64,8 @@ abstract class Entity
             $sort = '';
             $order = '';
             foreach ($orderBy as $field => $dir) {
-                $sort .= $field.',';
-                $order .= $dir.',';
+                $sort .= $field . ',';
+                $order .= $dir . ',';
             }
             $query['sort'] = rtrim($sort, ',');
             $query['order'] = rtrim($order, ',');
@@ -83,7 +84,7 @@ abstract class Entity
             $object->__fromArray($match);
             $result[] = $object;
         }
-        
+
         return $result;
     }
 
@@ -119,7 +120,7 @@ abstract class Entity
         }
 
         if (empty($arguments)) {
-            throw new \InvalidArgumentException('The method '.$method.$by.' requires parameters');
+            throw new \InvalidArgumentException('The method ' . $method . $by . ' requires parameters');
         }
 
         $fieldName = lcfirst($by);
@@ -152,7 +153,7 @@ abstract class Entity
             }
         }
 
-        throw new \BadMethodCallException('Unexisting method: '.$method.$by);
+        throw new \BadMethodCallException('Unexisting method: ' . $method . $by);
     }
 
     /**
@@ -164,7 +165,7 @@ abstract class Entity
      */
     public static function findLinkedEntity(Entity $parent, $type, $id)
     {
-        $url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl.'/'.$id;
+        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $type::$relativeUrl . '/' . $id;
 
         $entity = self::getEntity($type, $url, $parent);
         if ($entity === false) {
@@ -186,7 +187,7 @@ abstract class Entity
     public static function getLinkedEntities(Entity $parent, $type, $url = null, array $getParams = array())
     {
         if ($url == null) {
-            $url = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$type::$relativeUrl;
+            $url = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $type::$relativeUrl;
         }
 
         if ($getParams) {
@@ -204,7 +205,7 @@ abstract class Entity
     public static function getEntity($type, $url, Entity $parent = null)
     {
         $response = ApiConnector::callServer($url);
-        if ($response === false) {
+        if ($response === null) {
             return false;
         }
 
@@ -242,41 +243,41 @@ abstract class Entity
             $entity->__fromArray($data);
             $entities[] = $entity;
         }
-        
+
         return $entities;
     }
 
     public static function linkEntity(Entity $parent, Entity $child)
     {
-        $url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$child::$relativeUrl.'/'.$child->getId();
+        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $child::$relativeUrl . '/' . $child->getId();
 
         $response = ApiConnector::callServer($url, null, 'LINK');
         if (!$response) {
             throw new Exception('Penneo: Internal problem encountered');
         }
-    
+
         return true;
     }
 
     public static function unlinkEntity(Entity $parent, Entity $child)
     {
-        $url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$child::$relativeUrl.'/'.$child->getId();
+        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $child::$relativeUrl . '/' . $child->getId();
 
         $response = ApiConnector::callServer($url, null, 'UNLINK');
         if (!$response) {
             throw new Exception('Penneo: Internal problem encountered');
         }
-    
+
         return true;
     }
 
     public static function getAssets(Entity $parent, $assetName)
     {
-        $url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$assetName;
+        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $assetName;
 
         $response = ApiConnector::callServer($url);
         if (!$response) {
-            throw new Exception('Penneo: Internal problem encountered fetching assets: '.$assetName);
+            throw new Exception('Penneo: Internal problem encountered fetching assets: ' . $assetName);
         }
 
         $assets = json_decode($response->getBody()->getContents(), true);
@@ -285,35 +286,35 @@ abstract class Entity
         foreach ($assets as $asset) {
             $result[] = $asset;
         }
-        
+
         return $result;
     }
-    
+
     public static function callAction(Entity $parent, $actionName)
     {
-        $url  = $parent->getRelativeUrl().'/'.$parent->getId().'/'.$actionName;
-        
+        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $actionName;
+
         $response = ApiConnector::callServer($url, null, 'patch');
         if (!$response) {
-            throw new Exception('Penneo: Internal problem encountered calling action: '.$actionName);
+            throw new Exception('Penneo: Internal problem encountered calling action: ' . $actionName);
         }
-            
+
         return true;
     }
 
     public static function persist(Entity $object)
     {
         if (!ApiConnector::writeObject($object)) {
-            throw new Exception('Penneo: Could not persist the '.get_class($object));
+            throw new Exception('Penneo: Could not persist the ' . get_class($object));
         }
     }
-    
+
     public static function delete(Entity $object)
     {
         if (!ApiConnector::deleteObject($object)) {
-            throw new Exception('Penneo: Could not delete the '.get_class($object));
+            throw new Exception('Penneo: Could not delete the ' . get_class($object));
         }
-        
+
         $object->id = null;
     }
 
@@ -322,9 +323,9 @@ abstract class Entity
         $class = get_called_class();
         $mapping = $class::$propertyMapping;
         if ($this->id) {
-            return isset($mapping['update'])?$mapping['update']:null;
+            return isset($mapping['update']) ? $mapping['update'] : null;
         }
-        return isset($mapping['create'])?$mapping['create']:null;
+        return isset($mapping['create']) ? $mapping['create'] : null;
     }
 
     public function __fromJson($json)
@@ -332,7 +333,7 @@ abstract class Entity
         $data = json_decode($json, true);
         $this->__fromArray($data);
     }
-    
+
     public function __fromArray(array $data)
     {
         foreach ($data as $key => $val) {
@@ -351,7 +352,7 @@ abstract class Entity
 
         // Check if we an object
         if (isset($data['sdkClassName'])) {
-            $class = 'Penneo\SDK\\'.$data['sdkClassName'];
+            $class = 'Penneo\\SDK\\' . $data['sdkClassName'];
             $obj = new $class($parent);
             $obj->__fromArray($data);
             return $obj;
@@ -362,7 +363,7 @@ abstract class Entity
         foreach ($data as $key => $element) {
             $parsedArray[$key] = $this->parseObjects($element, $parent);
         }
-        
+
         return $parsedArray;
     }
 
@@ -382,7 +383,7 @@ abstract class Entity
                 $isFile = true;
                 $property = ltrim($property, '@');
             }
-            
+
             // Decode the property value (if needed).
             $propValue = $this->__getPropertyValue($property);
             if ($propValue === null) {
@@ -394,10 +395,10 @@ abstract class Entity
                 if (!is_readable($propValue)) {
                     continue;
                 }
-                
+
                 $propValue = base64_encode(file_get_contents($propValue));
             }
-            
+
             if (is_int($key)) {
                 $data[$property] = $propValue;
             } else {
@@ -407,7 +408,7 @@ abstract class Entity
 
         return json_encode($data);
     }
-    
+
     public function __getPropertyValue($property)
     {
         // NOTE: Properties can actually be properties of properties.
@@ -426,28 +427,28 @@ abstract class Entity
                 return null;
             }
         }
-        
+
         return $propValue;
     }
-    
+
     public function getId()
     {
         return $this->id;
     }
-    
+
     public function getParent()
     {
         return null;
     }
-    
+
     public function getRelativeUrl()
     {
         $class = get_called_class();
         $parent = $this->getParent();
         $url = $class::$relativeUrl;
-        
+
         if ($parent) {
-            $url = $parent::$relativeUrl.'/'.$parent->getId().'/'.$url;
+            $url = $parent::$relativeUrl . '/' . $parent->getId() . '/' . $url;
         }
 
         return $url;

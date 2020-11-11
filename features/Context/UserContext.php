@@ -3,7 +3,6 @@
 namespace Penneo\SDK\Tests;
 
 use Penneo\SDK\User;
-
 use Behat\Gherkin\Node\TableNode;
 
 /**
@@ -40,7 +39,7 @@ class UserContext extends AbstractContext
         $this->prepareGetResponse($this->userData[$this->loggedInUser]);
 
         $this->setEntity(User::getActiveUser());
-        
+
         $this->flushServer();
     }
 }

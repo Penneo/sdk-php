@@ -3,7 +3,6 @@
 namespace Penneo\SDK\Tests;
 
 use Penneo\SDK\ApiConnector;
-
 use Behat\Gherkin\Node\PyStringNode;
 
 /**

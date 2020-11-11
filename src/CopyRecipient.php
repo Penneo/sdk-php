@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class CopyRecipient extends Entity

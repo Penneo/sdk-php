@@ -9,7 +9,7 @@ before_script:
   - composer install --no-interaction
 
 script:
-  - ./bin/phpcs --standard=PSR2 -p ./src ./features
+  - ./bin/phpcs --standard=PSR12 -p ./src ./features
   - ./bin/behat -f progress
 
 cache:
