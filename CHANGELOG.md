@@ -21,7 +21,7 @@ Not setting the SSN type is now deprecated, and will throw an error in the next 
 See https://app.penneo.com/api/v1/signers/ssn-types for info on permitted values.
 
 - Added support for setting up webhook subscriptions. See
-[the docs](ttps://github.com/Penneo/sdk-net/blob/master/docs/webhooks.md) for more details.
+[the docs](https://github.com/Penneo/sdk-net/blob/master/docs/webhooks.md) for more details.
 
 
 ## [2.0.0] - 2020-11-06
