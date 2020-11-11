@@ -4,6 +4,7 @@ namespace Penneo\SDK;
 
 abstract class Entity
 {
+    /** @var int */
     protected $id;
     protected static $propertyMapping = array(
         'create' => array(),
@@ -290,11 +291,11 @@ abstract class Entity
         return $result;
     }
 
-    public static function callAction(Entity $parent, $actionName)
+    public static function callAction(Entity $parent, string $actionName, string $method = 'patch', $data = null): bool
     {
         $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $actionName;
 
-        $response = ApiConnector::callServer($url, null, 'patch');
+        $response = ApiConnector::callServer($url, json_encode($data), $method);
         if (!$response) {
             throw new Exception('Penneo: Internal problem encountered calling action: ' . $actionName);
         }
