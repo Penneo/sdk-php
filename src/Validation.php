@@ -1,7 +1,9 @@
 <?php
+
 namespace Penneo\SDK;
 
 use Penneo\SDK\Entity;
+use Penneo\SDK\LogEntry;
 
 class Validation extends Entity
 {
@@ -44,13 +46,13 @@ class Validation extends Entity
         $data = parent::getAssets($this, 'pdf');
         return base64_decode($data[0]);
     }
-    
+
     public function getLink()
     {
         $data = parent::getAssets($this, 'link');
         return $data[0];
     }
-    
+
     public function send()
     {
         return parent::callAction($this, 'send');
@@ -60,7 +62,7 @@ class Validation extends Entity
     {
         return $this->title;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -70,37 +72,37 @@ class Validation extends Entity
     {
         return $this->name;
     }
-    
+
     public function setName($name)
     {
         $this->name = $name;
     }
-    
+
     public function getEmail()
     {
         return $this->email;
     }
-    
+
     public function setEmail($email)
     {
         $this->email = $email;
     }
-    
+
     public function getEmailSubject()
     {
         return $this->emailSubject;
     }
-    
+
     public function setEmailSubject($emailSubject)
     {
         $this->emailSubject = $emailSubject;
     }
-    
+
     public function getEmailText()
     {
         return $this->emailText;
     }
-    
+
     public function setEmailText($emailText)
     {
         $this->emailText = $emailText;
@@ -110,7 +112,7 @@ class Validation extends Entity
     {
         return $this->successUrl;
     }
-    
+
     public function setSuccessUrl($url)
     {
         $this->successUrl = $url;
@@ -120,7 +122,7 @@ class Validation extends Entity
     {
         return $this->reminderInterval;
     }
-    
+
     public function setReminderInterval($interval)
     {
         $this->reminderInterval = $interval;
@@ -130,7 +132,7 @@ class Validation extends Entity
     {
         return $this->customText;
     }
-    
+
     public function setCustomText($text)
     {
         $this->customText = $text;
@@ -152,7 +154,7 @@ class Validation extends Entity
             case 5:
                 return 'completed';
         }
-    
+
         return 'new';
     }
 
@@ -161,6 +163,6 @@ class Validation extends Entity
      */
     public function getEventLog()
     {
-        return parent::getLinkedEntities($this, 'Penneo\SDK\LogEntry');
+        return parent::getLinkedEntities($this, LogEntry::class);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 use GuzzleHttp\Client;
@@ -29,7 +30,7 @@ class ApiConnector
     protected static $throwExceptions = false;
     /** @var LoggerInterface */
     protected static $logger;
-    
+
     protected static function getDefaultEndpoint(): string
     {
         return 'https://sandbox.penneo.com/api/v1/';
@@ -93,7 +94,7 @@ class ApiConnector
 
     public static function readObject(Entity $object)
     {
-        $response = self::callServer($object->getRelativeUrl().'/'.$object->getId());
+        $response = self::callServer($object->getRelativeUrl() . '/' . $object->getId());
         if ($response === false) {
             return false;
         }
@@ -110,7 +111,7 @@ class ApiConnector
 
         if ($object->getId()) {
             // Update request
-            $response = self::callServer($object->getRelativeUrl().'/'.$object->getId(), $data, 'put');
+            $response = self::callServer($object->getRelativeUrl() . '/' . $object->getId(), $data, 'put');
             if ($response === false) {
                 return false;
             }
@@ -122,16 +123,16 @@ class ApiConnector
             }
             $object->__fromJson($response->getBody(true));
         }
-        
+
         return true;
     }
 
     public static function deleteObject(Entity $object)
     {
-        if (!self::callServer($object->getRelativeUrl().'/'.$object->getId(), null, 'delete')) {
+        if (!self::callServer($object->getRelativeUrl() . '/' . $object->getId(), null, 'delete')) {
             return false;
         }
-        
+
         return true;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class CustomerBranding extends Entity
@@ -33,7 +34,7 @@ class CustomerBranding extends Entity
     public function setBackgroundColor($backgroundColor)
     {
         $this->backgroundColor = $backgroundColor;
-    
+
         return $this;
     }
 
@@ -56,7 +57,7 @@ class CustomerBranding extends Entity
     public function setHighlightColor($highlightColor)
     {
         $this->highlightColor = $highlightColor;
-    
+
         return $this;
     }
 
@@ -79,7 +80,7 @@ class CustomerBranding extends Entity
     public function setTextColor($textColor)
     {
         $this->textColor = $textColor;
-    
+
         return $this;
     }
 
@@ -102,7 +103,7 @@ class CustomerBranding extends Entity
     public function setSiteUrl($siteUrl)
     {
         $this->siteUrl = $siteUrl;
-    
+
         return $this;
     }
 
@@ -125,9 +126,9 @@ class CustomerBranding extends Entity
     {
         if ($this->logo === null) {
             // Fetch the logo url.
-            $this->logo = self::findLinkedEntity($this->customer, 'Penneo\SDK\Image', $this->imageId);
+            $this->logo = self::findLinkedEntity($this->customer, Image::class, $this->imageId);
         }
-        
+
         return $this->logo->getUrl();
     }
 }

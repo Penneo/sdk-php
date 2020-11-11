@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class SignerType extends Entity
@@ -14,12 +15,12 @@ class SignerType extends Entity
     {
         return $this->role;
     }
-    
+
     public function getLowerLimit()
     {
         return $this->lowerLimit;
     }
-    
+
     public function getUpperLimit()
     {
         return $this->upperLimit;
@@ -29,7 +30,7 @@ class SignerType extends Entity
     {
         return $this->signOrder;
     }
-    
+
     public function getConditions()
     {
         return $this->conditions;

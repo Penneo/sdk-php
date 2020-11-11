@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class Document extends Entity
@@ -49,7 +50,7 @@ class Document extends Entity
     public function getCaseFile()
     {
         if (!$this->caseFile) {
-            $caseFiles = parent::getLinkedEntities($this, 'Penneo\SDK\CaseFile');
+            $caseFiles = parent::getLinkedEntities($this, CaseFile::class);
             $this->caseFile = $caseFiles[0];
         }
         return $this->caseFile;
@@ -63,7 +64,7 @@ class Document extends Entity
         if ($this->signatureLines !== null) {
             return $this->signatureLines;
         }
-        return parent::getLinkedEntities($this, 'Penneo\SDK\SignatureLine');
+        return parent::getLinkedEntities($this, SignatureLine::class);
     }
 
     /**
@@ -81,7 +82,7 @@ class Document extends Entity
             }
             return null;
         }
-        return parent::findLinkedEntity($this, 'Penneo\SDK\SignatureLine', $id);
+        return parent::findLinkedEntity($this, SignatureLine::class, $id);
     }
 
     public function getPdf()
@@ -127,17 +128,17 @@ class Document extends Entity
 
     public function getCreatedAt()
     {
-        return new \Datetime('@'.$this->created);
+        return new \Datetime('@' . $this->created);
     }
 
     public function getModifiedAt()
     {
-        return new \Datetime('@'.$this->modified);
+        return new \Datetime('@' . $this->modified);
     }
 
     public function getCompletedAt()
     {
-        return new \Datetime('@'.$this->completed);
+        return new \Datetime('@' . $this->completed);
     }
 
     public function getStatus()
@@ -156,7 +157,7 @@ class Document extends Entity
             case 5:
                 return 'completed';
         }
-    
+
         return 'deleted';
     }
 
@@ -171,7 +172,7 @@ class Document extends Entity
     public function getDocumentType()
     {
         if ($this->id && !$this->documentType) {
-            $documentTypes = parent::getLinkedEntities($this, 'Penneo\SDK\DocumentType');
+            $documentTypes = parent::getLinkedEntities($this, DocumentType::class);
             $this->documentType = $documentTypes[0];
         }
         return $this->documentType;

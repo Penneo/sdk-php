@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 use Penneo\SDK\Entity;
@@ -60,7 +61,7 @@ class SigningRequest extends Entity
     {
         $this->email = $email;
     }
-    
+
     public function getEmailSubject()
     {
         return $this->emailSubject;
@@ -70,7 +71,7 @@ class SigningRequest extends Entity
     {
         $this->emailSubject = $emailSubject;
     }
-    
+
     public function getEmailText()
     {
         return $this->emailText;
@@ -80,7 +81,7 @@ class SigningRequest extends Entity
     {
         $this->emailText = $emailText;
     }
-    
+
     public function getReminderEmailSubject()
     {
         return $this->reminderEmailSubject;
@@ -137,15 +138,15 @@ class SigningRequest extends Entity
             case 5:
                 return 'undeliverable';
         }
-    
+
         return 'rejected';
     }
-    
+
     public function getRejectReason()
     {
         return $this->rejectReason;
     }
-    
+
     public function getEmailFormat()
     {
         return $this->emailFormat;
@@ -165,7 +166,7 @@ class SigningRequest extends Entity
     {
         $this->successUrl = $url;
     }
-    
+
     public function getFailUrl()
     {
         return $this->failUrl;
@@ -175,32 +176,32 @@ class SigningRequest extends Entity
     {
         $this->failUrl = $url;
     }
-    
+
     public function getReminderInterval()
     {
         return $this->reminderInterval;
     }
-    
+
     public function setReminderInterval($interval)
     {
         $this->reminderInterval = $interval;
     }
-    
+
     public function getAccessControl()
     {
         return $this->accessControl;
     }
-    
+
     public function setAccessControl($accessControl)
     {
         return $this->accessControl = $accessControl;
     }
-    
+
     public function getEnableInsecureSigning()
     {
         return $this->enableInsecureSigning;
     }
-    
+
     public function setEnableInsecureSigning($enableInsecureSigning)
     {
         $this->enableInsecureSigning = $enableInsecureSigning;

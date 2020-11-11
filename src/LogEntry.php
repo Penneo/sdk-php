@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class LogEntry extends Entity
@@ -11,9 +12,9 @@ class LogEntry extends Entity
     {
         return $this->eventType;
     }
-    
+
     public function getEventTime()
     {
-        return new \DateTime('@'.$this->eventTime);
+        return new \DateTime('@' . $this->eventTime);
     }
 }

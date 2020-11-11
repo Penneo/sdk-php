@@ -1,4 +1,5 @@
 <?php
+
 namespace Penneo\SDK;
 
 class Folder extends Entity
@@ -22,7 +23,7 @@ class Folder extends Entity
     {
         $paging = $page !== null ? array('page' => $page, 'per_page' => $perPage) : array();
 
-        return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFile', null, $paging);
+        return parent::getLinkedEntities($this, CaseFile::class, null, $paging);
     }
 
     public function addCaseFile(CaseFile $caseFile)
@@ -39,7 +40,7 @@ class Folder extends Entity
     {
         return $this->title;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;

@@ -1,10 +1,11 @@
 <?php
+
 namespace Penneo\SDK;
 
 class CaseFile extends Entity
 {
-    const DISPLAY_MODE_TABBED  = 0;
-    const DISPLAY_MODE_FLOW    = 1;
+    public const DISPLAY_MODE_TABBED  = 0;
+    public const DISPLAY_MODE_FLOW    = 1;
 
     protected static $propertyMapping = array(
         'create' => array(
@@ -88,7 +89,7 @@ class CaseFile extends Entity
      */
     public function getCaseFileTemplates()
     {
-        return parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileTemplate', 'casefile/casefiletypes');
+        return parent::getLinkedEntities($this, CaseFileTemplate::class, 'casefile/casefiletypes');
     }
 
     /**
@@ -99,7 +100,7 @@ class CaseFile extends Entity
         if (!$this->id) {
             return array();
         }
-        return parent::getLinkedEntities($this, 'Penneo\SDK\DocumentType', 'casefiles/'.$this->id.'/documenttypes');
+        return parent::getLinkedEntities($this, DocumentType::class, 'casefiles/' . $this->id . '/documenttypes');
     }
 
     /**
@@ -110,7 +111,7 @@ class CaseFile extends Entity
         if (!$this->id) {
             return array();
         }
-        return parent::getLinkedEntities($this, 'Penneo\SDK\SignerType', 'casefiles/'.$this->id.'/signertypes');
+        return parent::getLinkedEntities($this, SignerType::class, 'casefiles/' . $this->id . '/signertypes');
     }
 
     /**
@@ -121,7 +122,7 @@ class CaseFile extends Entity
         if ($this->documents !== null) {
             return $this->documents;
         }
-        return parent::getLinkedEntities($this, 'Penneo\SDK\Document');
+        return parent::getLinkedEntities($this, Document::class);
     }
 
     /**
@@ -132,7 +133,7 @@ class CaseFile extends Entity
         if ($this->signers !== null) {
             return $this->signers;
         }
-        return parent::getLinkedEntities($this, 'Penneo\SDK\Signer');
+        return parent::getLinkedEntities($this, Signer::class);
     }
 
     /**
@@ -143,7 +144,7 @@ class CaseFile extends Entity
         if ($this->copyRecipients !== null) {
             return $this->copyRecipients;
         }
-        return parent::getLinkedEntities($this, 'Penneo\SDK\Recipient');
+        return parent::getLinkedEntities($this, CopyRecipient::class);
     }
 
     /**
@@ -161,7 +162,7 @@ class CaseFile extends Entity
             }
             return null;
         }
-        return parent::findLinkedEntity($this, 'Penneo\SDK\Signer', $id);
+        return parent::findLinkedEntity($this, Signer::class, $id);
     }
 
     /**
@@ -179,7 +180,7 @@ class CaseFile extends Entity
             }
             return null;
         }
-        return parent::findLinkedEntity($this, 'Penneo\SDK\CopyRecipient', $id);
+        return parent::findLinkedEntity($this, CopyRecipient::class, $id);
     }
 
     public function getErrors()
@@ -237,7 +238,7 @@ class CaseFile extends Entity
 
     public function getSendAt()
     {
-        return new \DateTime('@'.$this->sendAt);
+        return new \DateTime('@' . $this->sendAt);
     }
 
     public function setSendAt(\DateTime $sendAt)
@@ -247,7 +248,7 @@ class CaseFile extends Entity
 
     public function getExpireAt()
     {
-        return new \DateTime('@'.$this->expireAt);
+        return new \DateTime('@' . $this->expireAt);
     }
 
     public function setExpireAt(\DateTime $expireAt)
@@ -412,7 +413,7 @@ class CaseFile extends Entity
 
     public function getCreatedAt()
     {
-        return new \DateTime('@'.$this->created);
+        return new \DateTime('@' . $this->created);
     }
 
     public function getSignIteration()
@@ -426,7 +427,7 @@ class CaseFile extends Entity
     public function getCaseFileTemplate()
     {
         if ($this->id && !$this->caseFileType) {
-            $caseFileTypes = parent::getLinkedEntities($this, 'Penneo\SDK\CaseFileTemplate');
+            $caseFileTypes = parent::getLinkedEntities($this, CaseFileTemplate::class);
             $this->caseFileType = $caseFileTypes[0];
         }
         return $this->caseFileType;
