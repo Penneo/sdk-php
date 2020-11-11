@@ -4,8 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-
 ### Changed
+### Removed
+
+
 ## [2.1.0] - 2020-11-11
 ### Added
 - Added support for specifying which type of SSN signers should validate as.
@@ -17,6 +19,10 @@ $ssType = $signer->getSsnType();
 ```
 Not setting the SSN type is now deprecated, and will throw an error in the next major version.
 See https://app.penneo.com/api/v1/signers/ssn-types for info on permitted values.
+
+- Added support for setting up webhook subscriptions. See
+[the docs](ttps://github.com/Penneo/sdk-net/blob/master/docs/webhooks.md) for more details.
+
 
 ## [2.0.0] - 2020-11-06
 ### Changed
