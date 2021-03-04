@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 
+## [2.1.1] - 2021-03-04
+### Fixed
+- Fixed a bug that caused case file activation to fail
+
+
 ## [2.1.0] - 2020-11-11
 ### Added
 - Added support for specifying which type of SSN signers should validate as.
