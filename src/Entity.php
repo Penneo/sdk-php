@@ -295,7 +295,7 @@ abstract class Entity
     {
         $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $actionName;
 
-        $response = ApiConnector::callServer($url, json_encode($data), $method);
+        $response = ApiConnector::callServer($url, $data !== null ? json_encode($data) : null, $method);
         if (!$response) {
             throw new Exception('Penneo: Internal problem encountered calling action: ' . $actionName);
         }
