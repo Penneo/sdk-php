@@ -155,7 +155,7 @@ class ApiConnector
                 $url,
                 $options + [
                     RequestOptions::HEADERS => self::$headers,
-                    RequestOptions::BODY => $data,
+                    RequestOptions::BODY => self::sanitizeData($data),
                 ]
             );
 
@@ -213,5 +213,33 @@ class ApiConnector
         }
 
         return $uri;
+    }
+
+    /**
+     * Our ::callServer method supports being called with both array/object $data parameters, but also with directly
+     * serialized data. This is for historical reasons in our own code bases.
+     *
+     * This method tries to make sure we only pass JSON to Guzzle.
+     *
+     * This problem likely snuck in with a Guzzle update, we have historically had this method be called in both ways
+     * without problems.
+     *
+     * @param mixed $data
+     *
+     * @return string|null
+     */
+    private static function sanitizeData($data): ?string
+    {
+        if ($data !== null && !is_string($data)) {
+            $serializedData = json_encode($data);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception('JSON error: ' . json_last_error_msg());
+            }
+
+            return $serializedData;
+        }
+
+        return $data;
     }
 }

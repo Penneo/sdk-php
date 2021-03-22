@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 
+## 2.1.2 - 2021-03-22
+### Fixed
+- Fixed not being able to call ApiConnector::callServer with array data
+
+
 ## [2.1.1] - 2021-03-04
 ### Fixed
 - Fixed a bug that caused case file activation to fail
