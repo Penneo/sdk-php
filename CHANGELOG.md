@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## 2.1.2 - 2021-03-22
+## 2.2.0 - 2021-05-04
+### Added
+- Allowed setting Dutch `nl` as a language on casefiles
+
+
 ### Fixed
 - Fixed not being able to call ApiConnector::callServer with array data
 
