@@ -213,14 +213,14 @@ class CaseFile extends Entity
         $this->title = $title;
     }
 
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         return $this->language;
     }
 
-    public function setLanguage($language)
+    public function setLanguage(string $language): void
     {
-        if (!in_array($language, ['en', 'da', 'sv', 'no'])) {
+        if (!in_array($language, ['en', 'da', 'sv', 'no', 'nl'])) {
             return;
         }
         $this->language = $language;
