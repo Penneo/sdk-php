@@ -6,12 +6,13 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Defines application features from the specific context.
  */
-class AbstractContext extends \PHPUnit_Framework_TestCase implements Context, SnippetAcceptingContext
+class AbstractContext extends TestCase implements Context, SnippetAcceptingContext
 {
     /** @var BootlegServer|null */
     private static $server;
