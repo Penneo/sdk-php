@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 
+## 2.3.0 - 2021-05-26
+### Changed
+- Specification of `composer.json` changed to accept `php:^8.0`
+
+
 ## 2.2.0 - 2021-05-04
 ### Added
 - Allowed setting Dutch `nl` as a language on casefiles
