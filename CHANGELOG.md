@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 
+## 2.4.0 - 2022-10-31
+### Added
+- Added the `storeAsContact` property to signers
+
+
 ## 2.3.0 - 2021-05-26
 ### Changed
 - Specification of `composer.json` changed to accept `php:^8.0`
