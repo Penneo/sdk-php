@@ -10,14 +10,16 @@ class Signer extends Entity
             'socialSecurityNumberPlain',
             'ssnType',
             'vatin',
-            'onBehalfOf'
+            'onBehalfOf',
+            'storeAsContact'
         ),
         'update' => array(
             'name',
             'socialSecurityNumberPlain',
             'ssnType',
             'vatin',
-            'onBehalfOf'
+            'onBehalfOf',
+            'storeAsContact'
         )
     );
     protected static $relativeUrl = 'signers';
@@ -34,6 +36,9 @@ class Signer extends Entity
     protected $onBehalfOf;
     /** @var string|null */
     protected $vatin;
+    /** @var bool|null */
+    protected $storeAsContact;
+
 
     /** @var CaseFile */
     protected $caseFile;
@@ -131,6 +136,22 @@ class Signer extends Entity
     public function setOnBehalfOf(string $onBehalfOf)
     {
         $this->onBehalfOf = $onBehalfOf;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getStoreAsContact(): ?bool
+    {
+        return $this->storeAsContact;
+    }
+
+    /**
+     * @param bool|null $storeAsContact
+     */
+    public function setStoreAsContact(?bool $storeAsContact): void
+    {
+        $this->storeAsContact = $storeAsContact;
     }
 
     public function addSignerType(SignerType $type): bool
