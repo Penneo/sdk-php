@@ -95,7 +95,7 @@ class ApiConnector
     public static function readObject(Entity $object)
     {
         $response = self::callServer($object->getRelativeUrl() . '/' . $object->getId());
-        if ($response === false) {
+        if (!$response) {
             return false;
         }
         $object->__fromJson($response->getBody()->getContents());
