@@ -112,13 +112,13 @@ class ApiConnector
         if ($object->getId()) {
             // Update request
             $response = self::callServer($object->getRelativeUrl() . '/' . $object->getId(), $data, 'put');
-            if ($response === false) {
+            if (!$response) {
                 return false;
             }
         } else {
             // Create request
             $response = self::callServer($object->getRelativeUrl(), $data, 'post');
-            if ($response === false) {
+            if (!$response) {
                 return false;
             }
             $object->__fromJson($response->getBody(true));
