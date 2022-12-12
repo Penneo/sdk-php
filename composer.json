@@ -1,5 +1,5 @@
 {
-    "name": "malek-mohamed/penneo-sdk-php",
+    "name": "penneo/penneo-sdk-php",
     "type": "library",
     "homepage": "https://penneo.com",
     "description": "Penneo SDK for PHP",
