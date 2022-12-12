@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 
+## 2.4.1 - 2022-11-30
+### Fixed
+- Fixed "never true" if condition and "Calling method X on null" issues: https://github.com/Penneo/sdk-php/pull/63
+
+
 ## 2.4.0 - 2022-10-31
 ### Added
 - Added the `storeAsContact` property to signers
