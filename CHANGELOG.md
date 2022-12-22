@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 2.4.2 - 2022-12-22
+### Fixed
+- Fixed "Calling method X on null" issues: https://github.com/Penneo/sdk-php/issues/66
+
 
 ## 2.4.1 - 2022-11-30
 ### Fixed
