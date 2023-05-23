@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added `insecureSigningMethods` to SigningRequest allowing for finer control over which simple electronic signature methods
 should be available to a signer
 ```php
-$signingRequest->setInsecureSigningMethods(['draw', 'text', 'image']);
+$signingRequest->setInsecureSigningMethods([InsecureSigningMethods::DRAW, InsecureSigningMethods::IMAGE, InsecureSigningMethods::TEXT]);
 ```
 
 

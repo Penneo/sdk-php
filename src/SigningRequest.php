@@ -2,7 +2,7 @@
 
 namespace Penneo\SDK;
 
-use Penneo\SDK\Entity;
+use InvalidArgumentException;
 
 class SigningRequest extends Entity
 {
@@ -41,6 +41,11 @@ class SigningRequest extends Entity
     protected $reminderInterval;
     protected $accessControl;
     protected $enableInsecureSigning;
+
+    /**
+     * The simple electronic signing methods that the signer can use to make a simple electronic signature
+     * @var array<string>|null $insecureSigningMethods
+     */
     protected $insecureSigningMethods;
 
     public function getLink()
@@ -215,10 +220,19 @@ class SigningRequest extends Entity
     }
 
     /**
-     * @param array<string>|null $insecureSigningMethods
+     * See InsecureSigningMethods class for possible values
+     * @param array<"draw" | "image" | "text">|null $insecureSigningMethods
      */
     public function setInsecureSigningMethods(?array $insecureSigningMethods): void
     {
+        if ($insecureSigningMethods !== null) {
+            foreach ($insecureSigningMethods as $method) {
+                if (!in_array($method, [InsecureSigningMethods::DRAW, InsecureSigningMethods::IMAGE, InsecureSigningMethods::TEXT], true)) {
+                    throw new InvalidArgumentException('Invalid signing method: ' . $method);
+                }
+            }
+        }
+
         $this->insecureSigningMethods = $insecureSigningMethods;
     }
 }
