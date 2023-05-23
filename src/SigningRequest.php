@@ -43,8 +43,10 @@ class SigningRequest extends Entity
     protected $enableInsecureSigning;
 
     /**
-     * The simple electronic signing methods that the signer can use to make a simple electronic signature
-     * @var array<string>|null $insecureSigningMethods
+     * The simple electronic signing methods that the signer
+     * can use to make a simple electronic signature
+     *
+     * @var array<"draw" | "image" | "text">|null $insecureSigningMethods
      */
     protected $insecureSigningMethods;
 
@@ -221,14 +223,27 @@ class SigningRequest extends Entity
 
     /**
      * See InsecureSigningMethods class for possible values
-     * @param array<"draw" | "image" | "text">|null $insecureSigningMethods
+     *
+     * @param  array<"draw" | "image" | "text">|null $insecureSigningMethods
+     * @return void
      */
     public function setInsecureSigningMethods(?array $insecureSigningMethods): void
     {
         if ($insecureSigningMethods !== null) {
             foreach ($insecureSigningMethods as $method) {
-                if (!in_array($method, [InsecureSigningMethods::DRAW, InsecureSigningMethods::IMAGE, InsecureSigningMethods::TEXT], true)) {
-                    throw new InvalidArgumentException('Invalid signing method: ' . $method);
+                if (
+                    !in_array(
+                        $method,
+                        [
+                        InsecureSigningMethods::DRAW,
+                        InsecureSigningMethods::IMAGE,
+                        InsecureSigningMethods::TEXT],
+                        true
+                    )
+                ) {
+                    throw new InvalidArgumentException(
+                        'Invalid signing method: ' . $method
+                    );
                 }
             }
         }
