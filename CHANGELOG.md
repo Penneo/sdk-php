@@ -7,6 +7,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 2.5.0 - 2023-05-23
+### Added
+- Added `insecureSigningMethods` to SigningRequest allowing for finer control over which simple electronic signature methods
+should be available to a signer
+```php
+$signingRequest->setInsecureSigningMethods([InsecureSigningMethods::DRAW, InsecureSigningMethods::IMAGE, InsecureSigningMethods::TEXT]);
+```
+
+
 ## 2.4.2 - 2022-12-22
 ### Fixed
 - Fixed "Calling method X on null" issues: https://github.com/Penneo/sdk-php/issues/66
