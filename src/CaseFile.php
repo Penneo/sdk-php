@@ -220,7 +220,7 @@ class CaseFile extends Entity
 
     public function setLanguage(string $language): void
     {
-        if (!in_array($language, ['en', 'da', 'sv', 'no', 'nl'])) {
+        if (!in_array($language, ['en', 'da', 'sv', 'no', 'nl', 'fr', 'fi'])) {
             return;
         }
         $this->language = $language;

@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+### 2.5.1 - 2023-07-13
+### Added
+- Added support for french `fr` and finnish `fi` language options on casefiles
+
+
 ## 2.5.0 - 2023-05-23
 ### Added
 - Added `insecureSigningMethods` to SigningRequest allowing for finer control over which simple electronic signature methods
