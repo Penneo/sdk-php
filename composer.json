@@ -1,27 +1,27 @@
 {
-    "name": "penneo/penneo-sdk-php",
-    "type": "library",
-    "homepage": "https://penneo.com",
-    "description": "Penneo SDK for PHP",
-    "license": "Apache-2.0",
-    "autoload": {
-        "psr-4": {
-            "Penneo\\SDK\\": "src/",
-            "Penneo\\SDK\\Tests\\": "features/Context/"
-        }
-    },
-    "require": {
-        "php": "^7.2|^8.0",
-        "psr/log": "~1.0",
-        "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.2"
-    },
-    "require-dev": {
-        "behat/behat": "^3.8",
-        "phpunit/phpunit": "^8.5",
-        "squizlabs/php_codesniffer": "*"
-    },
-    "config": {
-        "bin-dir": "bin"
+  "name": "penneo/penneo-sdk-php",
+  "type": "library",
+  "homepage": "https://penneo.com",
+  "description": "Penneo SDK for PHP",
+  "license": "Apache-2.0",
+  "autoload": {
+    "psr-4": {
+      "Penneo\\SDK\\": "src/",
+      "Penneo\\SDK\\Tests\\": "features/Context/"
     }
+  },
+  "require": {
+    "php": "^7.2|^8.0",
+    "psr/log": "^1.0|^2.0|^3.0",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^7.2"
+  },
+  "require-dev": {
+    "behat/behat": "^3.8",
+    "phpunit/phpunit": "^8.5",
+    "squizlabs/php_codesniffer": "*"
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
 }
