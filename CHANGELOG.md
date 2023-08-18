@@ -7,7 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
-### 2.5.1 - 2023-07-13
+## 2.5.2 - 2023-08-17
+### Added
+- Added support for psr/log versions ^2.0 and ^3.0
+
+
+## 2.5.1 - 2023-07-13
 ### Added
 - Added support for french `fr` and finnish `fi` language options on casefiles
 
