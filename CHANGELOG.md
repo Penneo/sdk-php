@@ -7,6 +7,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+
+## 2.5.3 - 2023-10-02
+### Added
+- Removes "supported languages" as a dependency. Before it would fail silently and fallback to the default language. Now
+  it will pass whatever you pass it and let the API handle errors.
+
+
 ## 2.5.2 - 2023-08-17
 ### Added
 - Added support for psr/log versions ^2.0 and ^3.0
