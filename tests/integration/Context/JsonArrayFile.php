@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
 class JsonArrayFile
 {

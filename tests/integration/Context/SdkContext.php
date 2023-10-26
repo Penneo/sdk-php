@@ -1,9 +1,14 @@
 <?php
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
-use Penneo\SDK\ApiConnector;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\TableNode;
+use Penneo\SDK\ApiConnector;
+use Penneo\SDK\OAuth\OAuth;
+use Penneo\SDK\OAuth\OAuthBuilder;
+use Penneo\SDK\OAuth\PenneoTokens;
+use Penneo\SDK\OAuth\TokenStorage;
 
 /**
  * Defines application features from the specific context.
@@ -18,6 +23,12 @@ class SdkContext extends AbstractContext
         self::startBootlegServer();
         ApiConnector::initialize('apiKeyHere', 'apiSecretHere', self::getServerUrl());
     }
+
+    /** @var OAuth|null */
+    private $oauth;
+
+    /** @var string */
+    private $codeExchangeUrl;
 
     /**
      * @AfterSuite
@@ -79,5 +90,51 @@ class SdkContext extends AbstractContext
     public function propertyShouldBeUndefined($property)
     {
         $this->assertNull($this->getEntityField($property));
+    }
+
+    /**
+     * @When I prepare OAuth with the following details:
+     */
+    public function iBuildAnOauthUrlWithTheFollowingDetails(TableNode $table)
+    {
+        $details = $table->getRowsHash();
+
+        $this->assertNotNull($details['clientId']);
+        $this->assertNotNull($details['clientSecret']);
+        $this->assertNotNull($details['environment']);
+        $this->assertNotNull($details['redirectUri']);
+
+        $this->oauth = OAuthBuilder::start()
+            ->setClientId($details['clientId'])
+            ->setClientSecret($details['clientSecret'])
+            ->setEnvironment($details['environment'])
+            ->setRedirectUri($details['redirectUri'])
+            ->setTokenStorage(new class implements TokenStorage {
+                function saveTokens(PenneoTokens $tokens) {}
+                function getTokens(): ?PenneoTokens { return null; }
+            })
+            ->build();
+    }
+
+    /**
+     * @When I request a code exchange URL with the following details:
+     */
+    public function iRequestACodeExchangeUrlWithTheFollowingDetails(TableNode $table) {
+        $details = $table->getRowsHash();
+
+        $this->assertNotNull($this->oauth);
+
+        $this->codeExchangeUrl = $this->oauth->buildRedirectUrl(
+            $details['state'],
+            $details['scope']
+        );
+    }
+
+    /**
+     * @Then the resulting URL is :url
+     */
+    public function theResultingUrlIs(string $url)
+    {
+        $this->assertEquals($url, $this->codeExchangeUrl);
     }
 }

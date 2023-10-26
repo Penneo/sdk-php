@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
 use GuzzleHttp\Psr7\Request;
 
