@@ -2,7 +2,7 @@
 
 namespace Penneo\SDK\OAuth;
 
-class Environment
-{
-
+final class Environment {
+    public const SANDBOX = 'sandbox';
+    public const PRODUCTION = 'production';
 }

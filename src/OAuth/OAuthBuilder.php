@@ -2,8 +2,22 @@
 
 namespace Penneo\SDK\OAuth;
 
-class PenneoOAuthBuilder
+use GuzzleHttp\Client;
+use Penneo\SDK\PenneoSDKException;
+
+class OAuthBuilder
 {
+    /** @var string */
+    private $environment;
+    /** @var string */
+    private $clientId;
+    /** @var string */
+    private $clientSecret;
+    /** @var string */
+    private $redirectUri;
+    /** @var TokenStorage */
+    private $tokenStorage;
+
     private function __construct()
     {
     }
@@ -15,25 +29,95 @@ class PenneoOAuthBuilder
 
     public function setEnvironment(string $environment): self
     {
+        $this->environment = $environment;
+        return $this;
     }
 
-    public function setClientId(string $string): self
+    public function setClientId(string $clientId): self
     {
+        $this->clientId = $clientId;
+        return $this;
     }
 
-    public function setClientSecret(string $string): self
+    public function setClientSecret(string $secret): self
     {
+        $this->clientSecret = $secret;
+        return $this;
     }
 
-    public function setRedirectUri(string $string): self
+    public function setRedirectUri(string $redirectUri): self
     {
+        $this->redirectUri = $redirectUri;
+        return $this;
     }
 
     public function setTokenStorage(TokenStorage $tokenStorage): self
     {
+        $this->tokenStorage = $tokenStorage;
+        return $this;
     }
 
-    public function build(): PenneoOAuth
+    public function build(Client $client = null): OAuth
     {
+        $this->validateAllParametersPresent();
+        $this->validateEnvironment();
+        $this->validateRedirectUri();
+
+        if (!$client) {
+            $client = new Client();
+        }
+
+        return new OAuth(
+            $this->environment,
+            $this->clientId,
+            $this->clientSecret,
+            $this->redirectUri,
+            $this->tokenStorage,
+            $client
+        );
+    }
+
+    private function throwMissingParameterError(string $missingParameter): void {
+        $capitalized = ucfirst($missingParameter);
+        throw new PenneoSDKException("Cannot build! Please set the ${missingParameter} with ->set${capitalized}()!");
+    }
+
+    /** @throws PenneoSDKException */
+    private function validateAllParametersPresent(): void
+    {
+        if (!$this->environment) {
+            $this->throwMissingParameterError('environment');
+        }
+        if (!$this->clientId) {
+            $this->throwMissingParameterError('clientId');
+        }
+        if (!$this->clientSecret) {
+            $this->throwMissingParameterError('clientSecret');
+        }
+        if (!$this->redirectUri) {
+            $this->throwMissingParameterError('redirectUri');
+        }
+        if (!$this->tokenStorage) {
+            $this->throwMissingParameterError('tokenStorage');
+        }
+    }
+
+    /** @throws PenneoSDKException */
+    public function validateEnvironment(): void
+    {
+        // TODO: multiple environments
+        if ($this->environment != 'sandbox') {
+            throw new PenneoSDKException("Cannot build! Unknown environment '$this->environment'!");
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function validateRedirectUri(): void
+    {
+        if (!filter_var($this->redirectUri, FILTER_VALIDATE_URL)) {
+            throw new PenneoSDKException('Cannot build! The supplied redirect URI is not a valid URL!');
+        }
     }
 }

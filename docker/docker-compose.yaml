@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  composer:
+    image: composer:latest
+    volumes:
+      - ..:/app
+    working_dir: /app
+    command: install
+
+  test-runner-php7:
+    container_name: tests-72
+    build:
+      context: ../
+      dockerfile: docker/PHP72.Dockerfile
+    volumes:
+      - ../:/var/www/html
+      - php72vendor:/var/www/html/vendor
+    working_dir: /var/www/html
+    command: /bin/sh -c "composer update && php vendor/behat/behat/bin/behat"
+
+  test-runner-php8:
+    container_name: tests-81
+    build:
+      context: ../
+      dockerfile: docker/PHP81.Dockerfile
+    volumes:
+      - ../:/var/www/html
+      - php81vendor:/var/www/html/vendor
+    working_dir: /var/www/html
+    command: /bin/sh -c "composer update && php vendor/behat/behat/bin/behat"
+volumes:
+  php72vendor:
+  php81vendor:

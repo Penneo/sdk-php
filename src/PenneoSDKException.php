@@ -1,6 +1,8 @@
 <?php
 
-class PenneoSDKException
+namespace Penneo\SDK;
+
+class PenneoSDKException extends \RuntimeException
 {
 
 }

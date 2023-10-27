@@ -2,7 +2,7 @@
 
 namespace Penneo\SDK\OAuth;
 
-class OAuthUrlBuilder
+class TokenContainer
 {
 
 }
