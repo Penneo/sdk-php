@@ -2,6 +2,7 @@
 
 namespace Penneo\SDK\Tests\Unit\OAuth\OAuth;
 
+use Penneo\SDK\OAuth\PKCE\PKCE;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use Penneo\SDK\Tests\Unit\OAuth\TestsEnvironments;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +22,11 @@ class RedirectUriTest extends TestCase
             'environment' => $environment
         ]);
 
-        $url = $oauth->buildRedirectUrl(['full_access'], 'someState');
+        $pkce = new PKCE();
+        $verifier = $pkce->getCodeVerifier();
+        $codeChallenge = $pkce->getCodeChallenge('S256', $verifier);
+
+        $url = $oauth->buildRedirectUrl(['full_access'], $codeChallenge, 'someState');
 
         $parsed = parse_url($url);
         $this->assertNotEmpty($parsed);
@@ -37,6 +42,8 @@ class RedirectUriTest extends TestCase
 
         $this->assertStringNotContainsString('client_secret', $parsed['query']);
         $this->assertStringNotContainsString('456', $parsed['query']);
+        $this->assertStringContainsString("code_challenge={$codeChallenge->getCodeChallenge()}", $parsed['query']);
+        $this->assertStringContainsString('code_challenge_method=S256', $parsed['query']);
     }
 
     public function testDoesNotAddEmptyStateParameter()
@@ -48,7 +55,11 @@ class RedirectUriTest extends TestCase
             'environment' => 'sandbox'
         ]);
 
-        $url = $oauth->buildRedirectUrl(['full_access'], '');
+        $pkce = new PKCE();
+        $verifier = $pkce->getCodeVerifier();
+        $codeChallenge = $pkce->getCodeChallenge('S256', $verifier);
+
+        $url = $oauth->buildRedirectUrl(['full_access'], $codeChallenge, '');
 
         $parsed = parse_url($url);
         $this->assertNotEmpty($parsed);
