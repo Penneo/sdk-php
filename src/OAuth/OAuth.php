@@ -46,6 +46,11 @@ class OAuth
         );
     }
 
+    public function isAuthorized(): bool
+    {
+        return PenneoTokenValidator::isValid($this->tokenStorage->getTokens());
+    }
+
     /**
      * @throws PenneoSDKException
      * @internal
@@ -62,6 +67,9 @@ class OAuth
         ]);
     }
 
+    /**
+     * @internal
+     */
     public function getEnvironment(): string
     {
         return $this->config->getEnvironment();
