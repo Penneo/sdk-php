@@ -24,11 +24,32 @@ class OAuthApiTest extends TestCase
         $this->config->method('getRedirectUri')->willReturn('https://google.com');
         $this->config->method('getClientId')->willReturn('id');
 
+        $storage = $this->createMock(SessionTokenStorage::class);
         $this->client = $this->createMock(Client::class);
 
-        $this->api = new OAuthApi($this->config, $this->client);
+        $this->api = new OAuthApi($this->config, $storage, $this->client);
+
+        $storage->method('getTokens')
+            ->willReturn(new PenneoTokens(
+                'not_important',
+                'refresh_token',
+                10,
+                20
+            ));
 
         parent::setUp();
+    }
+
+    /** @dataProvider environmentProvider */
+    public function testRefreshTokenMethodUsesCorrectHostname(string $environment, string $expectedHostname)
+    {
+        $this->config->method('getEnvironment')->willReturn($environment);
+        $this->client->expects($this->once())
+            ->method('post')
+            ->with("https://${expectedHostname}/oauth/token")
+            ->willReturn($this->successfulResponse());
+
+        $this->api->postTokenRefresh();
     }
 
     /** @dataProvider environmentProvider */

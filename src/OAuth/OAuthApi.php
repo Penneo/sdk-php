@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
+use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\PenneoSDKException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -19,9 +20,13 @@ final class OAuthApi
     /** @var Client */
     private $client;
 
-    public function __construct(OAuthConfig $config, Client $client)
+    /** @var TokenStorage */
+    private $tokenStorage;
+
+    public function __construct(OAuthConfig $config, TokenStorage $tokenStorage, Client $client)
     {
         $this->config = $config;
+        $this->tokenStorage = $tokenStorage;
         $this->client = $client;
     }
 
@@ -90,6 +95,26 @@ final class OAuthApi
             'code' => $code,
             'redirect_uri' => $this->config->getRedirectUri(),
             'code_verifier' => $codeVerifier
+        ];
+    }
+
+    /** @throws PenneoSDKException */
+    public function postTokenRefresh(): PenneoTokens
+    {
+        return $this->postOrThrow(
+            $this->buildTokenRefreshPayload(),
+            "refresh tokens"
+        );
+    }
+
+    private function buildTokenRefreshPayload(): array
+    {
+        return [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $this->tokenStorage->getTokens()->getRefreshToken(),
+            'redirect_uri' => $this->config->getRedirectUri(),
+            'client_id' => $this->config->getClientId(),
+            'client_secret' => $this->config->getClientSecret(),
         ];
     }
 }

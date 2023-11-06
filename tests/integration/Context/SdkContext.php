@@ -21,7 +21,7 @@ class SdkContext extends AbstractContext
     public static function prepare(): void
     {
         self::startBootlegServer();
-        ApiConnector::initialize('apiKeyHere', 'apiSecretHere', self::getServerUrl());
+        ApiConnector::initializeWSSE('apiKeyHere', 'apiSecretHere', self::getServerUrl());
     }
 
     /**
