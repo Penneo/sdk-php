@@ -15,14 +15,20 @@
         "php": "^7.2|^8.0",
         "psr/log": "^1.0|^2.0|^3.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.2"
+        "guzzlehttp/guzzle": "^7.2",
+        "nesbot/carbon": "^2.71",
+        "ext-openssl": "*"
     },
     "require-dev": {
         "behat/behat": "^3.8",
-        "phpunit/phpunit": "^8.5",
-        "squizlabs/php_codesniffer": "*"
+        "phpunit/phpunit": "^8.5|^9.0",
+        "squizlabs/php_codesniffer": "*",
+        "blastcloud/guzzler": ">=2.0"
     },
     "config": {
         "bin-dir": "bin"
+    },
+    "archive": {
+        "exclude": ["tests/", ".github/", ".gitignore", ".travis.yml", "behat.yml", "phpunit.xml", "phpcs.xml"]
     }
 }
