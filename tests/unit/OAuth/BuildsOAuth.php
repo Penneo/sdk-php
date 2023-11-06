@@ -5,6 +5,8 @@ namespace Penneo\SDK\Tests\Unit\OAuth;
 use GuzzleHttp\Client;
 use Penneo\SDK\OAuth\OAuth;
 use Penneo\SDK\OAuth\OAuthBuilder;
+use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
+use Penneo\SDK\OAuth\Tokens\TokenStorage;
 
 trait BuildsOAuth
 {
@@ -13,6 +15,7 @@ trait BuildsOAuth
      *     clientId: ?string,
      *     clientSecret: ?int,
      *     redirectUri: ?string,
+     *     tokenStorage: ?TokenStorage,
      *     environment: ?string
      * } $overrides
      */
@@ -22,6 +25,7 @@ trait BuildsOAuth
             'clientId' => 'myId',
             'clientSecret' => 'mySecret',
             'redirectUri' => 'https://myUri.com',
+            'tokenStorage' => $this->createStub(SessionTokenStorage::class),
             'environment' => 'sandbox',
         ], $overrides);
 

@@ -16,6 +16,7 @@ class OAuthBuilderTest extends TestCase
             ['clientId'],
             ['clientSecret'],
             ['redirectUri'],
+            ['tokenStorage'],
             ['environment'],
         ];
     }

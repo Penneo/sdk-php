@@ -4,6 +4,7 @@ namespace Penneo\SDK\OAuth;
 
 use GuzzleHttp\Client;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
+use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\PenneoSDKException;
 
 final class OAuthBuilder
@@ -16,6 +17,8 @@ final class OAuthBuilder
     private $clientSecret;
     /** @var string */
     private $redirectUri;
+    /** @var TokenStorage */
+    private $tokenStorage;
 
     private function __construct()
     {
@@ -50,6 +53,12 @@ final class OAuthBuilder
         return $this;
     }
 
+    public function setTokenStorage(TokenStorage $tokenStorage): self
+    {
+        $this->tokenStorage = $tokenStorage;
+        return $this;
+    }
+
     public function build(Client $client = null): OAuth
     {
         $this->validateAllParametersPresent();
@@ -62,7 +71,9 @@ final class OAuthBuilder
                 $this->clientId,
                 $this->clientSecret,
                 $this->redirectUri
-            )
+            ),
+            $this->tokenStorage,
+            $client ?: new Client()
         );
     }
 
@@ -80,6 +91,9 @@ final class OAuthBuilder
         }
         if (!$this->redirectUri) {
             $this->throwMissingParameterError('redirectUri');
+        }
+        if (!$this->tokenStorage) {
+            $this->throwMissingParameterError('tokenStorage');
         }
     }
 
