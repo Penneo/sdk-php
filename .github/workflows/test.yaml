@@ -1,0 +1,60 @@
+name: Run tests
+
+on:
+  pull_request:
+    branches: [ master, main ]
+  push:
+    branches: [ master, main ]
+
+concurrency:
+  # cancel previous runs in current pull request
+  group: test-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #3.5.3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@7fdd3ece872ec7ec4c098ae5ab7637d5e0a96067 #2.26.0
+      with:
+        php-version: 8.2
+        tools: composer
+
+    - name: Install dependencies
+      run: composer install
+
+    - name: phpcs
+      run: bin/phpcs
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-ver:
+          - "7.2"
+          - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
+    name: PHP v${{ matrix.php-ver }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #3.5.3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@7fdd3ece872ec7ec4c098ae5ab7637d5e0a96067 #2.26.0
+        with:
+          php-version: ${{ matrix.php-ver }}
+          extensions: curl, openssl, zlib
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run unit tests
+        run: bin/phpunit --testdox
+
+      - name: Run integration tests
+        run: bin/behat -f progress

@@ -29,6 +29,6 @@
         "bin-dir": "bin"
     },
     "archive": {
-        "exclude": ["tests/", ".github/", ".gitignore", ".travis.yml", "behat.yml", "phpunit.xml", "phpcs.xml"]
+        "exclude": ["tests/", ".github/", ".gitignore", "behat.yml", "phpunit.xml", "phpcs.xml"]
     }
 }
