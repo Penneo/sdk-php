@@ -3,10 +3,10 @@
 default:
     suites:
         default:
-            paths:    ['%paths.base%/features']
+            paths:    ['%paths.base%/tests/integration']
             contexts: 
-                - Penneo\SDK\Tests\SdkContext
-                - Penneo\SDK\Tests\MessageTemplateContext
-                - Penneo\SDK\Tests\CustomerContext
-                - Penneo\SDK\Tests\UserContext
+                - Penneo\SDK\Tests\Integration\SdkContext
+                - Penneo\SDK\Tests\Integration\MessageTemplateContext
+                - Penneo\SDK\Tests\Integration\CustomerContext
+                - Penneo\SDK\Tests\Integration\UserContext
             

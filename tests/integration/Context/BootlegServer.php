@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
 use GuzzleHttp\Psr7\Request;
 
@@ -106,6 +106,9 @@ class BootlegServer
         if (!$handle) {
             throw new \RuntimeException("Port probably taken");
         }
+
+        // wait for a moment, so that the server has a chance to start
+        sleep(1);
 
         return $handle;
     }
