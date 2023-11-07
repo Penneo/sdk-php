@@ -17,44 +17,48 @@ jobs:
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #3.5.3
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@7fdd3ece872ec7ec4c098ae5ab7637d5e0a96067 #2.26.0
-        with:
-          php-version: 8.2
-          tools: composer
+      - name: Build PHP container
+        run: docker build --build-arg "PHP_VERSION=8.2" -t php --file docker/Dockerfile docker/
+
+      - name: Start PHP container
+        run: |
+          docker run -d --name php -v ${GITHUB_WORKSPACE}:/app php tail -f /dev/null
 
       - name: Install dependencies
-        run: composer install
+        run: docker exec php /bin/sh -c "composer install"
 
-      - name: phpcs
-        run: bin/phpcs
+      - name: Lint
+        run: docker exec php /bin/sh -c "bin/phpcs"
+
+      - name: Stop PHP container
+        if: always()
+        run: docker stop php
 
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-ver:
-          - "7.2"
-          - "7.4"
-          - "8.0"
-          - "8.1"
-          - "8.2"
-    name: PHP v${{ matrix.php-ver }}
+        php-version: ["7.2", "7.4", "8.0", "8.1", "8.2"]
+    name: PHP v${{ matrix.php-version }}
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #3.5.3
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@7fdd3ece872ec7ec4c098ae5ab7637d5e0a96067 #2.26.0
-        with:
-          php-version: ${{ matrix.php-ver }}
-          extensions: curl, openssl, zlib
-          tools: composer
+      - name: Build PHP container
+        run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
+
+      - name: Start PHP container
+        run: |
+          docker run -d --name php -v ${GITHUB_WORKSPACE}:/app php tail -f /dev/null
 
       - name: Install dependencies
-        run: composer install
+        run: docker exec php /bin/sh -c "composer install"
 
       - name: Run unit tests
-        run: bin/phpunit --testdox
+        run: docker exec php /bin/sh -c "bin/phpunit --testdox"
 
       - name: Run integration tests
-        run: bin/behat -f progress
+        run: docker exec php /bin/sh -c "bin/behat -f progress"
+
+      - name: Stop PHP container
+        if: always()
+        run: docker stop php
