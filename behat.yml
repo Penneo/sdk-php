@@ -1,12 +1,11 @@
 # behat.yml
 
 default:
-    suites:
-        default:
-            paths:    ['%paths.base%/tests/integration']
-            contexts: 
-                - Penneo\SDK\Tests\Integration\SdkContext
-                - Penneo\SDK\Tests\Integration\MessageTemplateContext
-                - Penneo\SDK\Tests\Integration\CustomerContext
-                - Penneo\SDK\Tests\Integration\UserContext
-            
+  suites:
+    default:
+      paths: [ '%paths.base%/tests/integration' ]
+      contexts:
+        - Penneo\SDK\Tests\Integration\SdkContext
+        - Penneo\SDK\Tests\Integration\MessageTemplateContext
+        - Penneo\SDK\Tests\Integration\CustomerContext
+        - Penneo\SDK\Tests\Integration\UserContext
