@@ -16,6 +16,7 @@ class PKCE
      * GET parameter to web requests.
      *
      * @see https://datatracker.ietf.org/doc/html/rfc4648#section-5
+     * @see https://datatracker.ietf.org/doc/html/rfc7636#section-4.2
      */
     private function base64UrlEncode(string $str): string
     {
