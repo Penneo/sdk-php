@@ -32,7 +32,7 @@ class MiddlewareTest extends TestCase
 
     public function setUp(): void
     {
-        Carbon::setTestNow(Carbon::create(1998, 5, 10, 5, 10, 36));
+        Carbon::setTestNow(Carbon::now());
 
         $this->tomorrowTimestamp = Carbon::now()->addDay()->getTimestamp();
         $this->yesterdayTimestamp = Carbon::now()->subDay()->getTimestamp();
