@@ -4,7 +4,7 @@ namespace Penneo\SDK\OAuth;
 
 use Penneo\SDK\AuthenticationExpiredException;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
-use Penneo\SDK\OAuth\Tokens\PenneoTokenValidator;
+use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Psr\Http\Message\RequestInterface;
 
@@ -38,14 +38,14 @@ class OAuthMiddleware
     /** @throws AuthenticationExpiredException */
     private function validateBothTokensNotExpired(PenneoTokens $tokens): void
     {
-        if (!PenneoTokenValidator::isValid($tokens)) {
+        if (!PenneoTokensValidator::areNotExpired($tokens)) {
             throw new AuthenticationExpiredException('Session has expired, please reauthenticate!');
         }
     }
 
     private function refreshExpiredAccessToken(PenneoTokens $tokens): void
     {
-        if (PenneoTokenValidator::isAccessTokenExpired($tokens)) {
+        if (PenneoTokensValidator::isAccessTokenExpired($tokens)) {
             $this->tokenStorage->saveTokens(
                 $this->api->postTokenRefresh()
             );

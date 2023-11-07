@@ -3,7 +3,7 @@
 namespace Penneo\SDK\Tests\Unit\OAuth;
 
 use Carbon\Carbon;
-use Penneo\SDK\OAuth\Tokens\PenneoTokenValidator;
+use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +18,7 @@ class PenneoTokensValidatorTest extends TestCase
             Carbon::yesterday()->getTimestamp()
         );
 
-        $this->assertFalse(PenneoTokenValidator::isValid($tokens));
+        $this->assertFalse(PenneoTokensValidator::areNotExpired($tokens));
     }
 
     public function testReturnsTrueWhenBothTokensAreValid(): void
@@ -30,7 +30,7 @@ class PenneoTokensValidatorTest extends TestCase
             Carbon::tomorrow()->getTimestamp()
         );
 
-        $this->assertTrue(PenneoTokenValidator::isValid($tokens));
+        $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
     }
 
     public function testReturnsTrueWhenAccessTokenIsExpiredAndRefreshTokenIsValid(): void
@@ -42,7 +42,7 @@ class PenneoTokensValidatorTest extends TestCase
             Carbon::tomorrow()->getTimestamp()
         );
 
-        $this->assertTrue(PenneoTokenValidator::isValid($tokens));
+        $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
     }
 
     public function testReturnsTrueWhenAccessTokenIsValidAndRefreshTokenIsExpired(): void
@@ -54,7 +54,7 @@ class PenneoTokensValidatorTest extends TestCase
             Carbon::tomorrow()->getTimestamp()
         );
 
-        $this->assertTrue(PenneoTokenValidator::isValid($tokens));
+        $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
     }
 
     /**
@@ -68,6 +68,6 @@ class PenneoTokensValidatorTest extends TestCase
         $expiredTs = Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp();
         $tokens = new PenneoTokens('access_token', 'refresh_token', $expiredTs, $expiredTs);
 
-        $this->assertFalse(PenneoTokenValidator::isValid($tokens));
+        $this->assertFalse(PenneoTokensValidator::areNotExpired($tokens));
     }
 }

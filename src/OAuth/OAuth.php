@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\PKCE\CodeChallenge;
-use Penneo\SDK\OAuth\Tokens\PenneoTokenValidator;
+use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\PenneoSdkRuntimeException;
 
@@ -48,7 +48,7 @@ class OAuth
 
     public function isAuthorized(): bool
     {
-        return PenneoTokenValidator::isValid($this->tokenStorage->getTokens());
+        return PenneoTokensValidator::areNotExpired($this->tokenStorage->getTokens());
     }
 
     /**
@@ -57,7 +57,7 @@ class OAuth
      */
     public function getMiddleware(): callable
     {
-        if (!PenneoTokensValidator::isValid($this->tokenStorage->getTokens())) {
+        if (!PenneoTokensValidator::areNotExpired($this->tokenStorage->getTokens())) {
             throw new PenneoSdkRuntimeException('The access token is missing or expired! Did you complete the OAuth flow?');
         }
 

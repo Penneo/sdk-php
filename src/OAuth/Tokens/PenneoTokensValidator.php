@@ -4,11 +4,11 @@ namespace Penneo\SDK\OAuth\Tokens;
 
 use Carbon\Carbon;
 
-class PenneoTokenValidator
+class PenneoTokensValidator
 {
     private const TOKEN_EXPIRY_BUFFER_IN_SECONDS = 5;
 
-    public static function isValid(?PenneoTokens $tokens = null): bool
+    public static function areNotExpired(?PenneoTokens $tokens = null): bool
     {
         if ($tokens === null) {
             return false;
