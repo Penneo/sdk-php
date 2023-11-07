@@ -102,7 +102,10 @@ final class OAuthBuilder
     private function throwMissingParameterError(string $missingParameter): void
     {
         $capitalized = ucfirst($missingParameter);
-        throw new PenneoSdkRuntimeException("Cannot build! Please set the {$missingParameter} with ->set{$capitalized}()!");
+
+        throw new PenneoSdkRuntimeException(
+            "Cannot build! Please set the {$missingParameter} with ->set{$capitalized}()!"
+        );
     }
 
     /** @throws PenneoSdkRuntimeException */

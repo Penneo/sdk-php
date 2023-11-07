@@ -58,7 +58,9 @@ class OAuth
     public function getMiddleware(): callable
     {
         if (!PenneoTokensValidator::areNotExpired($this->tokenStorage->getTokens())) {
-            throw new PenneoSdkRuntimeException('The access token is missing or expired! Did you complete the OAuth flow?');
+            throw new PenneoSdkRuntimeException(
+                'The access token is missing or expired! Did you complete the OAuth flow?'
+            );
         }
 
         return Middleware::mapRequest([
