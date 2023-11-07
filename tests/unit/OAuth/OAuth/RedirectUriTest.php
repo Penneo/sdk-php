@@ -24,7 +24,7 @@ class RedirectUriTest extends TestCase
 
         $pkce = new PKCE();
         $verifier = $pkce->getCodeVerifier();
-        $codeChallenge = $pkce->getCodeChallenge('S256', $verifier);
+        $codeChallenge = $pkce->getCodeChallenge($verifier);
 
         $url = $oauth->buildRedirectUrl(['full_access'], $codeChallenge, 'someState');
 
@@ -57,7 +57,7 @@ class RedirectUriTest extends TestCase
 
         $pkce = new PKCE();
         $verifier = $pkce->getCodeVerifier();
-        $codeChallenge = $pkce->getCodeChallenge('S256', $verifier);
+        $codeChallenge = $pkce->getCodeChallenge($verifier);
 
         $url = $oauth->buildRedirectUrl(['full_access'], $codeChallenge, '');
 
