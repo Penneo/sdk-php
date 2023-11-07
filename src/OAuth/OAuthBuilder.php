@@ -3,6 +3,7 @@
 namespace Penneo\SDK\OAuth;
 
 use GuzzleHttp\Client;
+use Penneo\SDK\OAuth\Config\Environment;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\PenneoSdkRuntimeException;
@@ -107,7 +108,7 @@ final class OAuthBuilder
     /** @throws PenneoSdkRuntimeException */
     private function validateEnvironment(): void
     {
-        if ($this->environment != 'sandbox' && $this->environment != 'production') {
+        if (!Environment::isSupported($this->environment)) {
             throw new PenneoSdkRuntimeException("Cannot build! Unknown environment '$this->environment'!");
         }
     }

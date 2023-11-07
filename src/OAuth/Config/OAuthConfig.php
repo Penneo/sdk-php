@@ -53,9 +53,4 @@ class OAuthConfig
     {
         return $this->redirectUri;
     }
-
-    public function getOAuthHostname(): string
-    {
-        return $this->getEnvironment() === 'sandbox' ? 'sandbox.oauth.penneo.cloud' : 'login.penneo.com';
-    }
 }

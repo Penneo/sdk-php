@@ -2,6 +2,7 @@
 
 namespace Penneo\SDK\OAuth;
 
+use Penneo\SDK\OAuth\Config\Environment;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\PKCE\CodeChallenge;
 
@@ -31,7 +32,8 @@ class AuthorizeUrlBuilder
         }
 
         $query = http_build_query($queryParameters);
+        $hostname = Environment::getOAuthHostname($this->config->getEnvironment());
 
-        return "https://{$this->config->getOAuthHostname()}/oauth/authorize?$query";
+        return "https://{$hostname}/oauth/authorize?$query";
     }
 }

@@ -5,6 +5,7 @@ namespace Penneo\SDK\OAuth;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
+use Penneo\SDK\OAuth\Config\Environment;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
@@ -57,8 +58,10 @@ final class OAuthApi
      */
     private function post(array $payload): PenneoTokens
     {
+        $hostname = Environment::getOAuthHostname($this->config->getEnvironment());
+
         $response = $this->client->post(
-            "https://{$this->config->getOAuthHostname()}/oauth/token",
+            "https://{$hostname}/oauth/token",
             ['json' => $payload]
         );
 

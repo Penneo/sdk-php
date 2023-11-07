@@ -8,6 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
+use Penneo\SDK\OAuth\Config\Environment;
 use Penneo\SDK\OAuth\OAuth;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
@@ -255,7 +256,7 @@ class ApiConnector
         $handler = HandlerStack::create();
         $handler->push($oauth->getMiddleware());
 
-        $hostname = $oauth->getEnvironment() === 'sandbox' ? 'sandbox.penneo.com' : 'app.penneo.com';
+        $hostname = Environment::getSignHostname($oauth->getEnvironment());
 
         self::$client = new Client([
             'base_uri' => "https://{$hostname}/api/{$apiVersion}/",
