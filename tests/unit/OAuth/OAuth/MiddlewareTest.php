@@ -12,7 +12,7 @@ use GuzzleHttp\Psr7\Response;
 use Penneo\SDK\AuthenticationExpiredException;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
-use Penneo\SDK\PenneoSDKException;
+use Penneo\SDK\PenneoSdkRuntimeException;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use PHPUnit\Framework\TestCase;
 
@@ -50,7 +50,7 @@ class MiddlewareTest extends TestCase
 
         $oauth = $this->build(['tokenStorage' => $mockStorage]);
 
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage('The access token is missing or expired! Did you complete the OAuth flow?');
 
         $oauth->getMiddleware();
@@ -114,7 +114,7 @@ class MiddlewareTest extends TestCase
             'tokenStorage' => $this->mockStorage,
         ]);
 
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage('The access token is missing or expired! Did you complete the OAuth flow?');
 
         $oauth->getMiddleware();
@@ -144,7 +144,7 @@ class MiddlewareTest extends TestCase
             Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp()
         ));
 
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectException(AuthenticationExpiredException::class);
         $this->expectExceptionMessage('Session has expired, please reauthenticate!');
 
@@ -247,7 +247,7 @@ class MiddlewareTest extends TestCase
                 )
             );
 
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage('Failed to refresh tokens: HTTP 400, something went wrong not sure what');
 
         $this->guzzler->getClient()
@@ -283,7 +283,7 @@ class MiddlewareTest extends TestCase
         try {
             $this->guzzler->getClient()
                 ->get('/');
-        } catch (PenneoSDKException $e) {
+        } catch (PenneoSdkRuntimeException $e) {
             $this->assertEquals('Unexpected error occurred: uh oh', $e->getMessage());
             $this->assertEquals($guzzleException, $e->getPrevious());
             return;

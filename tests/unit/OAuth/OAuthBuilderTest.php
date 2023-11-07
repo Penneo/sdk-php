@@ -3,7 +3,7 @@
 namespace Penneo\SDK\Tests\Unit\OAuth;
 
 use Penneo\SDK\OAuth\OAuth;
-use Penneo\SDK\PenneoSDKException;
+use Penneo\SDK\PenneoSdkRuntimeException;
 use PHPUnit\Framework\TestCase;
 
 class OAuthBuilderTest extends TestCase
@@ -26,7 +26,7 @@ class OAuthBuilderTest extends TestCase
     {
         $capitalized = ucfirst($missingParameter);
 
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage("Cannot build! Please set the {$missingParameter} with ->set{$capitalized}()!");
 
         $this->build([
@@ -39,7 +39,7 @@ class OAuthBuilderTest extends TestCase
     {
         $capitalized = ucfirst($missingParameter);
 
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage("Cannot build! Please set the {$missingParameter} with ->set{$capitalized}()!");
 
         $this->build([
@@ -54,7 +54,7 @@ class OAuthBuilderTest extends TestCase
      */
     public function testWhenBuildingWithUnknownEnvironmentThenAPenneoExceptionIsThrown(string $unknownEnvironment)
     {
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage("Cannot build! Unknown environment '$unknownEnvironment'!");
 
         $this->build([
@@ -64,7 +64,7 @@ class OAuthBuilderTest extends TestCase
 
     public function testWhenBuildingWithAnInvalidRedirectUriAPenneoExceptionIsThrown()
     {
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage("Cannot build! The supplied redirect URI is not a valid URL!");
 
         $this->build([

@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
-use Penneo\SDK\PenneoSDKException;
+use Penneo\SDK\PenneoSdkRuntimeException;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +38,7 @@ class ExchangeAuthCodeTest extends TestCase
 
         $oauth = $this->build([], $this->guzzler->getClient());
 
-        $this->expectException(PenneoSDKException::class);
+        $this->expectException(PenneoSdkRuntimeException::class);
         $this->expectExceptionMessage('Failed to exchange code: HTTP 400, Something broke! The white thing exploded.');
 
         $oauth->exchangeAuthCode('someCode', 'someCodeVerifier');
@@ -56,7 +56,7 @@ class ExchangeAuthCodeTest extends TestCase
 
         try {
             $oauth->exchangeAuthCode('doesntmatter', 'doesntmatter');
-        } catch (PenneoSDKException $e) {
+        } catch (PenneoSdkRuntimeException $e) {
             $this->assertEquals('Unexpected error occurred: I am an exception!', $e->getMessage());
             $this->assertEquals($guzzleException, $e->getPrevious());
             return;

@@ -8,7 +8,7 @@ use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\PKCE\CodeChallenge;
 use Penneo\SDK\OAuth\Tokens\PenneoTokenValidator;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
-use Penneo\SDK\PenneoSDKException;
+use Penneo\SDK\PenneoSdkRuntimeException;
 
 class OAuth
 {
@@ -32,13 +32,13 @@ class OAuth
         $this->api = new OAuthApi($config, $tokenStorage, $client);
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     public function buildRedirectUrl(array $scope, CodeChallenge $codeChallenge, string $state = ''): string
     {
         return $this->urlBuilder->build($scope, $codeChallenge, $state);
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     public function exchangeAuthCode(string $code, string $codeVerifier): void
     {
         $this->tokenStorage->saveTokens(
@@ -52,13 +52,13 @@ class OAuth
     }
 
     /**
-     * @throws PenneoSDKException
+     * @throws PenneoSdkRuntimeException
      * @internal
      */
     public function getMiddleware(): callable
     {
-        if (!PenneoTokenValidator::isValid($this->tokenStorage->getTokens())) {
-            throw new PenneoSDKException('The access token is missing or expired! Did you complete the OAuth flow?');
+        if (!PenneoTokensValidator::isValid($this->tokenStorage->getTokens())) {
+            throw new PenneoSdkRuntimeException('The access token is missing or expired! Did you complete the OAuth flow?');
         }
 
         return Middleware::mapRequest([

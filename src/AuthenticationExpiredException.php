@@ -2,6 +2,6 @@
 
 namespace Penneo\SDK;
 
-class AuthenticationExpiredException extends PenneoSDKException
+class AuthenticationExpiredException extends PenneoSdkRuntimeException
 {
 }

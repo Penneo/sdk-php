@@ -6,7 +6,7 @@ use Penneo\SDK\OAuth\Config\Environment;
 use Penneo\SDK\OAuth\OAuthBuilder;
 use Penneo\SDK\OAuth\PKCE\PKCE;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
-use Penneo\SDK\PenneoSDKException;
+use Penneo\SDK\PenneoSdkRuntimeException;
 
 session_start();
 
@@ -32,7 +32,7 @@ if (isset($_GET['error'])) {
     // we are returning with a code after authorization
     try {
         $penneoOAuth->exchangeAuthCode($_GET['code'], $_SESSION['code_verifier']);
-    } catch (PenneoSDKException $e) {
+    } catch (PenneoSdkRuntimeException $e) {
         /// something went wrong - handle the error
         print_r($e);
         exit;
@@ -55,7 +55,7 @@ if (isset($_GET['error'])) {
 
         header('Location: ' . $url);
         exit;
-    } catch (PenneoSDKException $e) {
+    } catch (PenneoSdkRuntimeException $e) {
         // something went wrong - handle the error
         var_dump($e);
     }

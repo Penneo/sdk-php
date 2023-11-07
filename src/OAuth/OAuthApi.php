@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
-use Penneo\SDK\PenneoSDKException;
+use Penneo\SDK\PenneoSdkRuntimeException;
 use Psr\Http\Message\ResponseInterface;
 
 /** @internal */
@@ -30,7 +30,7 @@ final class OAuthApi
         $this->client = $client;
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     public function postCodeExchange(string $code, string $codeVerifier): PenneoTokens
     {
         return $this->postOrThrow(
@@ -39,7 +39,7 @@ final class OAuthApi
         );
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     private function postOrThrow(array $payload, string $actionDescription): PenneoTokens
     {
         try {
@@ -47,7 +47,7 @@ final class OAuthApi
         } catch (BadResponseException $e) {
             $this->handleBadResponse($e->getResponse(), "Failed to $actionDescription");
         } catch (GuzzleException $e) {
-            throw new PenneoSDKException("Unexpected error occurred: {$e->getMessage()}", $e);
+            throw new PenneoSdkRuntimeException("Unexpected error occurred: {$e->getMessage()}", $e);
         }
     }
 
@@ -72,7 +72,7 @@ final class OAuthApi
         );
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     private function handleBadResponse(ResponseInterface $response, string $title)
     {
         $body = json_decode($response->getBody());
@@ -81,7 +81,7 @@ final class OAuthApi
         $message = $body->error ?? 'Unknown error';
         $description = isset($body->error_description) ? " {$body->error_description}" : '';
 
-        throw new PenneoSDKException(
+        throw new PenneoSdkRuntimeException(
             "$title: HTTP {$code}, {$message}{$description}"
         );
     }
@@ -98,7 +98,7 @@ final class OAuthApi
         ];
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     public function postTokenRefresh(): PenneoTokens
     {
         return $this->postOrThrow(

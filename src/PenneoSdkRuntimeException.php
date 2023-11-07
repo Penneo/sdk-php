@@ -2,7 +2,7 @@
 
 namespace Penneo\SDK;
 
-class PenneoSDKException extends \RuntimeException
+class PenneoSdkRuntimeException extends \RuntimeException
 {
     public function __construct(string $message, \Throwable $previous = null)
     {

@@ -5,7 +5,7 @@ namespace Penneo\SDK\OAuth;
 use GuzzleHttp\Client;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
-use Penneo\SDK\PenneoSDKException;
+use Penneo\SDK\PenneoSdkRuntimeException;
 
 final class OAuthBuilder
 {
@@ -77,7 +77,7 @@ final class OAuthBuilder
         );
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     private function validateAllParametersPresent(): void
     {
         if (!$this->environment) {
@@ -97,26 +97,26 @@ final class OAuthBuilder
         }
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     private function throwMissingParameterError(string $missingParameter): void
     {
         $capitalized = ucfirst($missingParameter);
-        throw new PenneoSDKException("Cannot build! Please set the {$missingParameter} with ->set{$capitalized}()!");
+        throw new PenneoSdkRuntimeException("Cannot build! Please set the {$missingParameter} with ->set{$capitalized}()!");
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     private function validateEnvironment(): void
     {
         if ($this->environment != 'sandbox' && $this->environment != 'production') {
-            throw new PenneoSDKException("Cannot build! Unknown environment '$this->environment'!");
+            throw new PenneoSdkRuntimeException("Cannot build! Unknown environment '$this->environment'!");
         }
     }
 
-    /** @throws PenneoSDKException */
+    /** @throws PenneoSdkRuntimeException */
     private function validateRedirectUri(): void
     {
         if (!filter_var($this->redirectUri, FILTER_VALIDATE_URL)) {
-            throw new PenneoSDKException('Cannot build! The supplied redirect URI is not a valid URL!');
+            throw new PenneoSdkRuntimeException('Cannot build! The supplied redirect URI is not a valid URL!');
         }
     }
 }
