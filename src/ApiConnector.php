@@ -48,7 +48,7 @@ class ApiConnector
      * @param string|null $endpoint The API endpoint url. This defaults to the API sandbox.
      * @param int|null    $user
      * @param array|null  $headers  Will be passed on to Guzzle
-     * @deprecated - use ApiConnector::initializeWSSE() instead
+     * @deprecated - use ApiConnector::initializeWsse() instead
      */
     public static function initialize(
         string $key,
@@ -57,10 +57,10 @@ class ApiConnector
         int $user = null,
         array $headers = null
     ): void {
-        self::initializeWSSE($key, $secret, $endpoint, $user, $headers);
+        self::initializeWsse($key, $secret, $endpoint, $user, $headers);
     }
 
-    public static function initializeWSSE(
+    public static function initializeWsse(
         string $key,
         string $secret,
         string $endpoint = null,
