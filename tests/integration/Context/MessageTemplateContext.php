@@ -1,10 +1,9 @@
 <?php
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
-use Penneo\SDK\MessageTemplate;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Penneo\SDK\MessageTemplate;
 
 /**
  * Defines application features from the specific context.

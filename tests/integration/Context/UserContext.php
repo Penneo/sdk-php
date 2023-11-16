@@ -1,9 +1,9 @@
 <?php
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
-use Penneo\SDK\User;
 use Behat\Gherkin\Node\TableNode;
+use Penneo\SDK\User;
 
 /**
  * Defines application features from the specific context.

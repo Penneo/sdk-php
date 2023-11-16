@@ -1,9 +1,14 @@
 <?php
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
-use Penneo\SDK\ApiConnector;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\TableNode;
+use Penneo\SDK\ApiConnector;
+use Penneo\SDK\OAuth\OAuth;
+use Penneo\SDK\OAuth\OAuthBuilder;
+use Penneo\SDK\OAuth\Tokens\PenneoTokens;
+use Penneo\SDK\OAuth\Tokens\TokenStorage;
 
 /**
  * Defines application features from the specific context.
@@ -16,7 +21,7 @@ class SdkContext extends AbstractContext
     public static function prepare(): void
     {
         self::startBootlegServer();
-        ApiConnector::initialize('apiKeyHere', 'apiSecretHere', self::getServerUrl());
+        ApiConnector::initializeWsse('apiKeyHere', 'apiSecretHere', self::getServerUrl());
     }
 
     /**

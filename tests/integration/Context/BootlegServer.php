@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Penneo\SDK\Tests;
+namespace Penneo\SDK\Tests\Integration;
 
 use GuzzleHttp\Psr7\Request;
 
@@ -107,6 +107,8 @@ class BootlegServer
             throw new \RuntimeException("Port probably taken");
         }
 
+        $this->waitForServerToStart($address);
+
         return $handle;
     }
 
@@ -127,5 +129,26 @@ class BootlegServer
     private function makeFile(): string
     {
         return tempnam('/tmp/', 'penneosdk-test-');
+    }
+
+    public function waitForServerToStart(string $address): void
+    {
+        $maxAttempts = 100;
+        $sleepIntervalMicroseconds = 1000;
+
+        [$ip, $port] = explode(':', $address);
+
+        for ($attempts = 0; $attempts < $maxAttempts; $attempts++) {
+            $connection = @fsockopen($ip, (int)$port, $_, $_, 0.01);
+
+            if (is_resource($connection)) {
+                fclose($connection);
+                return;
+            }
+
+            usleep($sleepIntervalMicroseconds);
+        }
+
+        throw new \RuntimeException("Server failed to start!");
     }
 }

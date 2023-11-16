@@ -1,0 +1,64 @@
+name: Run tests
+
+on:
+  pull_request:
+    branches: [ master, main ]
+  push:
+    branches: [ master, main ]
+
+concurrency:
+  # cancel previous runs in current pull request
+  group: test-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #3.5.3
+
+      - name: Build PHP container
+        run: docker build --build-arg "PHP_VERSION=8.2" -t php --file docker/Dockerfile docker/
+
+      - name: Start PHP container
+        run: |
+          docker run -d --name php -v ${GITHUB_WORKSPACE}:/app php tail -f /dev/null
+
+      - name: Install dependencies
+        run: docker exec php /bin/sh -c "composer install"
+
+      - name: Lint
+        run: docker exec php /bin/sh -c "bin/phpcs"
+
+      - name: Stop PHP container
+        if: always()
+        run: docker stop php
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ["7.2", "7.4", "8.0", "8.1", "8.2"]
+    name: PHP v${{ matrix.php-version }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #3.5.3
+
+      - name: Build PHP container
+        run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
+
+      - name: Start PHP container
+        run: |
+          docker run -d --name php -v ${GITHUB_WORKSPACE}:/app php tail -f /dev/null
+
+      - name: Install dependencies
+        run: docker exec php /bin/sh -c "composer install"
+
+      - name: Run unit tests
+        run: docker exec php /bin/sh -c "bin/phpunit --testdox"
+
+      - name: Run integration tests
+        run: docker exec php /bin/sh -c "bin/behat -f progress"
+
+      - name: Stop PHP container
+        if: always()
+        run: docker stop php

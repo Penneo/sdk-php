@@ -8,6 +8,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
+use Penneo\SDK\OAuth\Config\Environment;
+use Penneo\SDK\OAuth\OAuth;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -19,8 +21,6 @@ class ApiConnector
      */
     private const VERSION = '>=v2.0.0';
 
-    /** @var string */
-    protected static $endpoint;
     /** @var mixed[] */
     protected static $headers;
     /** @var Client */
@@ -49,6 +49,7 @@ class ApiConnector
      * @param string|null $endpoint The API endpoint url. This defaults to the API sandbox.
      * @param int|null    $user
      * @param array|null  $headers  Will be passed on to Guzzle
+     * @deprecated - use ApiConnector::initializeWsse() instead
      */
     public static function initialize(
         string $key,
@@ -57,8 +58,16 @@ class ApiConnector
         int $user = null,
         array $headers = null
     ): void {
-        self::$endpoint = self::fixEndpoint($endpoint ?: self::getDefaultEndpoint());
+        self::initializeWsse($key, $secret, $endpoint, $user, $headers);
+    }
 
+    public static function initializeWsse(
+        string $key,
+        string $secret,
+        string $endpoint = null,
+        int $user = null,
+        array $headers = null
+    ) {
         self::$headers = array_merge(
             $headers ?: [],
             self::getDefaultHeaders(),
@@ -69,14 +78,13 @@ class ApiConnector
             self::$headers['penneo-api-user'] = $user;
         }
 
-
         $wsse = new WsseMiddleware($key, $secret);
         $handler = HandlerStack::create();
         $handler->push(Middleware::mapRequest(function (RequestInterface $request) use ($wsse) {
             return $wsse->authorize($request);
         }));
         self::$client = new Client([
-            'base_uri' => self::$endpoint,
+            'base_uri' => self::fixEndpoint($endpoint ?: self::getDefaultEndpoint()),
             'handler' => $handler,
         ]);
         self::$logger = new NullLogger();
@@ -202,7 +210,7 @@ class ApiConnector
 
         return [
             // this helps us identify API users if we spot incorrect usage of the API or if we discover potential errors
-            'User-Agent' => "penneo/penneo-sdk-php v:${version} key:${keyPart} ua:${setUserAgent}"
+            'User-Agent' => "penneo/penneo-sdk-php v:{$version} key:{$keyPart} ua:{$setUserAgent}"
         ];
     }
 
@@ -241,5 +249,26 @@ class ApiConnector
         }
 
         return $data;
+    }
+
+    public static function initializeOAuth(OAuth $oauth, string $apiVersion = 'v3')
+    {
+        $handler = HandlerStack::create();
+        $handler->push($oauth->getMiddleware());
+
+        $hostname = Environment::getSignHostname($oauth->getEnvironment());
+
+        self::$client = new Client([
+            'base_uri' => "https://{$hostname}/api/{$apiVersion}/",
+            'handler' => $handler,
+        ]);
+
+        $version = self::VERSION;
+        self::$headers = array_merge(
+            self::getDefaultHeaders(),
+            ['User-Agent' => "penneo/penneo-sdk-php v:{$version} using OAuth"]
+        );
+
+        self::$logger = new NullLogger();
     }
 }
