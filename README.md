@@ -46,23 +46,86 @@ This section documents the different objects available through the SDK and how t
 ### Problems in production?
 You should add a logger by calling `ApiConnector::setLogger()`. If you contact support, please include any relevant `requestIds` you find in the logs.
 
+### Connectors
 
-### Authentication
-In order to use the SDK, you will have to authenticate against the Penneo API. Authentication is done in a single line of code, using your Penneo API credentials:
+There are two supported connectors. Those are:
+
+- WSSE
+- OAuth 2.0
+
+### WSSE
+
+To use the SDK, you will have to authenticate against the Penneo API. Authentication is done in a single line of code, using your Penneo API credentials:
 
 ```php
 // Initialize the connection to the API
-Penneo\SDK\ApiConnector::initialize('apiKeyHere', 'apiSecretHere', $endpoint);
+Penneo\SDK\ApiConnector::initializeWsse('apiKeyHere', 'apiSecretHere', $endpoint);
 ```
 
 If you have a reseller account, you can carry out operations on behalf of one of your customers, by specifying the customer id as well:
 
 ```php
 // Initialize the connection to the API as customer
-Penneo\SDK\ApiConnector::initialize('apiKeyHere','apiSecretHere', $endpoint, $customerId);
+Penneo\SDK\ApiConnector::initializeWsse('apiKeyHere','apiSecretHere', $endpoint, $customerId);
 ```
 
-The endpoint url can point to either the sandbox (for testing) or the live system. Both endpoint urls are available on request.
+The endpoint URL can point to either the sandbox (for testing) or the live system. Both endpoint URLs are available on request.
+
+### OAuth 2.0
+
+That's the common OAuth 2.0 `Authorization Code Flow`. In this case, to use the SDK, you will have to build the authorization URI passing the client values provided by the Penneo and redirect the currently logged in user to the `Penneo Auth Service`:
+
+```php
+// Build the OAuth instance
+$oAuth = Penneo\SDK\OAuth\OAuthBuilder::start()
+    ->setEnvironment('environment')
+    ->setClientId('clientIdHere')
+    ->setClientSecret('clientSecretHere')
+    ->setRedirectUri('redirectUriHere')
+    ->setTokenStorage(new SessionTokenStorage())
+    ->build();
+
+// Generate code verfier and a code challenge
+$pkce = new Penneo\SDK\OAuth\PKCE\PKCE();
+// Code verifier should be stored (e.g. in user session) as it will be required later for the authorization code exchange
+$codeVerifier = $pkce->getCodeVerifier();
+$codeChallenge = $pkce->getCodeChallenge($codeVerifier);
+
+// Build authorization request URL
+$authorizationUrl = $oAuth->buildRedirectUrl($scope, $codeChallenge)
+
+// Redirect currently logged in user to the $authorizationUrl (Penneo Auth Service)
+```
+
+`Penneo Auth Service` redirects the user to the authentication page (if not already logged in) where the user can authenticate using one of the configured login options.
+
+After login, the user is redirected to the authorization page (only when login in the first time) where may see the consent with the list of permissions `Penneo Auth Service` will give to the application.
+After the user confirms the authorization, the one is redirected back to the `callback` page (the one defined as a `Redirect URI`) with a single-use authorization code.
+
+The SDK sends the `authorization code` and `code verifier` to `Penneo Auth Service` to exchange them with an `access token`. `Penneo Auth Service` validates incoming parameters and responds to the SDK with a new valid `token` that is stored in the token storage defined in the oauth builder:
+
+```php
+// Exchage received authorization code with the access token
+$oAuth->exchangeAuthCode($authCode, $codeVerifier);
+```
+
+When the authorization code is successfully exchanged with a new `token`, you can finally initialize the OAuth 2.0 connector using the already authorized `$oAuth` instance.
+
+```php
+// Initialize the connection to the API as customer
+Penneo\SDK\ApiConnector::initializeOAuth($oAuth);
+```
+
+#### OAuth Environment
+
+There are only 2 environments supported right now. Those are:
+
+- sandbox
+- production
+
+#### OAuth Token Storage
+
+The SDK has its own already implemented `SessinTokenStorage` that is based on the PHP session. But if you want to use a custom implementation of the storage you can implement one. The only requirement is that the storage must implement the `TokenStorage` interface.
 
 ### Document signing
 * [Folders][folder-docs]
