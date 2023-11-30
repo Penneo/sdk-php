@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 2.5.3 - 2023-11-30
+### Added
+- Added OAuth 2.0 as an authorisation option.
+
 
 ## 2.5.3 - 2023-10-02
 ### Added
