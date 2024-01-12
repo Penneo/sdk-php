@@ -5,33 +5,34 @@ namespace Penneo\SDK\OAuth\Config;
 /** @internal */
 class OAuthConfig
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $environment;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $clientId;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $clientSecret;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $redirectUri;
+    /** @var string|null */
+    private $apiKey;
+    /** @var string|null */
+    private $apiSecret;
 
     public function __construct(
         string $environment,
         string $clientId,
         string $clientSecret,
-        string $redirectUri
-    ) {
+        string $redirectUri,
+        string $apiKey = null,
+        string $apiSecret = null
+    )
+    {
         $this->environment = $environment;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->redirectUri = $redirectUri;
+        $this->apiKey = $apiKey;
+        $this->apiSecret = $apiSecret;
     }
 
     public function getEnvironment(): string
@@ -52,5 +53,15 @@ class OAuthConfig
     public function getRedirectUri(): string
     {
         return $this->redirectUri;
+    }
+
+    public function getApiKey(): ?string
+    {
+        return $this->apiKey;
+    }
+
+    public function getApiSecret(): ?string
+    {
+        return $this->apiSecret;
     }
 }

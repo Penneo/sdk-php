@@ -72,6 +72,28 @@ class OAuthBuilderTest extends TestCase
         ]);
     }
 
+    public function testWhenBuildingWithAnApiKeyButNoSecretThenAPenneoExceptionIsThrown()
+    {
+        $this->expectException(PenneoSdkRuntimeException::class);
+        $this->expectExceptionMessage("Cannot build! Please set the apiSecret with ->setApiSecret()!");
+
+        $this->build([
+            'redirectUri' => 'garbage',
+            'apiKey' => 'this_is_a_legit_api_key'
+        ]);
+    }
+
+    public function testWhenBuildingWithAnApiSecretButNoApiKeyThenAPenneoExceptionIsThrown()
+    {
+        $this->expectException(PenneoSdkRuntimeException::class);
+        $this->expectExceptionMessage("Cannot build! Please set the apiKey with ->setApiKey()!");
+
+        $this->build([
+            'redirectUri' => 'garbage',
+            'apiSecret' => 'so_secret!'
+        ]);
+    }
+
     public function testBuildsWithLocalhostAsRedirectUriSuccessfully()
     {
         $oauth = $this->build([
