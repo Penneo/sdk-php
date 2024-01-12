@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 class RefreshTokenMiddlewareTest extends TestCase
 {
     use BuildsOAuth;
+    use MocksTokenStorage;
     use UsesGuzzler;
 
     private $tomorrowTimestamp;
@@ -37,7 +38,9 @@ class RefreshTokenMiddlewareTest extends TestCase
         $this->tomorrowTimestamp = Carbon::now()->addDay()->getTimestamp();
         $this->yesterdayTimestamp = Carbon::now()->subDay()->getTimestamp();
         $this->fiveSecondsInTheFutureTimestamp = Carbon::now()->addSeconds('5')->getTimestamp();
-        $this->mockStorage = $this->mockTokenStorage();
+        $this->mockStorage = $this->mockTokenStorage(
+            new PenneoTokens('accessToken', 'refreshToken', $this->tomorrowTimestamp, $this->tomorrowTimestamp)
+        );
 
         parent::setUp();
     }
@@ -289,32 +292,5 @@ class RefreshTokenMiddlewareTest extends TestCase
         }
 
         $this->fail('Expected exception was not thrown!');
-    }
-
-    private function mockTokenStorage(
-        string $accessToken = 'accessToken',
-        string $refreshToken = 'refreshToken',
-        int $accessTokenExpiresAt = null,
-        int $refreshTokenExpiresAt = null
-    ): SessionTokenStorage {
-        $tokens = new PenneoTokens(
-            $accessToken,
-            $refreshToken,
-            $accessTokenExpiresAt ?? $this->tomorrowTimestamp,
-            $refreshTokenExpiresAt ?? $this->tomorrowTimestamp
-        );
-
-        $mockStorage = $this->createMock(SessionTokenStorage::class);
-        $mockStorage->method('getTokens')
-            ->willReturnCallback(function () use (&$tokens) {
-                return $tokens;
-            });
-
-        $mockStorage->method('saveTokens')
-            ->willReturnCallback(function ($input) use (&$tokens) {
-                $tokens = $input;
-            });
-
-        return $mockStorage;
     }
 }

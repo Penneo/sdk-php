@@ -57,6 +57,13 @@ class OAuth
      */
     public function getMiddleware(): callable
     {
+        if ($this->config->getApiKey() && $this->config->getApiSecret()) {
+            return Middleware::mapRequest([
+                new ApiKeysMiddleware($this->tokenStorage, $this->api),
+                'handleRequest'
+            ]);
+        }
+
         if (!PenneoTokensValidator::areNotExpired($this->tokenStorage->getTokens())) {
             throw new PenneoSdkRuntimeException(
                 'The access token is missing or expired! Did you complete the OAuth flow?'

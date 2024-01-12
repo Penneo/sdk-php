@@ -2,6 +2,7 @@
 
 namespace Penneo\SDK\OAuth;
 
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -24,11 +25,19 @@ final class OAuthApi
     /** @var TokenStorage */
     private $tokenStorage;
 
-    public function __construct(OAuthConfig $config, TokenStorage $tokenStorage, Client $client)
-    {
+    /** @var UniqueIdGenerator */
+    private $idGenerator;
+
+    public function __construct(
+        OAuthConfig $config,
+        TokenStorage $tokenStorage,
+        Client $client,
+        UniqueIdGenerator $idGenerator = null
+    ) {
         $this->config = $config;
         $this->tokenStorage = $tokenStorage;
         $this->client = $client;
+        $this->idGenerator = $idGenerator ?? new UniqIdGenerator();
     }
 
     /** @throws PenneoSdkRuntimeException */
@@ -69,9 +78,9 @@ final class OAuthApi
 
         return new PenneoTokens(
             $result->access_token,
-            $result->refresh_token,
+            $result->refresh_token ?? null,
             $result->access_token_expires_at,
-            $result->refresh_token_expires_at
+            $result->refresh_token_expires_at ?? null
         );
     }
 
@@ -118,6 +127,30 @@ final class OAuthApi
             'redirect_uri' => $this->config->getRedirectUri(),
             'client_id' => $this->config->getClientId(),
             'client_secret' => $this->config->getClientSecret(),
+        ];
+    }
+    public function postApiKeyExchange(): PenneoTokens
+    {
+        return $this->postOrThrow(
+            $this->buildApiKeyExchangePayload(),
+            "exchange api key and secret for access token"
+        );
+    }
+
+    private function buildApiKeyExchangePayload(): array
+    {
+        $createdAt = Carbon::now()->toString();
+        $nonce = substr(hash('sha512', $this->idGenerator->generate()), 0, 64);;
+        $digest = base64_encode(sha1($nonce . $createdAt . $this->config->getApiSecret(), true));
+
+        return [
+            'grant_type' => 'api_keys',
+            'client_id' => $this->config->getClientId(),
+            'client_secret' => $this->config->getClientSecret(),
+            'key' => $this->config->getApiKey(),
+            'created_at' => $createdAt,
+            'nonce' => $nonce,
+            'digest' => $digest
         ];
     }
 }
