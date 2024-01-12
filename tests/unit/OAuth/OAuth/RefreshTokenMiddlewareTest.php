@@ -16,7 +16,7 @@ use Penneo\SDK\PenneoSdkRuntimeException;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use PHPUnit\Framework\TestCase;
 
-class MiddlewareTest extends TestCase
+class RefreshTokenMiddlewareTest extends TestCase
 {
     use BuildsOAuth;
     use UsesGuzzler;
@@ -91,7 +91,6 @@ class MiddlewareTest extends TestCase
         $this->guzzler->getClient()
             ->get('/');
     }
-
 
     /**
      * @testWith [5, "seconds"]

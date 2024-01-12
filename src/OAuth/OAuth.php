@@ -64,7 +64,7 @@ class OAuth
         }
 
         return Middleware::mapRequest([
-            new OAuthMiddleware($this->tokenStorage, $this->api),
+            new RefreshTokenMiddleware($this->tokenStorage, $this->api),
             'handleRequest'
         ]);
     }
