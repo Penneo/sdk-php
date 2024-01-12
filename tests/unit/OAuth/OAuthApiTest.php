@@ -14,6 +14,12 @@ class OAuthApiTest extends TestCase
 {
     use TestsEnvironments;
 
+    private $config;
+
+    private $client;
+
+    private $api;
+
     public function setUp(): void
     {
         $this->config = $this->createPartialMock(
@@ -46,7 +52,7 @@ class OAuthApiTest extends TestCase
         $this->config->method('getEnvironment')->willReturn($environment);
         $this->client->expects($this->once())
             ->method('post')
-            ->with("https://${expectedHostname}/oauth/token")
+            ->with("https://{$expectedHostname}/oauth/token")
             ->willReturn($this->successfulResponse());
 
         $this->api->postTokenRefresh();
@@ -59,7 +65,7 @@ class OAuthApiTest extends TestCase
 
         $this->client->expects($this->once())
             ->method('post')
-            ->with("https://${expectedHostname}/oauth/token")
+            ->with("https://{$expectedHostname}/oauth/token")
             ->willReturn($this->successfulResponse());
 
         $this->api->postCodeExchange('someCode', 'someVerifier');
