@@ -21,5 +21,4 @@ trait MocksTokenStorage
 
         return $mockStorage;
     }
-
 }

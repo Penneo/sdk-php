@@ -8,6 +8,8 @@ use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use Penneo\SDK\OAuth\Config\Environment;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
+use Penneo\SDK\OAuth\Nonce\NonceGenerator;
+use Penneo\SDK\OAuth\Nonce\UniqIdNonceGenerator;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\PenneoSdkRuntimeException;
@@ -25,19 +27,19 @@ final class OAuthApi
     /** @var TokenStorage */
     private $tokenStorage;
 
-    /** @var UniqueIdGenerator */
-    private $idGenerator;
+    /** @var NonceGenerator */
+    private $nonceGenerator;
 
     public function __construct(
         OAuthConfig $config,
         TokenStorage $tokenStorage,
         Client $client,
-        UniqueIdGenerator $idGenerator = null
+        NonceGenerator $idGenerator = null
     ) {
         $this->config = $config;
         $this->tokenStorage = $tokenStorage;
         $this->client = $client;
-        $this->idGenerator = $idGenerator ?? new UniqIdGenerator();
+        $this->nonceGenerator = $idGenerator ?? new UniqIdNonceGenerator();
     }
 
     /** @throws PenneoSdkRuntimeException */
@@ -129,6 +131,8 @@ final class OAuthApi
             'client_secret' => $this->config->getClientSecret(),
         ];
     }
+
+    /** @throws PenneoSdkRuntimeException */
     public function postApiKeyExchange(): PenneoTokens
     {
         return $this->postOrThrow(
@@ -140,7 +144,7 @@ final class OAuthApi
     private function buildApiKeyExchangePayload(): array
     {
         $createdAt = Carbon::now()->toString();
-        $nonce = substr(hash('sha512', $this->idGenerator->generate()), 0, 64);;
+        $nonce = $this->nonceGenerator->generate();
         $digest = base64_encode(sha1($nonce . $createdAt . $this->config->getApiSecret(), true));
 
         return [
@@ -149,7 +153,7 @@ final class OAuthApi
             'client_secret' => $this->config->getClientSecret(),
             'key' => $this->config->getApiKey(),
             'created_at' => $createdAt,
-            'nonce' => $nonce,
+            'nonce' => base64_encode($nonce),
             'digest' => $digest
         ];
     }

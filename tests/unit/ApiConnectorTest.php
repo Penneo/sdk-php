@@ -8,24 +8,19 @@ use Penneo\SDK\ApiConnector;
 use Penneo\SDK\OAuth\OAuth;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use ReflectionException;
-use ReflectionProperty;
-use RuntimeException;
 
 class ApiConnectorTest extends TestCase
 {
-    /** @throws ReflectionException */
     public function tearDown(): void
     {
         $this->resetStaticProperties(ApiConnector::class);
         parent::tearDown();
     }
 
-    /** @throws ReflectionException */
     protected function resetStaticProperties(string $className)
     {
         $reflectedClass = new ReflectionClass($className);
-        $staticProperties = $reflectedClass->getProperties(ReflectionProperty::IS_STATIC);
+        $staticProperties = $reflectedClass->getProperties(\ReflectionProperty::IS_STATIC);
 
         foreach ($staticProperties as $property) {
             $property->setAccessible(true);
@@ -55,7 +50,7 @@ class ApiConnectorTest extends TestCase
                 $this->assertEquals('https', $request->getUri()->getScheme());
                 $this->assertEquals("/api/{$apiVersion}/something", $request->getUri()->getPath());
 
-                throw new RuntimeException('cancel the request');
+                throw new \RuntimeException('cancel the request');
             }
         );
 
@@ -69,7 +64,7 @@ class ApiConnectorTest extends TestCase
         ApiConnector::initializeOAuth($oauth, $apiVersion);
         try {
             ApiConnector::callServer('something', ['somebody' => 'oncetoldme'], 'get');
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             if ($e->getMessage() !== 'cancel the request') {
                 throw $e;
             }

@@ -23,9 +23,7 @@ class ApiKeysMiddleware
 
     public function handleRequest(RequestInterface $request): RequestInterface
     {
-        $tokens = $this->tokenStorage->getTokens();
-
-        $this->refreshAccessToken($tokens);
+        $this->refreshAccessToken();
 
         return $request->withHeader(
             'Authorization',
@@ -33,8 +31,10 @@ class ApiKeysMiddleware
         );
     }
 
-    private function refreshAccessToken(PenneoTokens $tokens = null): void
+    private function refreshAccessToken(): void
     {
+        $tokens = $this->tokenStorage->getTokens();
+
         if (null === $tokens || PenneoTokensValidator::isAccessTokenExpired($tokens)) {
             $this->tokenStorage->saveTokens(
                 $this->api->postApiKeyExchange()

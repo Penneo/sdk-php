@@ -2,20 +2,20 @@
 
 namespace Penneo\SDK\Tests\Unit\OAuth\OAuth;
 
-use Penneo\SDK\OAuth\UniqIdGenerator;
+use Penneo\SDK\OAuth\Nonce\UniqIdNonceGenerator;
 use PHPUnit\Framework\TestCase;
 
-class UniqIdGeneratorTest extends TestCase
+class UniqIdNonceGeneratorTest extends TestCase
 {
     public function testDoesNotReturnSameValueOnMultipleCalls() {
-        $generator = new UniqIdGenerator();
+        $generator = new UniqIdNonceGenerator();
         $this->assertNotEquals($generator->generate(), $generator->generate());
     }
 
     /** @dataProvider runTest100Times */
-    public function testGeneratesAtLeast20CharacterLongString() {
-        $generator = new UniqIdGenerator();
-        $this->assertGreaterThanOrEqual(20, strlen($generator->generate()));
+    public function testGenerates64CharacterLongString() {
+        $generator = new UniqIdNonceGenerator();
+        $this->assertEquals(64, strlen($generator->generate()));
     }
 
     public function runTest100Times(): \Generator

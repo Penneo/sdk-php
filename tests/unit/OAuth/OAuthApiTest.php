@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
+use Penneo\SDK\OAuth\Nonce\NonceGenerator;
 use Penneo\SDK\OAuth\OAuthApi;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
-use Penneo\SDK\OAuth\UniqueIdGenerator;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 
@@ -18,16 +18,15 @@ class OAuthApiTest extends TestCase
     use TestsEnvironments;
 
     private $config;
-
     private $client;
-
     private $api;
-
-    /** @var UniqueIdGenerator&Stub */
-    private $idGenerator;
+    /** @var NonceGenerator&Stub */
+    private $nonceGenerator;
 
     public function setUp(): void
     {
+        Carbon::setTestNow(Carbon::now());
+
         $this->config = $this->createPartialMock(
             OAuthConfig::class,
             ['getClientSecret', 'getRedirectUri', 'getClientId', 'getEnvironment', 'getApiKey', 'getApiSecret']
@@ -35,12 +34,13 @@ class OAuthApiTest extends TestCase
         $this->config->method('getClientSecret')->willReturn('secret');
         $this->config->method('getRedirectUri')->willReturn('https://google.com');
         $this->config->method('getClientId')->willReturn('id');
+        $this->config->method('getApiKey')->willReturn('apiKey');
 
         $storage = $this->createMock(SessionTokenStorage::class);
         $this->client = $this->createMock(Client::class);
-        $this->idGenerator = $this->createStub(UniqueIdGenerator::class);
+        $this->nonceGenerator = $this->createStub(NonceGenerator::class);
 
-        $this->api = new OAuthApi($this->config, $storage, $this->client, $this->idGenerator);
+        $this->api = new OAuthApi($this->config, $storage, $this->client, $this->nonceGenerator);
 
         $storage->method('getTokens')
             ->willReturn(new PenneoTokens(
@@ -50,67 +50,43 @@ class OAuthApiTest extends TestCase
                 20
             ));
 
-        Carbon::setTestNow(Carbon::now());
-
         parent::setUp();
     }
 
-    /** @dataProvider environmentProvider */
-    public function testRefreshTokenMethodUsesCorrectHostname(string $environment, string $expectedHostname)
+    /** @dataProvider environmentAndApiMethodProvider */
+    public function testAPICallsUseCorrectHostname(string $env, string $expected, string $method, array $params = [])
     {
-        $this->config->method('getEnvironment')->willReturn($environment);
+        $this->config->method('getEnvironment')->willReturn($env);
+
         $this->client->expects($this->once())
             ->method('post')
-            ->with("https://{$expectedHostname}/oauth/token")
+            ->with("https://{$expected}/oauth/token")
             ->willReturn($this->successfulResponse());
 
-        $this->api->postTokenRefresh();
+        $this->api->{$method}(...$params);
     }
 
-    /** @dataProvider environmentProvider */
-    public function testExchangeAuthCodeMethodUsesCorrectHostname(string $environment, string $expectedHostname)
+    public function environmentAndApiMethodProvider(): \Generator
     {
-        $this->config->method('getEnvironment')->willReturn($environment);
-
-        $this->client->expects($this->once())
-            ->method('post')
-            ->with("https://{$expectedHostname}/oauth/token")
-            ->willReturn($this->successfulResponse());
-
-        $this->api->postCodeExchange('someCode', 'someVerifier');
-    }
-
-    /** @dataProvider environmentProvider */
-    public function testApiKeysExchangeMethodUsesCorrectHostname(string $environment, string $expectedHostname)
-    {
-        $this->config->method('getApiKey')->willReturn('apiKey');
-        $this->config->method('getApiSecret')->willReturn('secret');
-        $this->config->method('getEnvironment')->willReturn($environment);
-
-        $this->idGenerator->method('generate')->willReturn('really unique id');
-
-        $this->client->expects($this->once())
-            ->method('post')
-            ->with("https://{$expectedHostname}/oauth/token")
-            ->willReturn($this->successfulResponse());
-
-        $this->api->postApiKeyExchange();
+        foreach (self::environmentProvider() as $case) {
+            yield array_merge($case, ['postTokenRefresh']);
+            yield array_merge($case, ['postCodeExchange', ['code', 'verifier']]);
+            yield array_merge($case, ['postApiKeyExchange']);
+        }
     }
 
     /**
-     * @testWith ["unique id"]
-     *           ["another unique id"]
+     * @testWith ["unique nonce", "secret"]
+     *           ["another unique nonce", "real secret"]
      */
-    public function testApiKeysExchangeGeneratesProperParameters(string $mockUniqueId)
+    public function testApiKeysExchangeGeneratesProperParameters(string $mockNonce, string $apiSecret)
     {
-        $this->config->method('getApiKey')->willReturn('apiKey');
-        $this->config->method('getApiSecret')->willReturn('apiSecret');
         $this->config->method('getEnvironment')->willReturn('sandbox');
+        $this->nonceGenerator->method('generate')->willReturn($mockNonce);
+        $this->config->method('getApiSecret')->willReturn($apiSecret);
 
-        $this->idGenerator->method('generate')->willReturn($mockUniqueId);
-
-        $nonce = substr(hash('sha512', $mockUniqueId), 0, 64);;
-        $digest = base64_encode(sha1($nonce . Carbon::getTestNow()->toString() . 'apiSecret', true));
+        $createdAt = Carbon::getTestNow()->toString();
+        $digest = base64_encode(sha1($mockNonce . $createdAt . $apiSecret, true));
 
         $this->client->expects($this->once())
             ->method('post')
@@ -121,7 +97,7 @@ class OAuthApiTest extends TestCase
                     'client_secret' => 'secret',
                     'key' => 'apiKey',
                     'created_at' => Carbon::getTestNow()->toString(),
-                    'nonce' => $nonce,
+                    'nonce' => base64_encode($mockNonce),
                     'digest' => $digest
                 ]
             ])

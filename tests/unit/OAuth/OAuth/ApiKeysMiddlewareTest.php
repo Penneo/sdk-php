@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
+use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use PHPUnit\Framework\TestCase;
@@ -18,11 +19,10 @@ class ApiKeysMiddlewareTest extends TestCase
     use UsesGuzzler;
     use MocksTokenStorage;
 
-    /** @var SessionTokenStorage */
+    /** @var TokenStorage */
     private $mockStorage;
     private $tomorrowTimestamp;
     private $yesterdayTimestamp;
-    private $oauth;
     private $mockAuthClient;
 
     public function setUp(): void
@@ -34,33 +34,30 @@ class ApiKeysMiddlewareTest extends TestCase
         $this->mockStorage = $this->mockTokenStorage();
 
         $this->mockAuthClient = $this->createMock(Client::class);
-        $this->oauth = $this->build([
+
+        $oauth = $this->build([
             'tokenStorage' => $this->mockStorage,
             'apiKey' => 'some API Key',
             'apiSecret' => 'some API secret'
         ], $this->mockAuthClient);
 
         $this->guzzler->getHandlerStack()
-            ->unshift($this->oauth->getMiddleware());
+            ->unshift($oauth->getMiddleware());
 
         parent::setUp();
     }
 
-    /**
-     * @testWith ["accessTokenOne"]
-     *           ["accessTokenTwo"]
-     */
-    public function testAppendsAccessTokenToRequests(string $accessToken)
+    public function testGetsNewTokenWhenTokensHaveNotBeenSetYet()
     {
-        $this->mockStorage->saveTokens(
-            new PenneoTokens($accessToken, null, $this->tomorrowTimestamp, null)
-        );
+        $this->assertNull($this->mockStorage->getTokens());
 
-        // a post request is sent when tokens are refreshed - this should never happen if the token is present.
-        $this->mockAuthClient->expects($this->never())
-            ->method('post');
+        $this->apiKeysGrantRequest()
+            ->willReturn(new Response(200, [], json_encode([
+                'access_token' => 'freshAT',
+                'access_token_expires_at' => $this->tomorrowTimestamp,
+            ])));
 
-        $this->expectTokenToBeAddedToOutgoingRequest($accessToken);
+        $this->expectTokenToBeAddedToOutgoingRequest('freshAT');
 
         $this->triggerMiddleware();
     }
@@ -82,15 +79,21 @@ class ApiKeysMiddlewareTest extends TestCase
         $this->triggerMiddleware();
     }
 
-    public function testGetsNewTokenWhenTokensHaveNotBeenSetYet()
+    /**
+     * @testWith ["accessTokenOne"]
+     *           ["accessTokenTwo"]
+     */
+    public function testAppendsPreExistingValidAccessTokenToRequests(string $accessToken)
     {
-        $this->apiKeysGrantRequest()
-            ->willReturn(new Response(200, [], json_encode([
-                'access_token' => 'freshAT',
-                'access_token_expires_at' => $this->tomorrowTimestamp,
-            ])));
+        $this->mockStorage->saveTokens(
+            new PenneoTokens($accessToken, null, $this->tomorrowTimestamp, null)
+        );
 
-        $this->expectTokenToBeAddedToOutgoingRequest('freshAT');
+        // a post request is sent when tokens are refreshed - this should never happen if a valid token is present.
+        $this->mockAuthClient->expects($this->never())
+            ->method('post');
+
+        $this->expectTokenToBeAddedToOutgoingRequest($accessToken);
 
         $this->triggerMiddleware();
     }
