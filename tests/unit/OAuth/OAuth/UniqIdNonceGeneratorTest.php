@@ -7,13 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 class UniqIdNonceGeneratorTest extends TestCase
 {
-    public function testDoesNotReturnSameValueOnMultipleCalls() {
+    public function testDoesNotReturnSameValueOnMultipleCalls()
+    {
         $generator = new UniqIdNonceGenerator();
         $this->assertNotEquals($generator->generate(), $generator->generate());
     }
 
     /** @dataProvider runTest100Times */
-    public function testGenerates64CharacterLongString() {
+    public function testGenerates64CharacterLongString()
+    {
         $generator = new UniqIdNonceGenerator();
         $this->assertEquals(64, strlen($generator->generate()));
     }
