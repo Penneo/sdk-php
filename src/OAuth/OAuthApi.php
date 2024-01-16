@@ -34,12 +34,12 @@ final class OAuthApi
         OAuthConfig $config,
         TokenStorage $tokenStorage,
         Client $client,
-        NonceGenerator $idGenerator = null
+        NonceGenerator $nonceGenerator = null
     ) {
         $this->config = $config;
         $this->tokenStorage = $tokenStorage;
         $this->client = $client;
-        $this->nonceGenerator = $idGenerator ?? new RandomBytesNonceGenerator();
+        $this->nonceGenerator = $nonceGenerator ?? new RandomBytesNonceGenerator();
     }
 
     /** @throws PenneoSdkRuntimeException */
