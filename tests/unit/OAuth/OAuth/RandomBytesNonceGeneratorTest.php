@@ -7,11 +7,18 @@ use PHPUnit\Framework\TestCase;
 
 class RandomBytesNonceGeneratorTest extends TestCase
 {
-    /** @dataProvider runTest100Times */
-    public function testDoesNotReturnSameValueOnMultipleCalls()
+    public function testReturnsUniqueValues()
     {
+        $nonces = [];
+        $count = 100;
+
         $generator = new RandomBytesNonceGenerator();
-        $this->assertNotEquals($generator->generate(), $generator->generate());
+
+        for ($i = 0; $i < $count; $i++) {
+            $nonces[] = $generator->generate();
+        }
+
+        $this->assertEquals($count, count(array_unique($nonces)));
     }
 
     /** @dataProvider runTest100Times */
