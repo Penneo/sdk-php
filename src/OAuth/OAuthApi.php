@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Penneo\SDK\OAuth\Config\Environment;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
 use Penneo\SDK\OAuth\Nonce\NonceGenerator;
-use Penneo\SDK\OAuth\Nonce\UniqIdNonceGenerator;
+use Penneo\SDK\OAuth\Nonce\RandomBytesNonceGenerator;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\PenneoSdkRuntimeException;
@@ -39,7 +39,7 @@ final class OAuthApi
         $this->config = $config;
         $this->tokenStorage = $tokenStorage;
         $this->client = $client;
-        $this->nonceGenerator = $idGenerator ?? new UniqIdNonceGenerator();
+        $this->nonceGenerator = $idGenerator ?? new RandomBytesNonceGenerator();
     }
 
     /** @throws PenneoSdkRuntimeException */

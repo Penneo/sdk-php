@@ -2,21 +2,22 @@
 
 namespace Penneo\SDK\Tests\Unit\OAuth\OAuth;
 
-use Penneo\SDK\OAuth\Nonce\UniqIdNonceGenerator;
+use Penneo\SDK\OAuth\Nonce\RandomBytesNonceGenerator;
 use PHPUnit\Framework\TestCase;
 
-class UniqIdNonceGeneratorTest extends TestCase
+class RandomBytesNonceGeneratorTest extends TestCase
 {
+    /** @dataProvider runTest100Times */
     public function testDoesNotReturnSameValueOnMultipleCalls()
     {
-        $generator = new UniqIdNonceGenerator();
+        $generator = new RandomBytesNonceGenerator();
         $this->assertNotEquals($generator->generate(), $generator->generate());
     }
 
     /** @dataProvider runTest100Times */
     public function testGenerates64CharacterLongString()
     {
-        $generator = new UniqIdNonceGenerator();
+        $generator = new RandomBytesNonceGenerator();
         $this->assertEquals(64, strlen($generator->generate()));
     }
 
