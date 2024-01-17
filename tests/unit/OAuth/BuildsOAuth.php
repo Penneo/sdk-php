@@ -16,7 +16,9 @@ trait BuildsOAuth
      *     clientSecret: ?int,
      *     redirectUri: ?string,
      *     tokenStorage: ?TokenStorage,
-     *     environment: ?string
+     *     environment: ?string,
+     *     apiKey: ?string,
+     *     apiSecret: ?string,
      * } $overrides
      */
     private function build(array $overrides = [], Client $guzzle = null): OAuth

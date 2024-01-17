@@ -8,7 +8,7 @@ use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Psr\Http\Message\RequestInterface;
 
-class OAuthMiddleware
+class RefreshTokenMiddleware
 {
     /** @var TokenStorage */
     private $tokenStorage;

@@ -13,7 +13,8 @@ final class PenneoTokens
 
     private $refreshTokenExpiresAt;
 
-    public function getRefreshToken(): string
+    /** @return string|null */
+    public function getRefreshToken()
     {
         return $this->refreshToken;
     }
@@ -28,16 +29,17 @@ final class PenneoTokens
         return $this->accessTokenExpiresAt;
     }
 
-    public function getRefreshTokenExpiresAt(): int
+    /** @return int|null */
+    public function getRefreshTokenExpiresAt()
     {
         return $this->refreshTokenExpiresAt;
     }
 
     public function __construct(
         string $accessToken,
-        string $refreshToken,
+        string $refreshToken = null,
         int $accessTokenExpiresAt,
-        int $refreshTokenExpiresAt
+        int $refreshTokenExpiresAt = null
     ) {
         $this->refreshToken = $refreshToken;
         $this->accessToken = $accessToken;

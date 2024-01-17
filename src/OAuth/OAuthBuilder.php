@@ -20,6 +20,10 @@ final class OAuthBuilder
     private $redirectUri;
     /** @var TokenStorage */
     private $tokenStorage;
+    /** @var string|null */
+    private $apiKey = null;
+    /** @var string|null */
+    private $apiSecret = null;
 
     private function __construct()
     {
@@ -60,6 +64,18 @@ final class OAuthBuilder
         return $this;
     }
 
+    public function setApiKey(string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
+        return $this;
+    }
+
+    public function setApiSecret(string $apiSecret): self
+    {
+        $this->apiSecret = $apiSecret;
+        return $this;
+    }
+
     public function build(Client $client = null): OAuth
     {
         $this->validateAllParametersPresent();
@@ -71,7 +87,9 @@ final class OAuthBuilder
                 $this->environment,
                 $this->clientId,
                 $this->clientSecret,
-                $this->redirectUri
+                $this->redirectUri,
+                $this->apiKey,
+                $this->apiSecret
             ),
             $this->tokenStorage,
             $client ?: new Client()
@@ -95,6 +113,12 @@ final class OAuthBuilder
         }
         if (!$this->tokenStorage) {
             $this->throwMissingParameterError('tokenStorage');
+        }
+        if ($this->apiKey && !$this->apiSecret) {
+            $this->throwMissingParameterError('apiSecret');
+        }
+        if ($this->apiSecret && !$this->apiKey) {
+            $this->throwMissingParameterError('apiKey');
         }
     }
 
