@@ -19,7 +19,7 @@ class SessionTokenStorage implements TokenStorage
 
     public function getTokens(): ?PenneoTokens
     {
-        if ($_SESSION[$this->keyInSession]) {
+        if (false === empty($_SESSION[$this->keyInSession])) {
             return PenneoTokens::deserialize($_SESSION[$this->keyInSession]);
         }
 
