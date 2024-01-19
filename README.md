@@ -28,7 +28,7 @@ Next, update your project's composer.json file to include the SDK:
 ```json
 {
     "require": {
-        "penneo/penneo-sdk-php": "1.*"
+        "penneo/penneo-sdk-php": "2.*"
     }
 }
 ```
@@ -54,13 +54,14 @@ This section documents the different objects available through the SDK and how t
 
 ### Authentication
 
-The SDK supports two different methods of authentication:
+The SDK supports three different methods of authentication:
 
-- **OAuth 2.0**: This is the recommended method of authentication. It is more secure and allows you to perform
-  operations
-  on behalf of your users.
-- **WSSE**: This is the legacy method of authentication. It requires you to store your users' API credentials in your
-  application.
+- Interactive authentication using **OAuth 2.0**: This is the recommended method of authentication. It is more secure 
+and allows you to perform operations on behalf of your users.
+- Programmatic authentication using **OAuth 2.0**: The recommended method of authentication for integrations without 
+user interaction.
+- Programmatic authentication using **WSSE**: This is a legacy method of authentication. While it is supported, we
+encourage the use of OAuth instead of WSSE.
 
 #### OAuth 2.0
 
@@ -78,10 +79,33 @@ requests.
 
 We will provide you with a `client_id` and `client_secret`.
 
-##### Authorization request
+##### Programmatic authentication using OAuth
 
-You will have to build the authorization URI using your `client_id`, `client_secret` and your chosen `redirect_uri`,
-then redirect the user to the `$authorizationUrl`:
+To set up programmatic access, you'll need to initialize the API connector with oauth, by building it using your 
+`client_id`, `client_secret` and your chosen `redirect_uri`, alongside the API key and secret.
+
+```php
+$oAuth = Penneo\SDK\OAuth\OAuthBuilder::start()
+    ->setEnvironment('environmentHere')
+    ->setClientId('clientIdHere')
+    ->setClientSecret('clientSecretHere')
+    ->setRedirectUri('redirectUriHere')
+    ->setTokenStorage(new SessionTokenStorage())
+    ->setApiKey('apiKeyHere')
+    ->setApiSecret('apiSecretHere')
+    ->build();
+    
+Penneo\SDK\ApiConnector::initializeOAuth($oAuth);
+```
+
+> :point_right: see a full, functional example in [docs/programmatic_oauth_example.php](docs/programmatic_oauth_example.php).
+
+Then you can start making API requests.
+
+##### Interactive authentication using OAuth
+
+To initiate interactive authentication, you will first need to build the authorization URI using your `client_id`, 
+`client_secret` and your chosen `redirect_uri`, then redirect the user to the `$authorizationUrl`:
 
 ```php
 // Build the OAuth instance
@@ -107,7 +131,7 @@ $authorizationUrl = $oAuth->buildRedirectUrl($scope, $codeChallenge)
 
 The environment can either be `sandbox` for testing, or `production` for the live system.
 
-Following the standard OAuth 2.0 flow, the user is brought to the authorization page where they can login into Penneo
+Following the standard OAuth 2.0 flow, the user is brought to the authorization page where they can log in into Penneo
 with their chosen method (e.g. username and password, Google, Microsoft, etc.) and authorize your application to access
 their Penneo account.
 
@@ -130,6 +154,8 @@ connector using the already authorized `$oAuth` instance:
 // Initialize the connection to the API as customer
 Penneo\SDK\ApiConnector::initializeOAuth($oAuth);
 ```
+
+> :point_right: see a full, functional example in [docs/interactive_oauth_example.php](docs/interactive_oauth_example.php).
 
 ##### OAuth Token Storage
 
