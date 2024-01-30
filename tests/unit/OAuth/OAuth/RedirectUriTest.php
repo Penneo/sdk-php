@@ -2,7 +2,9 @@
 
 namespace Penneo\SDK\Tests\Unit\OAuth\OAuth;
 
+use Penneo\SDK\OAuth\PKCE\CodeChallenge;
 use Penneo\SDK\OAuth\PKCE\PKCE;
+use Penneo\SDK\PenneoSdkRuntimeException;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use Penneo\SDK\Tests\Unit\OAuth\TestsEnvironments;
 use PHPUnit\Framework\TestCase;
@@ -11,6 +13,21 @@ class RedirectUriTest extends TestCase
 {
     use BuildsOAuth;
     use TestsEnvironments;
+
+    public function testThrowsPenneoSDKExceptionWhenRedirectUriIsMissing()
+    {
+        $oauth = $this->build([
+            'redirectUri' => null,
+        ]);
+
+        $this->expectException(PenneoSdkRuntimeException::class);
+        $this->expectExceptionMessage(
+            'Cannot build redirect URL! Please set the redirectUri with ->setRedirectUri() when building the OAuth ' .
+            'client!'
+        );
+
+        $oauth->buildRedirectUrl(['full_access'], $this->createMock(CodeChallenge::class), 'someState');
+    }
 
     /** @dataProvider environmentProvider */
     public function testSuccessfullyBuildsUri(string $environment, string $expectedDomain)

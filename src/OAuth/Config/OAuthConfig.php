@@ -18,7 +18,7 @@ class OAuthConfig
      */
     private $clientSecret;
     /**
-     * @var string
+     * @var string|null
      */
     private $redirectUri;
     /**
@@ -34,7 +34,7 @@ class OAuthConfig
         string $environment,
         string $clientId,
         string $clientSecret,
-        string $redirectUri,
+        string $redirectUri = null,
         string $apiKey = null,
         string $apiSecret = null
     ) {
@@ -61,7 +61,7 @@ class OAuthConfig
         return $this->clientSecret;
     }
 
-    public function getRedirectUri(): string
+    public function getRedirectUri(): ?string
     {
         return $this->redirectUri;
     }
