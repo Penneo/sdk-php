@@ -16,8 +16,8 @@ final class OAuthBuilder
     private $clientId;
     /** @var string */
     private $clientSecret;
-    /** @var string */
-    private $redirectUri;
+    /** @var string|null */
+    private $redirectUri = null;
     /** @var TokenStorage */
     private $tokenStorage;
     /** @var string|null */
@@ -108,9 +108,6 @@ final class OAuthBuilder
         if (!$this->clientSecret) {
             $this->throwMissingParameterError('clientSecret');
         }
-        if (!$this->redirectUri) {
-            $this->throwMissingParameterError('redirectUri');
-        }
         if (!$this->tokenStorage) {
             $this->throwMissingParameterError('tokenStorage');
         }
@@ -143,7 +140,7 @@ final class OAuthBuilder
     /** @throws PenneoSdkRuntimeException */
     private function validateRedirectUri(): void
     {
-        if (!filter_var($this->redirectUri, FILTER_VALIDATE_URL)) {
+        if (null !== $this->redirectUri && !filter_var($this->redirectUri, FILTER_VALIDATE_URL)) {
             throw new PenneoSdkRuntimeException('Cannot build! The supplied redirect URI is not a valid URL!');
         }
     }

@@ -18,7 +18,6 @@ $penneoOAuth = OAuthBuilder::start()
     ->setEnvironment(Environment::SANDBOX)
     ->setClientId('clientId')                     // <- the credentials provided by Penneo
     ->setClientSecret('clientSecret')             // <-
-    ->setRedirectUri('http://dev.php.local')      // the exact URL you provided to Penneo
     ->setTokenStorage($tokenStorage)
     ->setApiKey('apiKey')                         // <- the api credentials found in your
     ->setApiKey('apiSecret')                      // <- penneo users settings
