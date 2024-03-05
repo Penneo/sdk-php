@@ -18,6 +18,10 @@ $mySigner->setOnBehalfOf('Acme Corporation');
 // Set the optional social security number
 $mySigner->setSocialSecurityNumber('0101501111', 'dk:cpr');
 
+// The SMS validation is relying on the same mechanism using 'sms' as the ssnType
+// The social security number to use must then contain a mobile number include the country code but not the leading +
+$mySigner->setSocialSecurityNumber('4511223344', 'sms');
+
 // Set the optional VAT identification number
 $mySigner->setVATIdentificationNumber('12345678');
 

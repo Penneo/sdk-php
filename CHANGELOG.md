@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 2.6.1 - 2024-03-05
+### Added
+- Update the signer documentation example to showcase the usage of the SMS access control feature
+
+
 ## 2.6.0 - 2023-11-30
 ### Added
 - Added OAuth 2.0 as an authentication option. See the [README](README.md#authentication) for more.
