@@ -27,7 +27,8 @@
         "behat/behat": "^3.8",
         "phpunit/phpunit": "^8.5|^9.0",
         "squizlabs/php_codesniffer": "*",
-        "blastcloud/guzzler": ">=2.0"
+        "blastcloud/chassis": "1.0.4|>=1.1",
+        "blastcloud/guzzler": "2.0.2|>=2.2"
     },
     "config": {
         "bin-dir": "bin"
