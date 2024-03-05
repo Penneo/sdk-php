@@ -4,7 +4,7 @@ namespace Penneo\SDK;
 
 class CaseFileTemplate extends Entity
 {
-    protected static $relativeUrl = 'casefiletype';
+    protected static $relativeUrl = 'casefile/casefiletypes';
 
     protected $name;
     protected $documentTypes;
