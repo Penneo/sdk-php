@@ -20,7 +20,7 @@ $penneoOAuth = OAuthBuilder::start()
     ->setClientSecret('clientSecret')             // <-
     ->setTokenStorage($tokenStorage)
     ->setApiKey('apiKey')                         // <- the api credentials found in your
-    ->setApiKey('apiSecret')                      // <- penneo users settings
+    ->setApiSecret('apiSecret')                   // <- penneo users settings
     ->build();
 
 ApiConnector::initializeOAuth($penneoOAuth);
