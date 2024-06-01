@@ -15,7 +15,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #4.1.6
 
       - name: Build PHP container
         run: docker build --build-arg "PHP_VERSION=8.2" -t php --file docker/Dockerfile docker/
@@ -41,7 +41,7 @@ jobs:
         php-version: ["7.2", "7.4", "8.0", "8.1", "8.2"]
     name: PHP v${{ matrix.php-version }}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #4.1.6
 
       - name: Build PHP container
         run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
