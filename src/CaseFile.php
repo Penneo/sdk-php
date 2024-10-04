@@ -36,7 +36,7 @@ class CaseFile extends Entity
         )
     );
     protected static $relativeUrl = 'casefiles';
-    
+
     /** @var string */
     protected $title;
     /** @var string */
