@@ -33,7 +33,7 @@ class WebhookSubscription extends Entity
     protected string $secret;
 
     /** @var bool */
-    protected bool $isActive;
+    protected bool $isActive = true;
 
     /** @var EventType[] */
     protected array $eventTypes;
