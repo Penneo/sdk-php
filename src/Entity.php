@@ -78,8 +78,16 @@ abstract class Entity
         }
 
         $matches = json_decode($response->getBody()->getContents(), true);
-        $result = array();
 
+        if (count($matches) === 1 && isset($matches['items'])) {
+            // In order to build the result (an array), we need an array.
+            // But there might be an endpoint which returns an object (and not an array).
+            // If that is the case and this object has one property called 'items',
+            // let's use the value of that property to generate the result.
+            $matches = $matches['items'];
+        }
+
+        $result = array();
         foreach ($matches as $match) {
             $object = new $class();
             $object->__fromArray($match);
