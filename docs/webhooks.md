@@ -41,7 +41,7 @@ The request will have an `x-event-type` header with the event type, `x-event-id`
 
 ## Finding webhook subscriptions
 ```php
-$webhook = WebhookSubscription::find(3410);
+$webhook = WebhookSubscription::find('1ca8abef-3168-46b7-b517-a03f19c66947');
 $webhooks = WebhookSubscription::findAll();
 ```
 
