@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 3.0.0 - 2025-05-08
+### Changed
+- WebhookSubscription has been upgraded to use the new webhook API. The new API is more flexible and allows for more advanced use cases (see documentation for details). 
+While the SDK continues to support the old API through the WebhookSubscriptionLegacy class, all new subscriptions are highly encouraged to utilize the new API.
+
+
 ## 2.7.1 - 2024-03-05
 ### Added
 - Update the signer documentation example to showcase the usage of the SMS access control feature

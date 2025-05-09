@@ -4,94 +4,116 @@ declare(strict_types=1);
 
 namespace Penneo\SDK;
 
+use Penneo\SDK\ApiConnector;
+
 /**
- * You can configure Penneo to send a request to your servers whenever certain entities change.
- * See https://github.com/Penneo/sdk-net/blob/master/docs/webhooks.md for more details.
+ * You can configure Penneo to send a request to your servers when certain events occur.
+ * See https://github.com/Penneo/sdk-php/blob/master/docs/webhooks.md for more details.
  */
 class WebhookSubscription extends Entity
 {
-    protected static $relativeUrl = 'webhook/subscriptions';
-    protected static $propertyMapping = [
-        'create' => ['topic', 'endpoint'],
-    ];
+    protected static $relativeUrl = '/webhook/api/v1/subscriptions';
+    protected static $propertyMapping = array(
+        'create' => array(
+            'eventTypes',
+            'endpoint',
+            'isActive'
+        ),
+        'update' => array(
+            'eventTypes',
+            'endpoint',
+            'isActive'
+        )
+    );
 
-    /** @var int|null */
-    protected $userId;
+    /** @var int */
+    protected int $customerId;
 
-    /** @var int|null */
-    protected $customerId;
+    /** @var string */
+    protected string $secret;
 
     /** @var bool */
-    protected $confirmed = false;
+    protected bool $isActive = true;
 
-    /** @var string|null */
-    protected $topic;
+    /** @var EventType[] */
+    protected array $eventTypes;
 
-    /** @var string|null */
-    protected $endpoint;
+    /** @var string */
+    protected string $endpoint;
 
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(?int $userId): WebhookSubscription
-    {
-        $this->userId = $userId;
-        return $this;
-    }
-
-    public function getCustomerId(): ?int
+    /** @return int */
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }
 
-    public function setCustomerId(?int $customerId): WebhookSubscription
+    /**
+     * @return string
+     */
+    public function getSecret(): string
     {
-        $this->customerId = $customerId;
+        return $this->secret;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param bool $isActive
+     *
+     * @return $this
+     */
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
         return $this;
     }
 
-    public function isConfirmed(): bool
+    /**
+     * @return EventType[]
+     */
+    public function getEventTypes(): array
     {
-        return $this->confirmed;
+        return $this->eventTypes;
     }
 
-    public function setConfirmed(bool $confirmed): WebhookSubscription
+    /**
+     * @param EventType[] $eventTypes
+     *
+     * @return $this
+     */
+    public function setEventTypes(array $eventTypes): static
     {
-        $this->confirmed = $confirmed;
+        $this->eventTypes = $eventTypes;
         return $this;
     }
 
-    public function getTopic(): ?string
-    {
-        return $this->topic;
-    }
-
-    public function setTopic(?string $topic): WebhookSubscription
-    {
-        $this->topic = $topic;
-        return $this;
-    }
-
-    public function getEndpoint(): ?string
+    /**
+     * @return string
+     */
+    public function getEndpoint(): string
     {
         return $this->endpoint;
     }
 
-    public function setEndpoint(?string $endpoint): WebhookSubscription
+    /**
+     * @param string $endpoint
+     *
+     * @return $this
+     */
+    public function setEndpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
         return $this;
     }
 
-    public function confirm(string $confirmationToken): bool
+    public static function test(): bool
     {
-        return self::callAction(
-            $this,
-            'confirm',
-            'POST',
-            ['token' => $confirmationToken]
-        );
+        return ApiConnector::callServer(self::$relativeUrl . '/test', null, 'post', array()) !== null;
     }
 }
