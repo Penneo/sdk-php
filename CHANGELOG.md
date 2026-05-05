@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 3.1.0 - 2026-05-05
+### Added
+- Added expireAt into updatable CaseFile attributes
+- Compatibility with PHP up to v8.5
+
+
 ## 3.0.0 - 2025-05-08
 ### Changed
 - WebhookSubscription has been upgraded to use the new webhook API. The new API is more flexible and allows for more advanced use cases (see documentation for details). 

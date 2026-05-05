@@ -34,9 +34,9 @@ class OAuthConfig
         string $environment,
         string $clientId,
         string $clientSecret,
-        string $redirectUri = null,
-        string $apiKey = null,
-        string $apiSecret = null
+        ?string $redirectUri = null,
+        ?string $apiKey = null,
+        ?string $apiSecret = null
     ) {
         $this->environment = $environment;
         $this->clientId = $clientId;

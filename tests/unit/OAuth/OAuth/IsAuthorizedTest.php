@@ -48,7 +48,7 @@ class IsAuthorizedTest extends TestCase
         $tokenStorage = $this->createMock(SessionTokenStorage::class);
         $tokenStorage->method('getTokens')
             ->willReturn(
-                new PenneoTokens('a', 'b', $accessTokenExpiresAt, $refreshTokenExpiresAt)
+                new PenneoTokens('a', $accessTokenExpiresAt, 'b', $refreshTokenExpiresAt)
             );
 
         return $this->build([

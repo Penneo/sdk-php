@@ -33,6 +33,7 @@ class CaseFile extends Entity
             'disableEmailAttachments',
             'sensitiveData',
             'reference',
+            'expireAt',
         )
     );
     protected static $relativeUrl = 'casefiles';

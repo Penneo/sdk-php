@@ -18,7 +18,7 @@ class SessionTokenStorageTest extends TestCase
         int $accessTokenExpiresAt,
         int $refreshTokenExpiresAt
     ): void {
-        $tokens = new PenneoTokens($accessToken, $refreshToken, $accessTokenExpiresAt, $refreshTokenExpiresAt);
+        $tokens = new PenneoTokens($accessToken, $accessTokenExpiresAt, $refreshToken, $refreshTokenExpiresAt);
         $storage = new SessionTokenStorage();
 
         $storage->saveTokens($tokens);

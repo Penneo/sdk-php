@@ -65,7 +65,7 @@ class ApiKeysMiddlewareTest extends TestCase
     public function testGetsNewTokenWhenStoredAccessTokenHasExpired()
     {
         $this->mockStorage->saveTokens(
-            new PenneoTokens('oldAT', null, $this->yesterdayTimestamp, null)
+            new PenneoTokens('oldAT', $this->yesterdayTimestamp, null, null)
         );
 
         $this->apiKeysGrantRequest()
@@ -86,7 +86,7 @@ class ApiKeysMiddlewareTest extends TestCase
     public function testAppendsPreExistingValidAccessTokenToRequests(string $accessToken)
     {
         $this->mockStorage->saveTokens(
-            new PenneoTokens($accessToken, null, $this->tomorrowTimestamp, null)
+            new PenneoTokens($accessToken, $this->tomorrowTimestamp, null, null)
         );
 
         // a post request is sent when tokens are refreshed - this should never happen if a valid token is present.

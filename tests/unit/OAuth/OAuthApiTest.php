@@ -10,6 +10,7 @@ use Penneo\SDK\OAuth\Nonce\NonceGenerator;
 use Penneo\SDK\OAuth\OAuthApi;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
+use Penneo\SDK\PenneoSdkRuntimeException;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 
@@ -45,8 +46,8 @@ class OAuthApiTest extends TestCase
         $storage->method('getTokens')
             ->willReturn(new PenneoTokens(
                 'not_important',
-                'refresh_token',
                 10,
+                'refresh_token',
                 20
             ));
 
@@ -73,6 +74,23 @@ class OAuthApiTest extends TestCase
             yield array_merge($case, ['postCodeExchange', ['code', 'verifier']]);
             yield array_merge($case, ['postApiKeyExchange']);
         }
+    }
+
+    public function testPostTokenRefreshThrowsWhenRefreshTokenIsMissing(): void
+    {
+        $storage = $this->createMock(SessionTokenStorage::class);
+        $storage->method('getTokens')
+            ->willReturn(new PenneoTokens('access_only', 999999, null, null));
+
+        $client = $this->createMock(Client::class);
+        $client->expects($this->never())->method('post');
+
+        $api = new OAuthApi($this->config, $storage, $client, $this->nonceGenerator);
+
+        $this->expectException(PenneoSdkRuntimeException::class);
+        $this->expectExceptionMessage('no refresh token');
+
+        $api->postTokenRefresh();
     }
 
     /**

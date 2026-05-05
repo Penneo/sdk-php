@@ -23,8 +23,10 @@ class ApiConnectorTest extends TestCase
         $staticProperties = $reflectedClass->getProperties(\ReflectionProperty::IS_STATIC);
 
         foreach ($staticProperties as $property) {
-            $property->setAccessible(true);
-            $property->setValue(null);
+            if (PHP_VERSION_ID < 80100) {
+                $property->setAccessible(true);
+            }
+            $property->setValue(null, null);
         }
     }
 

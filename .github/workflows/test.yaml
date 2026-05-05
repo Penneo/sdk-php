@@ -14,11 +14,15 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+    name: Lint (PHP ${{ matrix.php-version }})
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1
 
       - name: Build PHP container
-        run: docker build --build-arg "PHP_VERSION=8.2" -t php --file docker/Dockerfile docker/
+        run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
 
       - name: Start PHP container
         run: |
@@ -38,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ["7.2", "7.4", "8.0", "8.1", "8.2"]
+        php-version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
     name: PHP v${{ matrix.php-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1

@@ -47,7 +47,7 @@ abstract class Entity
      * @return static[]
      * @throws \Exception
      */
-    public static function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+    public static function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
     {
         $class = get_called_class();
 
@@ -104,7 +104,7 @@ abstract class Entity
      * @return static[]
      * @throws \Exception
      */
-    public static function findOneBy(array $criteria, array $orderBy = null)
+    public static function findOneBy(array $criteria, ?array $orderBy = null)
     {
         return self::findBy($criteria, $orderBy, 1);
     }
@@ -211,7 +211,7 @@ abstract class Entity
         return $entities;
     }
 
-    public static function getEntity($type, $url, Entity $parent = null)
+    public static function getEntity($type, $url, ?Entity $parent = null)
     {
         $response = ApiConnector::callServer($url);
         if ($response === null) {
@@ -233,7 +233,7 @@ abstract class Entity
         return $entity;
     }
 
-    public static function getEntities($type, $url, Entity $parent = null)
+    public static function getEntities($type, $url, ?Entity $parent = null)
     {
         $response = ApiConnector::callServer($url);
         if (!$response) {
