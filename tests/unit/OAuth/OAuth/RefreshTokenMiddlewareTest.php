@@ -39,7 +39,7 @@ class RefreshTokenMiddlewareTest extends TestCase
         $this->yesterdayTimestamp = Carbon::now()->subDay()->getTimestamp();
         $this->fiveSecondsInTheFutureTimestamp = Carbon::now()->addSeconds('5')->getTimestamp();
         $this->mockStorage = $this->mockTokenStorage(
-            new PenneoTokens('accessToken', 'refreshToken', $this->tomorrowTimestamp, $this->tomorrowTimestamp)
+            new PenneoTokens('accessToken', $this->tomorrowTimestamp, 'refreshToken', $this->tomorrowTimestamp)
         );
 
         parent::setUp();
@@ -67,8 +67,8 @@ class RefreshTokenMiddlewareTest extends TestCase
     {
         $this->mockStorage->saveTokens(new PenneoTokens(
             $accessToken,
-            'refreshToken',
             $this->tomorrowTimestamp,
+            'refreshToken',
             $this->tomorrowTimestamp
         ));
 
@@ -105,11 +105,12 @@ class RefreshTokenMiddlewareTest extends TestCase
         int $timeDiffValue,
         string $timeDiffUnit
     ) {
+        $exp = Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp();
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
+            $exp,
             'not_important',
-            Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp(),
-            Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp()
+            $exp
         ));
 
         $oauth = $this->build([
@@ -139,11 +140,12 @@ class RefreshTokenMiddlewareTest extends TestCase
         $this->guzzler->getHandlerStack()
             ->unshift($oauth->getMiddleware());
 
+        $exp = Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp();
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
+            $exp,
             'not_important',
-            Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp(),
-            Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp()
+            $exp
         ));
 
         $this->expectException(PenneoSdkRuntimeException::class);
@@ -178,8 +180,8 @@ class RefreshTokenMiddlewareTest extends TestCase
 
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
-            'VERY_IMPORTANT',
             Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp(),
+            'VERY_IMPORTANT',
             $this->tomorrowTimestamp
         ));
 
@@ -226,8 +228,8 @@ class RefreshTokenMiddlewareTest extends TestCase
 
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
-            'refresh_token',
             $this->yesterdayTimestamp,
+            'refresh_token',
             $this->tomorrowTimestamp
         ));
 
@@ -269,8 +271,8 @@ class RefreshTokenMiddlewareTest extends TestCase
 
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
-            'refresh_token',
             $this->yesterdayTimestamp,
+            'refresh_token',
             $this->tomorrowTimestamp
         ));
 

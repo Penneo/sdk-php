@@ -15,7 +15,7 @@ class CustomerBranding extends Entity
 
     protected $customer;
 
-    public function __construct(Customer $customer = null)
+    public function __construct(?Customer $customer = null)
     {
         $this->customer = $customer;
     }

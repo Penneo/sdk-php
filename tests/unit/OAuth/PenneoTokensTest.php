@@ -17,7 +17,7 @@ class PenneoTokensTest extends TestCase
         int $accessTokenExpiresAt,
         int $refreshTokenExpiresAt
     ): void {
-        $tokens = new PenneoTokens($accessToken, $refreshToken, $accessTokenExpiresAt, $refreshTokenExpiresAt);
+        $tokens = new PenneoTokens($accessToken, $accessTokenExpiresAt, $refreshToken, $refreshTokenExpiresAt);
         $deserialized = PenneoTokens::deserialize($tokens->serialize());
 
         $this->assertEquals($accessToken, $deserialized->getAccessToken());

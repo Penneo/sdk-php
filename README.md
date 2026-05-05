@@ -6,8 +6,7 @@ about how to become a customer.
 
 ## Prerequisites
 
-The Penneo SDK for PHP requires that you are using PHP 5.3 or newer. Also you must have a recent version of cURL >=
-7.16.2 compiled with OpenSSL and zlib.
+The Penneo SDK for PHP requires PHP 7.2 or newer (PHP 8 is supported). The PHP extensions `json` and `openssl` are required.
 
 ## Getting Started
 
@@ -28,7 +27,7 @@ Next, update your project's composer.json file to include the SDK:
 ```json
 {
     "require": {
-        "penneo/penneo-sdk-php": "2.*"
+        "penneo/penneo-sdk-php": "^3.0"
     }
 }
 ```

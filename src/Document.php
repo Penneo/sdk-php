@@ -39,7 +39,7 @@ class Document extends Entity
 
     protected $signatureLines = null;
 
-    public function __construct(CaseFile $caseFile = null)
+    public function __construct(?CaseFile $caseFile = null)
     {
         $this->caseFile = $caseFile;
     }

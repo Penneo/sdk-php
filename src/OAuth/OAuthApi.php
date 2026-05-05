@@ -34,7 +34,7 @@ final class OAuthApi
         OAuthConfig $config,
         TokenStorage $tokenStorage,
         Client $client,
-        NonceGenerator $nonceGenerator = null
+        ?NonceGenerator $nonceGenerator = null
     ) {
         $this->config = $config;
         $this->tokenStorage = $tokenStorage;
@@ -80,8 +80,8 @@ final class OAuthApi
 
         return new PenneoTokens(
             $result->access_token,
-            $result->refresh_token ?? null,
             $result->access_token_expires_at,
+            $result->refresh_token ?? null,
             $result->refresh_token_expires_at ?? null
         );
     }
@@ -115,6 +115,15 @@ final class OAuthApi
     /** @throws PenneoSdkRuntimeException */
     public function postTokenRefresh(): PenneoTokens
     {
+        $stored = $this->tokenStorage->getTokens();
+        $refreshToken = $stored->getRefreshToken();
+        if ($refreshToken === null || $refreshToken === '') {
+            throw new PenneoSdkRuntimeException(
+                'Cannot refresh OAuth tokens: no refresh token is available in stored tokens. '
+                . 'Obtain a new token pair using the authorization code or API key exchange flow.'
+            );
+        }
+
         return $this->postOrThrow(
             $this->buildTokenRefreshPayload(),
             "refresh tokens"

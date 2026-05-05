@@ -21,7 +21,7 @@ trait BuildsOAuth
      *     apiSecret: ?string,
      * } $overrides
      */
-    private function build(array $overrides = [], Client $guzzle = null): OAuth
+    private function build(array $overrides = [], ?Client $guzzle = null): OAuth
     {
         $buildParams = array_merge([
             'clientId' => 'myId',

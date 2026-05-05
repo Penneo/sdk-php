@@ -13,8 +13,8 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
-            'refresh_token',
             Carbon::yesterday()->getTimestamp(),
+            'refresh_token',
             Carbon::yesterday()->getTimestamp()
         );
 
@@ -25,8 +25,8 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
-            'refresh_token',
             Carbon::tomorrow()->getTimestamp(),
+            'refresh_token',
             Carbon::tomorrow()->getTimestamp()
         );
 
@@ -37,8 +37,8 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
-            'refresh_token',
             Carbon::yesterday()->getTimestamp(),
+            'refresh_token',
             Carbon::tomorrow()->getTimestamp()
         );
 
@@ -49,9 +49,9 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
+            Carbon::tomorrow()->getTimestamp(),
             'refresh_token',
-            Carbon::yesterday()->getTimestamp(),
-            Carbon::tomorrow()->getTimestamp()
+            Carbon::yesterday()->getTimestamp()
         );
 
         $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
@@ -66,7 +66,7 @@ class PenneoTokensValidatorTest extends TestCase
     public function testReturnsFalseWhenBothTokensAreExpired(int $timeDiffValue, string $timeDiffUnit)
     {
         $expiredTs = Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp();
-        $tokens = new PenneoTokens('access_token', 'refresh_token', $expiredTs, $expiredTs);
+        $tokens = new PenneoTokens('access_token', $expiredTs, 'refresh_token', $expiredTs);
 
         $this->assertFalse(PenneoTokensValidator::areNotExpired($tokens));
     }

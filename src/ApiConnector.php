@@ -54,9 +54,9 @@ class ApiConnector
     public static function initialize(
         string $key,
         string $secret,
-        string $endpoint = null,
-        int $user = null,
-        array $headers = null
+        ?string $endpoint = null,
+        ?int $user = null,
+        ?array $headers = null
     ): void {
         self::initializeWsse($key, $secret, $endpoint, $user, $headers);
     }
@@ -64,9 +64,9 @@ class ApiConnector
     public static function initializeWsse(
         string $key,
         string $secret,
-        string $endpoint = null,
-        int $user = null,
-        array $headers = null
+        ?string $endpoint = null,
+        ?int $user = null,
+        ?array $headers = null
     ) {
         self::$headers = array_merge(
             $headers ?: [],
@@ -201,7 +201,7 @@ class ApiConnector
      *
      * @return array<string, string>
      */
-    private static function getSpecificHeaders(string $key, array $headers = null): array
+    private static function getSpecificHeaders(string $key, ?array $headers = null): array
     {
         $keyPart = substr($key, 0, 8);
         $setUserAgent = $headers && array_key_exists('User-Agent', $headers) ?

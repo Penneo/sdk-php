@@ -76,7 +76,7 @@ final class OAuthBuilder
         return $this;
     }
 
-    public function build(Client $client = null): OAuth
+    public function build(?Client $client = null): OAuth
     {
         $this->validateAllParametersPresent();
         $this->validateEnvironment();
