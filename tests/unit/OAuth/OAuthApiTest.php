@@ -2,7 +2,7 @@
 
 namespace Penneo\SDK\Tests\Unit\OAuth;
 
-use Carbon\Carbon;
+use DateTimeImmutable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Penneo\SDK\OAuth\Config\OAuthConfig;
@@ -24,9 +24,12 @@ class OAuthApiTest extends TestCase
     /** @var NonceGenerator&Stub */
     private $nonceGenerator;
 
+    /** @var DateTimeImmutable */
+    private $fixedNow;
+
     public function setUp(): void
     {
-        Carbon::setTestNow(Carbon::now());
+        $this->fixedNow = new DateTimeImmutable('now');
 
         $this->config = $this->createPartialMock(
             OAuthConfig::class,
@@ -41,7 +44,15 @@ class OAuthApiTest extends TestCase
         $this->client = $this->createMock(Client::class);
         $this->nonceGenerator = $this->createStub(NonceGenerator::class);
 
-        $this->api = new OAuthApi($this->config, $storage, $this->client, $this->nonceGenerator);
+        $this->api = new OAuthApi(
+            $this->config,
+            $storage,
+            $this->client,
+            $this->nonceGenerator,
+            function () {
+                return $this->fixedNow;
+            }
+        );
 
         $storage->method('getTokens')
             ->willReturn(new PenneoTokens(
@@ -103,7 +114,7 @@ class OAuthApiTest extends TestCase
         $this->nonceGenerator->method('generate')->willReturn($mockNonce);
         $this->config->method('getApiSecret')->willReturn($apiSecret);
 
-        $createdAt = Carbon::getTestNow()->toString();
+        $createdAt = $this->fixedNow->format('D M j Y H:i:s \G\M\TO');
         $digest = base64_encode(sha1($mockNonce . $createdAt . $apiSecret, true));
 
         $this->client->expects($this->once())
@@ -114,7 +125,7 @@ class OAuthApiTest extends TestCase
                     'client_id' => 'id',
                     'client_secret' => 'secret',
                     'key' => 'apiKey',
-                    'created_at' => Carbon::getTestNow()->toString(),
+                    'created_at' => $createdAt,
                     'nonce' => base64_encode($mockNonce),
                     'digest' => $digest
                 ]

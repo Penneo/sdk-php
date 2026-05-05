@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 3.1.1 - 2026-05-05
+### Added
+- Removed nesbot/carbon dependency; OAuth timestamps use native `DateTimeImmutable` / `time()`.
+
+
 ## 3.1.0 - 2026-05-05
 ### Added
 - Added expireAt into updatable CaseFile attributes

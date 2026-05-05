@@ -3,11 +3,10 @@
 namespace Penneo\SDK\Tests\Unit\OAuth\OAuth;
 
 use BlastCloud\Guzzler\UsesGuzzler;
-use Carbon\Carbon;
+use DateTimeImmutable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
-use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
@@ -16,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 class ApiKeysMiddlewareTest extends TestCase
 {
     use BuildsOAuth;
-    use UsesGuzzler;
     use MocksTokenStorage;
+    use UsesGuzzler;
 
     /** @var TokenStorage */
     private $mockStorage;
@@ -27,10 +26,11 @@ class ApiKeysMiddlewareTest extends TestCase
 
     public function setUp(): void
     {
-        Carbon::setTestNow(Carbon::now());
+        $base = new DateTimeImmutable('@' . \time());
 
-        $this->tomorrowTimestamp = Carbon::now()->addDay()->getTimestamp();
-        $this->yesterdayTimestamp = Carbon::now()->subDay()->getTimestamp();
+        $this->tomorrowTimestamp = $base->modify('+1 day')->getTimestamp();
+        $this->yesterdayTimestamp = $base->modify('-1 day')->getTimestamp();
+
         $this->mockStorage = $this->mockTokenStorage();
 
         $this->mockAuthClient = $this->createMock(Client::class);

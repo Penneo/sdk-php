@@ -2,9 +2,6 @@
 
 namespace Penneo\SDK;
 
-use Penneo\SDK\Entity;
-use Penneo\SDK\LogEntry;
-
 class Validation extends Entity
 {
     protected static $propertyMapping = array(

@@ -3,7 +3,7 @@
 namespace Penneo\SDK\Tests\Unit\OAuth\OAuth;
 
 use BlastCloud\Guzzler\UsesGuzzler;
-use Carbon\Carbon;
+use DateTimeImmutable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -33,11 +33,12 @@ class RefreshTokenMiddlewareTest extends TestCase
 
     public function setUp(): void
     {
-        Carbon::setTestNow(Carbon::now());
+        $base = new DateTimeImmutable('@' . \time());
 
-        $this->tomorrowTimestamp = Carbon::now()->addDay()->getTimestamp();
-        $this->yesterdayTimestamp = Carbon::now()->subDay()->getTimestamp();
-        $this->fiveSecondsInTheFutureTimestamp = Carbon::now()->addSeconds('5')->getTimestamp();
+        $this->tomorrowTimestamp = $base->modify('+1 day')->getTimestamp();
+        $this->yesterdayTimestamp = $base->modify('-1 day')->getTimestamp();
+        $this->fiveSecondsInTheFutureTimestamp = $base->modify('+5 seconds')->getTimestamp();
+
         $this->mockStorage = $this->mockTokenStorage(
             new PenneoTokens('accessToken', $this->tomorrowTimestamp, 'refreshToken', $this->tomorrowTimestamp)
         );
@@ -105,7 +106,7 @@ class RefreshTokenMiddlewareTest extends TestCase
         int $timeDiffValue,
         string $timeDiffUnit
     ) {
-        $exp = Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp();
+        $exp = self::adjustNowByUnits($timeDiffValue, $timeDiffUnit)->getTimestamp();
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
             $exp,
@@ -140,7 +141,7 @@ class RefreshTokenMiddlewareTest extends TestCase
         $this->guzzler->getHandlerStack()
             ->unshift($oauth->getMiddleware());
 
-        $exp = Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp();
+        $exp = self::adjustNowByUnits($timeDiffValue, $timeDiffUnit)->getTimestamp();
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
             $exp,
@@ -180,7 +181,7 @@ class RefreshTokenMiddlewareTest extends TestCase
 
         $this->mockStorage->saveTokens(new PenneoTokens(
             'not_important',
-            Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp(),
+            self::adjustNowByUnits($timeDiffValue, $timeDiffUnit)->getTimestamp(),
             'VERY_IMPORTANT',
             $this->tomorrowTimestamp
         ));
@@ -294,5 +295,12 @@ class RefreshTokenMiddlewareTest extends TestCase
         }
 
         $this->fail('Expected exception was not thrown!');
+    }
+
+    private static function adjustNowByUnits(int $timeDiffValue, string $timeDiffUnit): DateTimeImmutable
+    {
+        $base = new DateTimeImmutable('@' . \time());
+
+        return $base->modify(\sprintf('%+d %s', $timeDiffValue, $timeDiffUnit));
     }
 }

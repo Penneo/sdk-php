@@ -2,7 +2,6 @@
 
 namespace Penneo\SDK\Tests\Unit\OAuth\OAuth;
 
-use Carbon\Carbon;
 use Penneo\SDK\OAuth\OAuth;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;

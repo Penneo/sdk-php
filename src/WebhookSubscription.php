@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Penneo\SDK;
 
-use Penneo\SDK\ApiConnector;
-
 /**
  * You can configure Penneo to send a request to your servers when certain events occur.
  * See https://github.com/Penneo/sdk-php/blob/master/docs/webhooks.md for more details.
