@@ -259,6 +259,16 @@ try {
     $link = $signingRequest->getLink();
     echo "\nSigning link:\n{$link}\n";
 
+    printStep('Download document content (Document::getContent)');
+    try {
+        $binary = $document->getContent();
+        echo 'Downloaded document binary: ' . strlen($binary) . " bytes\n";
+        $format = $document->getFormat();
+        echo 'Document format: ' . ($format ?? 'n/a') . PHP_EOL;
+    } catch (Throwable $e) {
+        echo '(skip content download: ' . $e->getMessage() . ')' . PHP_EOL;
+    }
+
     try {
         $log = $signer->getEventLog();
         echo 'Signer event log entries (LogEntry): ' . count($log) . PHP_EOL;

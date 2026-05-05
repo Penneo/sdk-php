@@ -193,7 +193,7 @@ relevant `requestIds` you find in the logs.
   The case file object is a container used to bundle documents and signers. Every signing process starts with a case
   file.
 * [Documents][document-docs]
-  The document object represents (and contains) the actual PDF document.
+  The document object represents the document file. Use `setFile()` for the upload path (PDF supported today; same API field as future formats). `setPdfFile()` remains for compatibility.
 * [Signature lines][signature-line-docs]
   Every signable document must have at least one signature line. Think of it as the dashed line that people used to sign
   using a pen.
@@ -233,7 +233,7 @@ CaseFile::persist($myCaseFile);
 // Create a new signable document in this case file
 $myDocument = new Document($myCaseFile);
 $myDocument->setTitle('Demo document');
-$myDocument->setPdfFile('/path/to/pdfFile');
+$myDocument->setFile('/path/to/document.pdf');
 $myDocument->makeSignable();
 Document::persist($myDocument);
 

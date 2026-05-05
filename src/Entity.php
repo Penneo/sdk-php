@@ -299,6 +299,35 @@ abstract class Entity
         return $result;
     }
 
+    /**
+     * Fetch raw binary content from an asset endpoint.
+     *
+     * Unlike getAssets(), the response body is returned as-is without JSON decoding.
+     * This requires that the server returns binary (i.e. the request must NOT include
+     * an Accept: application/json header, which is already the SDK default).
+     *
+     * @param Entity $parent
+     * @param string $assetPath  Sub-path appended after the entity URL (e.g. "content")
+     * @param array  $queryParams  Associative array of query-string parameters
+     *
+     * @return string Raw binary content
+     * @throws Exception
+     */
+    public static function getBinaryContent(Entity $parent, string $assetPath, array $queryParams = []): string
+    {
+        $url = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $assetPath;
+        if ($queryParams) {
+            $url .= '?' . http_build_query($queryParams);
+        }
+
+        $response = ApiConnector::callServer($url);
+        if (!$response) {
+            throw new Exception('Penneo: Internal problem encountered fetching content: ' . $assetPath);
+        }
+
+        return $response->getBody()->getContents();
+    }
+
     public static function callAction(Entity $parent, string $actionName, string $method = 'patch', $data = null): bool
     {
         $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $actionName;

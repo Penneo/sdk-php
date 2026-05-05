@@ -7,6 +7,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 3.2.0 - 2026-05-05
+### Added
+- `Document::getContent(bool $signed = true)` — downloads document content as raw binary via the `/content` endpoint (no base64 JSON round-trip). Decrypted content only; the SDK does not expose `decrypt=false`.
+- `Document::setFile(string $filePath)` — preferred setter; sends the API `file` field (PDF uploads today; naming aligns with upcoming non-PDF support).
+- `Document::getFormat()` — returns the document format as reported by the API (typically `"pdf"` for current use).
+- `Entity::getBinaryContent()` — low-level helper for fetching raw binary responses from asset endpoints.
+### Changed
+- `Document::getPdf()` now delegates to `getContent()` and is deprecated. The underlying endpoint changed from the deprecated `/pdf` (base64) to `/content` (binary). Return value is unchanged (raw binary string).
+- `Document::setPdfFile()` is deprecated in favour of `setFile()`.
+
 ## 3.1.1 - 2026-05-05
 ### Added
 - Removed nesbot/carbon dependency; OAuth timestamps use native `DateTimeImmutable` / `time()`.

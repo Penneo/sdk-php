@@ -12,6 +12,7 @@ class Document extends Entity
             'options',
             'type',
             '@pdfFile',
+            '@file',
             'documentTypeId' => 'documentType->getId'
         ),
         'update' => array(
@@ -31,7 +32,9 @@ class Document extends Entity
     protected $modified;
     protected $completed;
     protected $status;
+    protected $format;
     protected $pdfFile;
+    protected $file;
 
     protected $caseFile;
     protected $type = 'attachment';
@@ -85,10 +88,36 @@ class Document extends Entity
         return parent::findLinkedEntity($this, SignatureLine::class, $id);
     }
 
-    public function getPdf()
+    /**
+     * Download the document content as raw binary via GET .../content.
+     *
+     * Upload is PDF-only in the API today; this returns whatever bytes the API stores for the document.
+     * Content is always returned decrypted (API default); the encrypted storage blob is not exposed via the SDK.
+     *
+     * @param bool $signed Get the signed version when available (default: true). Pass false for the original document.
+     *
+     * @return string Raw binary content
+     */
+    public function getContent(bool $signed = true): string
     {
-        $data = parent::getAssets($this, 'pdf');
-        return base64_decode($data[0]);
+        $params = [];
+        if (!$signed) {
+            $params['signed'] = 'false';
+        }
+
+        return parent::getBinaryContent($this, 'content', $params);
+    }
+
+    /**
+     * @deprecated Use getContent() instead.
+     *
+     * @param bool $signed Get the signed version when available (default: true). Pass false for the original document.
+     *
+     * @return string Raw binary PDF content
+     */
+    public function getPdf(bool $signed = true): string
+    {
+        return $this->getContent($signed);
     }
 
     public function makeSignable()
@@ -96,9 +125,48 @@ class Document extends Entity
         $this->type = 'signable';
     }
 
+    /**
+     * Set the document file from a local path. The file is base64-encoded and sent as the API `file`
+     * field (alongside the legacy `pdfFile` from setPdfFile()). Only PDF uploads are supported by
+     * the API today; this naming prepares for additional formats without breaking compatibility.
+     *
+     * @param string $filePath Path to the local PDF file
+     */
+    public function setFile(string $filePath): void
+    {
+        $this->file = $filePath;
+    }
+
+    /**
+     * @deprecated Use setFile() instead.
+     */
     public function setPdfFile($pdfFile)
     {
         $this->pdfFile = $pdfFile;
+    }
+
+    /**
+     * Return the document format as reported by the API.
+     *
+     * In practice this is `"pdf"` for current integrations. Other numeric format codes from the API
+     * are mapped when present; additional format names may apply as the API evolves.
+     *
+     * @return string|null
+     */
+    public function getFormat(): ?string
+    {
+        if ($this->format === null) {
+            return null;
+        }
+
+        $formats = [
+            1 => 'pdf',
+            2 => 'xml',
+            3 => 'xhtml',
+            4 => 'zip',
+        ];
+
+        return $formats[$this->format] ?? (string) $this->format;
     }
 
     public function getDocumentId()
