@@ -2,7 +2,6 @@
 
 namespace Penneo\SDK\OAuth;
 
-use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Psr\Http\Message\RequestInterface;

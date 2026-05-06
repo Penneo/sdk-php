@@ -2,8 +2,6 @@
 
 namespace Penneo\SDK\OAuth\Tokens;
 
-use Carbon\Carbon;
-
 class PenneoTokensValidator
 {
     private const TOKEN_EXPIRY_BUFFER_IN_SECONDS = 5;
@@ -14,7 +12,7 @@ class PenneoTokensValidator
             return false;
         }
 
-        $now = Carbon::now()->getTimestamp();
+        $now = \time();
 
         return $tokens->getAccessToken()
             && ($now < $tokens->getAccessTokenExpiresAt() - self::TOKEN_EXPIRY_BUFFER_IN_SECONDS
@@ -23,7 +21,6 @@ class PenneoTokensValidator
 
     public static function isAccessTokenExpired(PenneoTokens $tokens): bool
     {
-        $now = Carbon::now()->getTimestamp();
-        return $now >= $tokens->getAccessTokenExpiresAt() - self::TOKEN_EXPIRY_BUFFER_IN_SECONDS;
+        return \time() >= $tokens->getAccessTokenExpiresAt() - self::TOKEN_EXPIRY_BUFFER_IN_SECONDS;
     }
 }

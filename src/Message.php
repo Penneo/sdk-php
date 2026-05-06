@@ -2,8 +2,6 @@
 
 namespace Penneo\SDK;
 
-use Penneo\SDK\ApiConnector;
-
 class Message
 {
     /**

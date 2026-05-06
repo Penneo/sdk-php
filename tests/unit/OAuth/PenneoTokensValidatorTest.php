@@ -2,9 +2,9 @@
 
 namespace Penneo\SDK\Tests\Unit\OAuth;
 
-use Carbon\Carbon;
-use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
+use DateTimeImmutable;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
+use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
 use PHPUnit\Framework\TestCase;
 
 class PenneoTokensValidatorTest extends TestCase
@@ -13,9 +13,9 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
-            Carbon::yesterday()->getTimestamp(),
+            (new DateTimeImmutable('yesterday'))->getTimestamp(),
             'refresh_token',
-            Carbon::yesterday()->getTimestamp()
+            (new DateTimeImmutable('yesterday'))->getTimestamp()
         );
 
         $this->assertFalse(PenneoTokensValidator::areNotExpired($tokens));
@@ -25,9 +25,9 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
-            Carbon::tomorrow()->getTimestamp(),
+            (new DateTimeImmutable('tomorrow'))->getTimestamp(),
             'refresh_token',
-            Carbon::tomorrow()->getTimestamp()
+            (new DateTimeImmutable('tomorrow'))->getTimestamp()
         );
 
         $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
@@ -37,9 +37,9 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
-            Carbon::yesterday()->getTimestamp(),
+            (new DateTimeImmutable('yesterday'))->getTimestamp(),
             'refresh_token',
-            Carbon::tomorrow()->getTimestamp()
+            (new DateTimeImmutable('tomorrow'))->getTimestamp()
         );
 
         $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
@@ -49,9 +49,9 @@ class PenneoTokensValidatorTest extends TestCase
     {
         $tokens = new PenneoTokens(
             'access_token',
-            Carbon::tomorrow()->getTimestamp(),
+            (new DateTimeImmutable('tomorrow'))->getTimestamp(),
             'refresh_token',
-            Carbon::yesterday()->getTimestamp()
+            (new DateTimeImmutable('yesterday'))->getTimestamp()
         );
 
         $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
@@ -65,9 +65,16 @@ class PenneoTokensValidatorTest extends TestCase
      */
     public function testReturnsFalseWhenBothTokensAreExpired(int $timeDiffValue, string $timeDiffUnit)
     {
-        $expiredTs = Carbon::now()->addUnit($timeDiffUnit, $timeDiffValue)->getTimestamp();
+        $expiredTs = self::adjustNowByUnits($timeDiffValue, $timeDiffUnit)->getTimestamp();
         $tokens = new PenneoTokens('access_token', $expiredTs, 'refresh_token', $expiredTs);
 
         $this->assertFalse(PenneoTokensValidator::areNotExpired($tokens));
+    }
+
+    private static function adjustNowByUnits(int $timeDiffValue, string $timeDiffUnit): DateTimeImmutable
+    {
+        $base = new DateTimeImmutable('@' . time());
+
+        return $base->modify(\sprintf('%+d %s', $timeDiffValue, $timeDiffUnit));
     }
 }

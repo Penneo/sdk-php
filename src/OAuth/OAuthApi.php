@@ -2,7 +2,7 @@
 
 namespace Penneo\SDK\OAuth;
 
-use Carbon\Carbon;
+use DateTimeImmutable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -30,16 +30,32 @@ final class OAuthApi
     /** @var NonceGenerator */
     private $nonceGenerator;
 
+    /** @var callable(): DateTimeImmutable */
+    private $nowFactory;
+
+    /**
+     * @param callable|null $nowFactory Returning the client clock instant for timestamps (primarily testing).
+     */
     public function __construct(
         OAuthConfig $config,
         TokenStorage $tokenStorage,
         Client $client,
-        ?NonceGenerator $nonceGenerator = null
+        ?NonceGenerator $nonceGenerator = null,
+        ?callable $nowFactory = null
     ) {
         $this->config = $config;
         $this->tokenStorage = $tokenStorage;
         $this->client = $client;
         $this->nonceGenerator = $nonceGenerator ?? new RandomBytesNonceGenerator();
+        $this->nowFactory = $nowFactory ?: static function () {
+            return new DateTimeImmutable('now');
+        };
+    }
+
+    /** Format matches the former Carbon `toString()` payload for API-key digest compatibility. */
+    private static function formatApiKeyDigestCreatedAt(DateTimeImmutable $moment): string
+    {
+        return $moment->format('D M j Y H:i:s \G\M\TO');
     }
 
     /** @throws PenneoSdkRuntimeException */
@@ -152,7 +168,8 @@ final class OAuthApi
 
     private function buildApiKeyExchangePayload(): array
     {
-        $createdAt = Carbon::now()->toString();
+        $moment = ($this->nowFactory)();
+        $createdAt = self::formatApiKeyDigestCreatedAt($moment);
         $nonce = $this->nonceGenerator->generate();
         $digest = base64_encode(sha1($nonce . $createdAt . $this->config->getApiSecret(), true));
 
