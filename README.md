@@ -51,6 +51,8 @@ dependencies at [getcomposer.org](http://getcomposer.org).
 
 This section documents the different objects available through the SDK and how to use them.
 
+For **runnable CLI demos** (case file E2E script and OAuth sample scripts), see [docs/cli-examples.md](docs/cli-examples.md).
+
 ### Authentication
 
 The SDK supports three different methods of authentication:
@@ -153,7 +155,7 @@ connector using the already authorized `$oAuth` instance:
 Penneo\SDK\ApiConnector::initializeOAuth($oAuth);
 ```
 
-> :point_right: see a full, functional example in [docs/interactive_oauth_example.php](docs/interactive_oauth_example.php).
+> :point_right: see a full, configurable example in [docs/interactive_oauth_example.php](docs/interactive_oauth_example.php) and **localhost setup** in [docs/cli-examples.md](docs/cli-examples.md#interactive-oauth-on-localhost-step-by-step).
 
 ##### OAuth Token Storage
 
