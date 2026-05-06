@@ -47,7 +47,10 @@ final class PenneoTokens
         $this->refreshTokenExpiresAt = $refreshTokenExpiresAt;
     }
 
-    public function serialize(): string
+    /**
+     * @return false|string
+     */
+    public function serialize()
     {
         return json_encode([
             'accessToken' => $this->getAccessToken(),

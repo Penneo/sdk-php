@@ -14,13 +14,13 @@ class Message
     {
         $response = ApiConnector::callServer('messages/' . $limit);
         if (!$response) {
-            return array();
+            return [];
         }
 
         return json_decode($response->getBody()->getContents(), true);
     }
 
-    public static function delete($id)
+    public static function delete($id): bool
     {
         return ApiConnector::callServer('message/' . $id, null, 'delete') !== null;
     }

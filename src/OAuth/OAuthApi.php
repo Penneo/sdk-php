@@ -102,7 +102,11 @@ final class OAuthApi
         );
     }
 
-    /** @throws PenneoSdkRuntimeException */
+    /**
+     * @throws PenneoSdkRuntimeException
+     *
+     * @return never
+     */
     private function handleBadResponse(ResponseInterface $response, string $title)
     {
         $body = json_decode($response->getBody());
@@ -132,6 +136,11 @@ final class OAuthApi
     public function postTokenRefresh(): PenneoTokens
     {
         $stored = $this->tokenStorage->getTokens();
+        if ($stored === null) {
+            throw new PenneoSdkRuntimeException(
+                'Cannot refresh OAuth tokens: no token storage state is available.'
+            );
+        }
         $refreshToken = $stored->getRefreshToken();
         if ($refreshToken === null || $refreshToken === '') {
             throw new PenneoSdkRuntimeException(
@@ -141,16 +150,16 @@ final class OAuthApi
         }
 
         return $this->postOrThrow(
-            $this->buildTokenRefreshPayload(),
+            $this->buildTokenRefreshPayload($stored),
             "refresh tokens"
         );
     }
 
-    private function buildTokenRefreshPayload(): array
+    private function buildTokenRefreshPayload(PenneoTokens $stored): array
     {
         return [
             'grant_type' => 'refresh_token',
-            'refresh_token' => $this->tokenStorage->getTokens()->getRefreshToken(),
+            'refresh_token' => $stored->getRefreshToken(),
             'redirect_uri' => $this->config->getRedirectUri(),
             'client_id' => $this->config->getClientId(),
             'client_secret' => $this->config->getClientSecret(),
@@ -171,7 +180,13 @@ final class OAuthApi
         $moment = ($this->nowFactory)();
         $createdAt = self::formatApiKeyDigestCreatedAt($moment);
         $nonce = $this->nonceGenerator->generate();
-        $digest = base64_encode(sha1($nonce . $createdAt . $this->config->getApiSecret(), true));
+        $apiSecret = $this->config->getApiSecret();
+        if ($apiSecret === null || $apiSecret === '') {
+            throw new PenneoSdkRuntimeException(
+                'Cannot exchange API credentials: client API secret is not configured.'
+            );
+        }
+        $digest = base64_encode(sha1($nonce . $createdAt . $apiSecret, true));
 
         return [
             'grant_type' => 'api_keys',

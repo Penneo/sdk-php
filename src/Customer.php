@@ -27,8 +27,12 @@ class Customer extends Entity
     public function getBranding()
     {
         if ($this->branding === null) {
+            $id = $this->getId();
+            if ($id === null) {
+                return null;
+            }
             // Try to retrieve the branding from the backend.
-            $url = self::$relativeUrl . '/' . $this->getId() . '/branding';
+            $url = self::$relativeUrl . '/' . $id . '/branding';
             $this->branding = self::getEntity(CustomerBranding::class, $url, $this);
         }
 
@@ -38,8 +42,12 @@ class Customer extends Entity
     public function getEmailSignature()
     {
         if ($this->emailSignature === null) {
+            $id = $this->getId();
+            if ($id === null) {
+                return null;
+            }
             // Try to retrieve the email signature from the backend.
-            $url = self::$relativeUrl . '/' . $this->getId() . '/email-signature';
+            $url = self::$relativeUrl . '/' . $id . '/email-signature';
             $this->emailSignature = self::getEntity(EmailSignature::class, $url, $this);
         }
 
@@ -49,7 +57,7 @@ class Customer extends Entity
     /**
      * @param EmailSignature $emailSignature
      */
-    public function setEmailSignature(EmailSignature $emailSignature)
+    public function setEmailSignature(EmailSignature $emailSignature): void
     {
         $this->emailSignature = $emailSignature;
     }

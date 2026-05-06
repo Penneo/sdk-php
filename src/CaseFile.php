@@ -99,7 +99,7 @@ class CaseFile extends Entity
     public function getDocumentTypes()
     {
         if (!$this->id) {
-            return array();
+            return [];
         }
         return parent::getLinkedEntities($this, DocumentType::class, 'casefiles/' . $this->id . '/documenttypes');
     }
@@ -110,13 +110,13 @@ class CaseFile extends Entity
     public function getSignerTypes()
     {
         if (!$this->id) {
-            return array();
+            return [];
         }
         return parent::getLinkedEntities($this, SignerType::class, 'casefiles/' . $this->id . '/signertypes');
     }
 
     /**
-     * @return Document[]|bool|null
+     * @return Document[]
      */
     public function getDocuments()
     {
@@ -127,7 +127,7 @@ class CaseFile extends Entity
     }
 
     /**
-     * @return Signer|bool|null
+     * @return Signer[]
      */
     public function getSigners()
     {
@@ -138,7 +138,7 @@ class CaseFile extends Entity
     }
 
     /**
-     * @return CopyRecipient|bool|null
+     * @return CopyRecipient[]
      */
     public function getCopyRecipients()
     {
@@ -149,11 +149,9 @@ class CaseFile extends Entity
     }
 
     /**
-     * @param $id
-     *
-     * @return Signer|null|false
+     * @param int|string $id
      */
-    public function findSigner($id)
+    public function findSigner($id): ?Signer
     {
         if ($this->signers !== null) {
             foreach ($this->signers as $signer) {
@@ -167,11 +165,9 @@ class CaseFile extends Entity
     }
 
     /**
-     * @param $id
-     *
-     * @return false|null|CopyRecipient
+     * @param int|string $id
      */
-    public function findCopyRecipient($id)
+    public function findCopyRecipient($id): ?CopyRecipient
     {
         if ($this->copyRecipients !== null) {
             foreach ($this->copyRecipients as $recipient) {
@@ -189,27 +185,22 @@ class CaseFile extends Entity
         return parent::getAssets($this, 'errors');
     }
 
-    public function activate()
+    public function activate(): bool
     {
         return parent::callAction($this, 'activate');
     }
 
-    public function send()
+    public function send(): bool
     {
         return parent::callAction($this, 'send');
     }
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle($title): void
     {
         $this->title = $title;
     }
@@ -224,42 +215,42 @@ class CaseFile extends Entity
         $this->language = $language;
     }
 
-    public function getMetaData()
+    public function getMetaData(): string
     {
         return $this->metaData;
     }
 
-    public function setMetaData($meta)
+    public function setMetaData($meta): void
     {
         $this->metaData = $meta;
     }
 
-    public function getSendAt()
+    public function getSendAt(): \DateTime
     {
         return new \DateTime('@' . $this->sendAt);
     }
 
-    public function setSendAt(\DateTime $sendAt)
+    public function setSendAt(\DateTime $sendAt): void
     {
         $this->sendAt = $sendAt->getTimestamp();
     }
 
-    public function getExpireAt()
+    public function getExpireAt(): \DateTime
     {
         return new \DateTime('@' . $this->expireAt);
     }
 
-    public function setExpireAt(\DateTime $expireAt)
+    public function setExpireAt(\DateTime $expireAt): void
     {
         $this->expireAt = $expireAt->getTimestamp();
     }
 
-    public function getVisibilityMode()
+    public function getVisibilityMode(): int
     {
         return $this->visibilityMode;
     }
 
-    public function setVisibilityMode($visibilityMode)
+    public function setVisibilityMode($visibilityMode): void
     {
         $this->visibilityMode = $visibilityMode;
     }
@@ -366,7 +357,7 @@ class CaseFile extends Entity
         return $this;
     }
 
-    public function getStatus()
+    public function getStatus(): string
     {
         switch ($this->status) {
             case 0:
@@ -409,29 +400,30 @@ class CaseFile extends Entity
         return $this->reference;
     }
 
-    public function getCreatedAt()
+    public function getCreatedAt(): \DateTime
     {
         return new \DateTime('@' . $this->created);
     }
 
-    public function getSignIteration()
+    public function getSignIteration(): int
     {
         return $this->signIteration;
     }
 
     /**
-     * @return CaseFileTemplate
+     * Resolved template for this case file, if the API returned one.
      */
-    public function getCaseFileTemplate()
+    public function getCaseFileTemplate(): ?CaseFileTemplate
     {
         if ($this->id && !$this->caseFileType) {
             $caseFileTypes = parent::getLinkedEntities($this, CaseFileTemplate::class);
-            $this->caseFileType = $caseFileTypes[0];
+            $first = $caseFileTypes[0] ?? null;
+            $this->caseFileType = $first instanceof CaseFileTemplate ? $first : null;
         }
         return $this->caseFileType;
     }
 
-    public function setCaseFileTemplate(CaseFileTemplate $template)
+    public function setCaseFileTemplate(CaseFileTemplate $template): void
     {
         $this->caseFileType = $template;
     }

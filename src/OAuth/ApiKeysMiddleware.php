@@ -4,6 +4,7 @@ namespace Penneo\SDK\OAuth;
 
 use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
+use Penneo\SDK\PenneoSdkRuntimeException;
 use Psr\Http\Message\RequestInterface;
 
 class ApiKeysMiddleware
@@ -24,9 +25,16 @@ class ApiKeysMiddleware
     {
         $this->refreshAccessToken();
 
+        $tokens = $this->tokenStorage->getTokens();
+        if ($tokens === null) {
+            throw new PenneoSdkRuntimeException(
+                'OAuth tokens are not available. Complete an OAuth or API key exchange flow first.'
+            );
+        }
+
         return $request->withHeader(
             'Authorization',
-            "Bearer {$this->tokenStorage->getTokens()->getAccessToken()}"
+            "Bearer {$tokens->getAccessToken()}"
         );
     }
 

@@ -67,7 +67,7 @@ class ApiConnector
         ?string $endpoint = null,
         ?int $user = null,
         ?array $headers = null
-    ) {
+    ): void {
         self::$headers = array_merge(
             $headers ?: [],
             self::getDefaultHeaders(),
@@ -100,9 +100,13 @@ class ApiConnector
         self::$logger = $logger;
     }
 
-    public static function readObject(Entity $object)
+    public static function readObject(Entity $object): bool
     {
-        $response = self::callServer($object->getRelativeUrl() . '/' . $object->getId());
+        $id = $object->getId();
+        if ($id === null) {
+            return false;
+        }
+        $response = self::callServer($object->getRelativeUrl() . '/' . $id);
         if (!$response) {
             return false;
         }
@@ -110,16 +114,17 @@ class ApiConnector
         return true;
     }
 
-    public static function writeObject(Entity $object)
+    public static function writeObject(Entity $object): bool
     {
         $data = $object->__getRequestData();
         if ($data === null) {
             return false;
         }
 
-        if ($object->getId()) {
+        $id = $object->getId();
+        if ($id !== null) {
             // Update request
-            $response = self::callServer($object->getRelativeUrl() . '/' . $object->getId(), $data, 'put');
+            $response = self::callServer($object->getRelativeUrl() . '/' . $id, $data, 'put');
             if (!$response) {
                 return false;
             }
@@ -129,23 +134,37 @@ class ApiConnector
             if (!$response) {
                 return false;
             }
-            $object->__fromJson($response->getBody(true));
+            $object->__fromJson($response->getBody()->getContents());
         }
 
         return true;
     }
 
-    public static function deleteObject(Entity $object)
+    public static function deleteObject(Entity $object): bool
     {
-        if (!self::callServer($object->getRelativeUrl() . '/' . $object->getId(), null, 'delete')) {
+        $id = $object->getId();
+        if ($id === null) {
+            return false;
+        }
+        if (!self::callServer($object->getRelativeUrl() . '/' . $id, null, 'delete')) {
             return false;
         }
 
         return true;
     }
 
-    public static function callServer($url, $data = null, $method = 'get', $options = array()): ?Response
-    {
+    /**
+     * @param false|null|string $data
+     * @param array[] $options
+     *
+     * @psalm-param array{query?: array} $options
+     */
+    public static function callServer(
+        string $url,
+        $data = null,
+        string $method = 'get',
+        array $options = []
+    ): ?Response {
         try {
             self::$logger->debug(
                 'request',
@@ -234,9 +253,9 @@ class ApiConnector
      *
      * @param mixed $data
      *
-     * @return string|null
+     * @return false|null|string
      */
-    private static function sanitizeData($data): ?string
+    private static function sanitizeData($data)
     {
         if ($data !== null && !is_string($data)) {
             $serializedData = json_encode($data);
@@ -251,7 +270,7 @@ class ApiConnector
         return $data;
     }
 
-    public static function initializeOAuth(OAuth $oauth, string $apiVersion = 'v3')
+    public static function initializeOAuth(OAuth $oauth, string $apiVersion = 'v3'): void
     {
         $handler = HandlerStack::create();
         $handler->push($oauth->getMiddleware());

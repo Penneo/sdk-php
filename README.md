@@ -6,7 +6,9 @@ about how to become a customer.
 
 ## Prerequisites
 
-The Penneo SDK for PHP requires PHP 7.2 or newer (PHP 8 is supported). The PHP extensions `json` and `openssl` are required.
+The Penneo SDK for PHP requires **PHP 8.1 or newer**. The PHP extensions `json` and `openssl` are required.
+
+If your application still runs on PHP 7.x or 8.0, stay on the **3.x** SDK line (e.g. `"penneo/penneo-sdk-php": "^3.2"`) and plan an upgrade.
 
 ## Getting Started
 
@@ -27,7 +29,7 @@ Next, update your project's composer.json file to include the SDK:
 ```json
 {
     "require": {
-        "penneo/penneo-sdk-php": "^3.0"
+        "penneo/penneo-sdk-php": "^4.0"
     }
 }
 ```
@@ -186,6 +188,28 @@ request.
 
 You should add a logger by calling `ApiConnector::setLogger()`. If you contact support, please include any
 relevant `requestIds` you find in the logs.
+
+### Static analysis (Psalm)
+
+CI runs [Psalm](https://psalm.dev/) on `src/` (`errorLevel="1"`, `psalm-baseline.xml`). With **PHP ^8.1**, Psalm is a normal **dev** dependency (`vimeo/psalm`); after `composer install` use:
+
+```bash
+composer psalm
+composer psalm:baseline   # refresh psalm-baseline.xml after fixing/suppressing issues
+```
+
+(`bin/psalm` is the Composer-generated proxy to `vendor/vimeo/psalm/psalm`.)
+
+### Code style (PHPCS / PHPCBF)
+
+`phpcs.xml` applies **PSR-12** to `src/` and `tests/`. CI runs `bin/phpcs` on every PHP version and a dedicated job runs **`bin/phpcbf`** then fails if anything changed (so auto-fixable drift is caught).
+
+Locally:
+
+```bash
+composer cs-check   # bin/phpcs
+composer cs-fix     # bin/phpcbf — apply fixes, then commit
+```
 
 ### Document signing
 

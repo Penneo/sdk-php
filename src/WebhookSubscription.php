@@ -112,6 +112,6 @@ class WebhookSubscription extends Entity
 
     public static function test(): bool
     {
-        return ApiConnector::callServer(self::$relativeUrl . '/test', null, 'post', array()) !== null;
+        return ApiConnector::callServer(self::$relativeUrl . '/test', null, 'post', []) !== null;
     }
 }

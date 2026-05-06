@@ -38,7 +38,7 @@ class Validation extends Entity
     protected $customText;
     protected $status;
 
-    public function getPdf()
+    public function getPdf(): string
     {
         $data = parent::getAssets($this, 'pdf');
         return base64_decode($data[0]);
@@ -50,7 +50,7 @@ class Validation extends Entity
         return $data[0];
     }
 
-    public function send()
+    public function send(): bool
     {
         return parent::callAction($this, 'send');
     }
@@ -60,7 +60,7 @@ class Validation extends Entity
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle($title): void
     {
         $this->title = $title;
     }
@@ -70,7 +70,7 @@ class Validation extends Entity
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -80,7 +80,7 @@ class Validation extends Entity
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
@@ -90,7 +90,7 @@ class Validation extends Entity
         return $this->emailSubject;
     }
 
-    public function setEmailSubject($emailSubject)
+    public function setEmailSubject($emailSubject): void
     {
         $this->emailSubject = $emailSubject;
     }
@@ -100,7 +100,7 @@ class Validation extends Entity
         return $this->emailText;
     }
 
-    public function setEmailText($emailText)
+    public function setEmailText($emailText): void
     {
         $this->emailText = $emailText;
     }
@@ -110,7 +110,7 @@ class Validation extends Entity
         return $this->successUrl;
     }
 
-    public function setSuccessUrl($url)
+    public function setSuccessUrl($url): void
     {
         $this->successUrl = $url;
     }
@@ -120,7 +120,7 @@ class Validation extends Entity
         return $this->reminderInterval;
     }
 
-    public function setReminderInterval($interval)
+    public function setReminderInterval($interval): void
     {
         $this->reminderInterval = $interval;
     }
@@ -130,12 +130,12 @@ class Validation extends Entity
         return $this->customText;
     }
 
-    public function setCustomText($text)
+    public function setCustomText($text): void
     {
         $this->customText = $text;
     }
 
-    public function getStatus()
+    public function getStatus(): string
     {
         switch ($this->status) {
             case 0:

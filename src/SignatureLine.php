@@ -11,6 +11,7 @@ class SignatureLine extends Entity
     protected static $relativeUrl = 'signaturelines';
 
     protected $document;
+    /** @var Signer|null */
     protected $signer = null;
     protected $role;
     protected $conditions;
@@ -24,24 +25,27 @@ class SignatureLine extends Entity
         $this->document = $document;
     }
 
+    /**
+     * @return Document
+     */
     public function getParent()
     {
         return $this->document;
     }
 
     /**
-     * @return Signer
+     * @return Signer|null
      */
-    public function getSigner()
+    public function getSigner(): ?Signer
     {
         if ($this->signer == null) {
             if ($this->signerId !== null) {
-                // Retrieve signer from signer id
-                $this->signer = $this->document->getCaseFile()->findSigner($this->signerId);
+                $found = $this->document->getCaseFile()->findSigner($this->signerId);
+                $this->signer = $found instanceof Signer ? $found : null;
             } else {
-                // Retrieve signer from API
                 $signers = parent::getLinkedEntities($this, Signer::class);
-                $this->signer = $signers[0];
+                $first = $signers[0] ?? null;
+                $this->signer = $first instanceof Signer ? $first : null;
             }
         }
 
@@ -59,7 +63,7 @@ class SignatureLine extends Entity
         return $this->role;
     }
 
-    public function setRole($role)
+    public function setRole($role): void
     {
         $this->role = $role;
     }
@@ -69,7 +73,7 @@ class SignatureLine extends Entity
         return $this->conditions;
     }
 
-    public function setConditions($conditions)
+    public function setConditions($conditions): void
     {
         $this->conditions = $conditions;
     }
@@ -79,12 +83,12 @@ class SignatureLine extends Entity
         return $this->signOrder;
     }
 
-    public function setSignOrder($signOrder)
+    public function setSignOrder($signOrder): void
     {
         $this->signOrder = $signOrder;
     }
 
-    public function getSignedAt()
+    public function getSignedAt(): ?\DateTime
     {
         if ($this->signedAt) {
             return new \DateTime('@' . $this->signedAt);

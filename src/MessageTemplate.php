@@ -27,7 +27,7 @@ class MessageTemplate extends Entity
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle($title): void
     {
         $this->title = $title;
     }
@@ -37,7 +37,7 @@ class MessageTemplate extends Entity
         return $this->subject;
     }
 
-    public function setSubject($subject)
+    public function setSubject($subject): void
     {
         $this->subject = $subject;
     }
@@ -47,7 +47,7 @@ class MessageTemplate extends Entity
         return $this->message;
     }
 
-    public function setMessage($message)
+    public function setMessage($message): void
     {
         $this->message = $message;
     }

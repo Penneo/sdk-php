@@ -12,11 +12,63 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    name: Auto-fix check (PHPCBF)
+    steps:
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #4.1.6
+
+      - name: Build PHP container
+        run: docker build --build-arg "PHP_VERSION=8.3" -t php --file docker/Dockerfile docker/
+
+      - name: Start PHP container
+        run: |
+          docker run -d --name php -v ${GITHUB_WORKSPACE}:/app php tail -f /dev/null
+
+      - name: Install dependencies
+        run: docker exec php /bin/sh -c "composer install"
+
+      - name: Apply PHPCBF (must leave tree clean)
+        run: docker exec php /bin/sh -c "bin/phpcbf"
+
+      - name: Fail if formatting differed
+        run: git diff --exit-code
+
+      - name: Stop PHP container
+        if: always()
+        run: docker stop php
+
+  psalm:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ["8.1", "8.2", "8.3", "8.4", "8.5"]
+    name: Psalm (PHP ${{ matrix.php-version }})
+    steps:
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #4.1.6
+
+      - name: Build PHP container
+        run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
+
+      - name: Start PHP container
+        run: |
+          docker run -d --name php -v ${GITHUB_WORKSPACE}:/app php tail -f /dev/null
+
+      - name: Install dependencies
+        run: docker exec php /bin/sh -c "composer install"
+
+      - name: Run Psalm
+        run: docker exec php /bin/sh -c "composer psalm -- --php-version=${{ matrix.php-version }}"
+
+      - name: Stop PHP container
+        if: always()
+        run: docker stop php
+
   lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+        php-version: ["8.1", "8.2", "8.3", "8.4", "8.5"]
     name: Lint (PHP ${{ matrix.php-version }})
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1
@@ -42,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+        php-version: ["8.1", "8.2", "8.3", "8.4", "8.5"]
     name: PHP v${{ matrix.php-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1

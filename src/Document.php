@@ -2,6 +2,39 @@
 
 namespace Penneo\SDK;
 
+/**
+ * Document attached to a case file (Penneo REST: `/documents`, `/documents/{id}`, `/documents/{id}/content`, …).
+ *
+ * Upload today is PDF-only; `setFile()` maps to the API `file` body field (OpenAPI: form `file` or legacy `pdfFile`).
+ * Download uses `GET .../documents/{id}/content` with optional query `signed`
+ * (SDK sends `signed=false` when needed; API `decrypt` is left at default).
+ *
+ * @method static Document find(int|string $id)
+ * @method static Document[] findAll()
+ * @method static Document[] findBy(
+ *     array $criteria,
+ *     ?array $orderBy = null,
+ *     ?int $limit = null,
+ *     ?int $offset = null
+ * )
+ * @method static Document[] findOneBy(array $criteria, ?array $orderBy = null)
+ * @method static Document[] findByTitle(
+ *     string $title,
+ *     ?array $orderBy = null,
+ *     ?int $limit = null,
+ *     ?int $offset = null
+ * )
+ * @method static Document[] findOneByTitle(string $title, ?array $orderBy = null)
+ * @method static Document[] findByMetaData(
+ *     string $metaData,
+ *     ?array $orderBy = null,
+ *     ?int $limit = null,
+ *     ?int $offset = null
+ * )
+ * @method static Document[] findOneByMetaData(string $metaData, ?array $orderBy = null)
+ * @method static void persist(Document $object)
+ * @method static void delete(Document $object)
+ */
 class Document extends Entity
 {
     protected static $propertyMapping = array(
@@ -40,27 +73,43 @@ class Document extends Entity
     protected $type = 'attachment';
     protected $documentType;
 
+    /** @var SignatureLine[]|null */
     protected $signatureLines = null;
 
+    /**
+     * @param CaseFile|null $caseFile Case file this document belongs to (required for create).
+     */
     public function __construct(?CaseFile $caseFile = null)
     {
         $this->caseFile = $caseFile;
     }
 
     /**
+     * Case file that owns this document.
+     *
      * @return CaseFile
+     *
+     * @throws Exception
      */
     public function getCaseFile()
     {
         if (!$this->caseFile) {
             $caseFiles = parent::getLinkedEntities($this, CaseFile::class);
-            $this->caseFile = $caseFiles[0];
+            $first = $caseFiles[0] ?? null;
+            if (!$first instanceof CaseFile) {
+                throw new Exception('Penneo: Case file not found for document');
+            }
+            $this->caseFile = $first;
         }
         return $this->caseFile;
     }
 
     /**
+     * Signature lines defined on this document.
+     *
      * @return SignatureLine[]
+     *
+     * @throws Exception
      */
     public function getSignatureLines()
     {
@@ -71,9 +120,13 @@ class Document extends Entity
     }
 
     /**
-     * @param $id
+     * Find a signature line by id on this document.
      *
-     * @return SignatureLine|false
+     * @param int|string $id Signature line id
+     *
+     * @return SignatureLine|false|null|static Null when not found in the cached list; null when API returns no entity
+     *
+     * @throws Exception
      */
     public function findSignatureLine($id)
     {
@@ -89,14 +142,17 @@ class Document extends Entity
     }
 
     /**
-     * Download the document content as raw binary via GET .../content.
+     * Raw document bytes from `GET /documents/{id}/content`.
+     * Response is binary when the client does not negotiate `Accept: application/json`.
      *
      * Upload is PDF-only in the API today; this returns whatever bytes the API stores for the document.
      * Content is always returned decrypted (API default); the encrypted storage blob is not exposed via the SDK.
      *
      * @param bool $signed Get the signed version when available (default: true). Pass false for the original document.
      *
-     * @return string Raw binary content
+     * @return string Binary response body
+     *
+     * @throws Exception When the HTTP request fails or the SDK returns no response
      */
     public function getContent(bool $signed = true): string
     {
@@ -109,28 +165,33 @@ class Document extends Entity
     }
 
     /**
-     * @deprecated Use getContent() instead.
-     *
      * @param bool $signed Get the signed version when available (default: true). Pass false for the original document.
      *
      * @return string Raw binary PDF content
+     * @deprecated Use {@see self::getContent()} instead.
+     *
      */
     public function getPdf(bool $signed = true): string
     {
         return $this->getContent($signed);
     }
 
+    /**
+     * Mark the document as signable (`type`: `signable`) before {@see Entity::persist()}.
+     *
+     * @return void
+     */
     public function makeSignable()
     {
         $this->type = 'signable';
     }
 
     /**
-     * Set the document file from a local path. The file is base64-encoded and sent as the API `file`
-     * field (alongside the legacy `pdfFile` from setPdfFile()). Only PDF uploads are supported by
-     * the API today; this naming prepares for additional formats without breaking compatibility.
+     * Local path to the file; encoded as base64 in the JSON `file` field on create (OpenAPI form field `file`).
      *
-     * @param string $filePath Path to the local PDF file
+     * @param string $filePath Path to the local PDF file supported by the API today
+     *
+     * @return void
      */
     public function setFile(string $filePath): void
     {
@@ -138,7 +199,11 @@ class Document extends Entity
     }
 
     /**
-     * @deprecated Use setFile() instead.
+     * @param string $pdfFile Path to a readable PDF file
+     *
+     * @return void
+     * @deprecated Use {@see self::setFile()} instead (same JSON key `pdfFile` on the wire).
+     *
      */
     public function setPdfFile($pdfFile)
     {
@@ -146,12 +211,11 @@ class Document extends Entity
     }
 
     /**
-     * Return the document format as reported by the API.
+     * Document format from the API numeric `format` field, mapped to a short string when known.
      *
-     * In practice this is `"pdf"` for current integrations. Other numeric format codes from the API
-     * are mapped when present; additional format names may apply as the API evolves.
+     * Typical value today: `"pdf"`. Unknown integer codes fall back to `(string) $format`.
      *
-     * @return string|null
+     * @return string|null Mapped label such as `pdf`, `xml`, `xhtml`, `zip`, or null if not hydrated
      */
     public function getFormat(): ?string
     {
@@ -166,49 +230,84 @@ class Document extends Entity
             4 => 'zip',
         ];
 
-        return $formats[$this->format] ?? (string) $this->format;
+        return $formats[$this->format] ?? (string)$this->format;
     }
 
+    /**
+     * External identifier stamped on document pages (API: `documentId`).
+     *
+     * @return int|string|null
+     */
     public function getDocumentId()
     {
         return $this->documentId;
     }
 
+    /**
+     * @return string|null
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * @param string $title
+     *
+     * @return void
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
+    /**
+     * @return string|null
+     */
     public function getMetaData()
     {
         return $this->metaData;
     }
 
+    /**
+     * @param string|null $meta
+     *
+     * @return void
+     */
     public function setMetaData($meta)
     {
         $this->metaData = $meta;
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getCreatedAt()
     {
-        return new \Datetime('@' . $this->created);
+        return new \DateTime('@' . $this->created);
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getModifiedAt()
     {
-        return new \Datetime('@' . $this->modified);
+        return new \DateTime('@' . $this->modified);
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getCompletedAt()
     {
-        return new \Datetime('@' . $this->completed);
+        return new \DateTime('@' . $this->completed);
     }
 
+    /**
+     * Human-readable lifecycle status derived from the API numeric `status` field.
+     *
+     * @return 'new'|'pending'|'rejected'|'deleted'|'signed'|'completed'
+     */
     public function getStatus()
     {
         switch ($this->status) {
@@ -229,13 +328,22 @@ class Document extends Entity
         return 'deleted';
     }
 
+    /**
+     * Document options / opts JSON string as stored by the API.
+     *
+     * @return string|null
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
     /**
-     * @return DocumentType
+     * Linked document type (lazy-loaded from `.../documenttype`).
+     *
+     * @return DocumentType|null
+     *
+     * @throws Exception
      */
     public function getDocumentType()
     {
@@ -246,6 +354,11 @@ class Document extends Entity
         return $this->documentType;
     }
 
+    /**
+     * @param DocumentType $type
+     *
+     * @return void
+     */
     public function setDocumentType(DocumentType $type)
     {
         $this->documentType = $type;

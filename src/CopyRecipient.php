@@ -38,7 +38,7 @@ class CopyRecipient extends Entity
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -48,7 +48,7 @@ class CopyRecipient extends Entity
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }

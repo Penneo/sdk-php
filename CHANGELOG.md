@@ -7,6 +7,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 4.0.0 - 2026-05-06
+### Added
+- Composer scripts `cs-check` / `cs-fix` (PHPCS / PHPCBF); CI job **Auto-fix check** ensures the tree matches `phpcbf` output.
+- Psalm (`psalm.xml`, `psalm-baseline.xml`): static analysis at `errorLevel="1"`. CI runs **`composer psalm`** (dev dependency `vimeo/psalm` **6.16.1**, aligned with `psalm-baseline.xml`).
+### Changed
+- **Breaking:** minimum supported PHP version is now **8.1** (PHP 7.x and 8.0 are no longer supported). This matches runtime requirements already implied by `EventType` (enum) and typed properties on `WebhookSubscription`.
+
 ## 3.2.0 - 2026-05-05
 ### Added
 - `Document::getContent(bool $signed = true)` — downloads document content as raw binary via the `/content` endpoint (no base64 JSON round-trip). Decrypted content only; the SDK does not expose `decrypt=false`.
@@ -14,8 +21,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Document::getFormat()` — returns the document format as reported by the API (typically `"pdf"` for current use).
 - `Entity::getBinaryContent()` — low-level helper for fetching raw binary responses from asset endpoints.
 ### Changed
-- `Document::getPdf()` now delegates to `getContent()` and is deprecated. The underlying endpoint changed from the deprecated `/pdf` (base64) to `/content` (binary). Return value is unchanged (raw binary string).
-- `Document::setPdfFile()` is deprecated in favour of `setFile()`.
+- `Document::getPdf()` now delegates to `getContent()` and is deprecated; optional `bool $signed = true` matches `getContent()`. The underlying endpoint changed from the deprecated `/pdf` (base64) to `/content` (binary). Return value is unchanged (raw binary string).
+- `Document::setPdfFile()` is deprecated in favor of `setFile()`.
 
 ## 3.1.1 - 2026-05-05
 ### Added

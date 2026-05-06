@@ -25,13 +25,21 @@ class RefreshTokenMiddleware
     public function handleRequest(RequestInterface $request): RequestInterface
     {
         $tokens = $this->tokenStorage->getTokens();
+        if ($tokens === null) {
+            throw new AuthenticationExpiredException('Session has expired, please reauthenticate!');
+        }
 
         $this->validateBothTokensNotExpired($tokens);
         $this->refreshExpiredAccessToken($tokens);
 
+        $tokens = $this->tokenStorage->getTokens();
+        if ($tokens === null) {
+            throw new AuthenticationExpiredException('Session has expired, please reauthenticate!');
+        }
+
         return $request->withHeader(
             'Authorization',
-            "Bearer {$this->tokenStorage->getTokens()->getAccessToken()}"
+            "Bearer {$tokens->getAccessToken()}"
         );
     }
 

@@ -16,12 +16,13 @@ class Folder extends Entity
      * @param int|null $page    Page numbers start at 1
      * @param int      $perPage Does nothing if $page is null
      *
-     * @return array
+     * @return array|bool
+     *
      * @throws Exception
      */
     public function getCaseFiles($page = null, $perPage = PHP_INT_MAX)
     {
-        $paging = $page !== null ? array('page' => $page, 'per_page' => $perPage) : array();
+        $paging = $page !== null ? array('page' => $page, 'per_page' => $perPage) : [];
 
         return parent::getLinkedEntities($this, CaseFile::class, null, $paging);
     }
@@ -41,7 +42,7 @@ class Folder extends Entity
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle($title): void
     {
         $this->title = $title;
     }
