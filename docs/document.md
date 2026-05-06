@@ -1,5 +1,7 @@
 # Documents
-The document object represents (and contains) the actual PDF document. A document can either be a signable document or an unsignable _annex_. Note that document are always linked to a case file and can't exist on their own.
+The document object represents (and contains) the document file. **Creating documents via the SDK currently supports PDF only** (signable document or annex). The API uses a generic `file` field; `setFile()` is the preferred way to supply the path, while `setPdfFile()` remains for compatibility.
+
+A document can either be a signable document or an unsignable _annex_. Documents are always linked to a case file and can't exist on their own.
 
 ## Creating a document
 Creating a document requires that you have a case file first since a document can't exist on its own. The case file must be passed to the _Document_ constructor and the document will be linked to the case file.
@@ -13,8 +15,8 @@ $myDocument = new Document($myCaseFile);
 // Set the document title
 $myDocument->setTitle('My brand new document');
 
-// Add the actual PDF document
-$myDocument->setPdfFile('/path/to/pdfFile');
+// Add the PDF file (generic `file` field on the API)
+$myDocument->setFile('/path/to/document.pdf');
 
 // Make the document signable
 $myDocument->makeSignable();
@@ -22,6 +24,8 @@ $myDocument->makeSignable();
 // Finally, persist the object
 Document::persist($myDocument);
 ```
+
+> **Note:** `setPdfFile()` still works but is deprecated. Use `setFile()` for new code — same behaviour today (PDF), aligned with the API’s `file` parameter for future formats.
 
 ## Retrieve existing documents
 There is several ways to retrieve document from Penneo. Available methods for retrieving documents are:
@@ -68,8 +72,28 @@ $myDocuments = Document::findBy(
 );
 ```
 
-## Retrieving the signed document
-When the signing process is completed (when __getStatus()__ returns "completed"), the signed PDF document can be retrieved by calling the __getPdf()__ method on the document object in question.
+## Downloading the document content
+When the signing process is completed (when __getStatus()__ returns "completed"), the signed document can be downloaded by calling __getContent()__:
+
+```php
+// Download the signed document (binary)
+$binary = $myDocument->getContent();
+file_put_contents('signed-document.pdf', $binary);
+
+// Download the unsigned version
+$unsigned = $myDocument->getContent(false);
+
+// Document format as returned by the API (typically "pdf" today)
+$format = $myDocument->getFormat();
+```
+
+The `getContent()` method accepts one optional parameter:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `$signed` | bool | `true` | Return the signed version when available |
+
+> **Note:** `getPdf()` still works but is deprecated. Use `getContent()` for new code — raw binary from `/content` without base64 JSON.
 
 ## Retrieving linked objects
 A signable document contains signature lines. These objects can be retrieved using the following methods:
@@ -98,5 +122,7 @@ Returns the date and time when the document was last modified as a _DateTime_ ob
 Returns the date and time when the document signing process was finalized as a _DateTime_ object.
 * __getDocumentId()__
 Returns the unique ID that is stamped on every page in the document for identification purposes.
+* __getFormat()__
+Returns the document format as a string (typically `"pdf"`). Returns `null` for locally created documents that have not been persisted yet.
 * __getOptions()__
 Returns the option values assigned to the document.
