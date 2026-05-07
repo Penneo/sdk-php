@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="1"
+    resolveFromConfigFile="true"
+    findUnusedVariablesAndParams="false"
+    findUnusedCode="false"
+    phpVersion="8.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    errorBaseline="psalm-baseline.xml"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <!-- Legacy SDK: dynamic property hydration from API payloads -->
+        <MissingConstructor errorLevel="suppress"/>
+        <!-- Typed class constants (PHP 8.3+ syntax); SDK stays PHP 8.1-compatible until min is raised -->
+        <MissingClassConstType errorLevel="suppress"/>
+        <PropertyNotSetInConstructor errorLevel="suppress"/>
+        <UnusedClass errorLevel="suppress"/>
+        <PossiblyUnusedMethod errorLevel="suppress"/>
+        <ClassMustBeFinal errorLevel="suppress"/>
+        <MissingOverrideAttribute errorLevel="suppress"/>
+        <LessSpecificReturnType errorLevel="info"/>
+        <MissingClosureReturnType errorLevel="info"/>
+        <!-- Incremental typing: keep CI green while improving annotations over time -->
+        <MissingPropertyType errorLevel="info"/>
+        <MissingParamType errorLevel="info"/>
+        <MissingReturnType errorLevel="info"/>
+        <MixedArgument errorLevel="info"/>
+        <MixedAssignment errorLevel="info"/>
+        <MixedOperand errorLevel="info"/>
+        <MixedArrayAccess errorLevel="info"/>
+        <MixedArrayOffset errorLevel="info"/>
+        <MixedReturnStatement errorLevel="info"/>
+        <MixedPropertyFetch errorLevel="info"/>
+        <MixedMethodCall errorLevel="info"/>
+        <MixedArgumentTypeCoercion errorLevel="info"/>
+        <MixedPropertyTypeCoercion errorLevel="info"/>
+        <RiskyTruthyFalsyComparison errorLevel="info"/>
+        <LessSpecificReturnStatement errorLevel="info"/>
+        <MoreSpecificReturnType errorLevel="info"/>
+        <MoreSpecificImplementedParamType errorLevel="info"/>
+        <LessSpecificImplementedReturnType errorLevel="info"/>
+        <DocblockTypeContradiction errorLevel="info"/>
+        <ImplicitToStringCast errorLevel="info"/>
+    </issueHandlers>
+</psalm>

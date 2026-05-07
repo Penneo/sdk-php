@@ -14,9 +14,11 @@ class PenneoTokensValidator
 
         $now = \time();
 
+        $refreshExp = $tokens->getRefreshTokenExpiresAt();
+
         return $tokens->getAccessToken()
             && ($now < $tokens->getAccessTokenExpiresAt() - self::TOKEN_EXPIRY_BUFFER_IN_SECONDS
-            || $now < $tokens->getRefreshTokenExpiresAt() - self::TOKEN_EXPIRY_BUFFER_IN_SECONDS);
+            || ($refreshExp !== null && $now < $refreshExp - self::TOKEN_EXPIRY_BUFFER_IN_SECONDS));
     }
 
     public static function isAccessTokenExpired(PenneoTokens $tokens): bool

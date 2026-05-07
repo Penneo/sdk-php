@@ -4,18 +4,37 @@ namespace Penneo\SDK;
 
 abstract class Entity
 {
-    /** @var int */
+    /** @var int|null */
     protected $id;
+
+    /** @var array<array-key, mixed> */
     protected static $propertyMapping = array(
-        'create' => array(),
-        'update' => array()
+        'create' => [],
+        'update' => []
     );
+
+    /** @var string */
     protected static $relativeUrl;
+
+    /**
+     * @throws Exception
+     */
+    private static function persistedEntityId(Entity $entity): int
+    {
+        $id = $entity->getId();
+        if ($id === null) {
+            throw new Exception('Penneo: Entity must be persisted for this operation');
+        }
+
+        return $id;
+    }
 
     /**
      * @param $id
      *
      * @return static
+     *
+     * @psalm-suppress UnsafeInstantiation
      */
     public static function find($id)
     {
@@ -35,29 +54,31 @@ abstract class Entity
      */
     public static function findAll()
     {
-        return self::findBy(array());
+        return self::findBy([]);
     }
 
     /**
      * @param array      $criteria
      * @param array|null $orderBy
-     * @param null       $limit
-     * @param null       $offset
+     * @param int|null   $limit
+     * @param int|null   $offset
      *
      * @return static[]
      * @throws \Exception
+     *
+     * @psalm-suppress UnsafeInstantiation
      */
-    public static function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
+    public static function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null)
     {
         $class = get_called_class();
 
         // Build query array
         $query = $criteria;
         if ($limit !== null) {
-            $query['limit'] = (int) $limit;
+            $query['limit'] = $limit;
         }
         if ($offset !== null) {
-            $query['offset'] = (int) $offset;
+            $query['offset'] = $offset;
         }
 
         // Build order by parameters.
@@ -77,21 +98,32 @@ abstract class Entity
             throw new Exception('Penneo: Internal problem encountered');
         }
 
-        $matches = json_decode($response->getBody()->getContents(), true);
+        $decoded = json_decode($response->getBody()->getContents(), true);
+        if (!is_array($decoded)) {
+            throw new Exception('Penneo: Internal problem encountered');
+        }
+
+        /** @var array<int|string, mixed> $matches */
+        $matches = $decoded;
 
         if (count($matches) === 1 && isset($matches['items'])) {
             // In order to build the result (an array), we need an array.
             // But there might be an endpoint which returns an object (and not an array).
             // If that is the case and this object has one property called 'items',
             // let's use the value of that property to generate the result.
-            $matches = $matches['items'];
+            $items = $matches['items'];
+            $matches = is_array($items) ? $items : array($items);
         }
 
-        $result = array();
+        $result = [];
         foreach ($matches as $match) {
-            $object = new $class();
-            $object->__fromArray($match);
-            $result[] = $object;
+            if (!is_array($match)) {
+                continue;
+            }
+            /** @var static $instance */
+            $instance = new $class();
+            $instance->__fromArray($match);
+            $result[] = $instance;
         }
 
         return $result;
@@ -166,15 +198,19 @@ abstract class Entity
     }
 
     /**
+     * @template T of Entity
      * @param Entity $parent
-     * @param        $type
-     * @param        $id
+     * @param class-string<T> $type
+     * @param int|string $id
      *
-     * @return static|false|null
+     * @return T|null
+     *
+     * @psalm-suppress InvalidPropertyFetch
      */
-    public static function findLinkedEntity(Entity $parent, $type, $id)
+    public static function findLinkedEntity(Entity $parent, string $type, $id)
     {
-        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $type::$relativeUrl . '/' . $id;
+        $p = self::persistedEntityId($parent);
+        $url = $parent->getRelativeUrl() . '/' . $p . '/' . $type::$relativeUrl . '/' . $id;
 
         $entity = self::getEntity($type, $url, $parent);
         if ($entity === false) {
@@ -185,18 +221,24 @@ abstract class Entity
     }
 
     /**
+     * @template T of Entity
      * @param Entity $parent
-     * @param string $type      Full class path of the linked entity type
-     * @param null   $url       Force the use of a certain URL instead of the auto-detected one
-     * @param array  $getParams Extra params to be added to the url; must be a associative array of GET params
+     * @param class-string<T> $type      Full class name of the linked entity type
+     * @param null|string $url
+     *    Force the use of a certain URL instead of the auto-detected one
+     * @param array<string, scalar|list<scalar>> $getParams
+     *    Associative GET parameters
      *
-     * @return array|bool
+     * @return list<T>
+     *
      * @throws Exception
+     *
+     * @psalm-suppress InvalidPropertyFetch
      */
-    public static function getLinkedEntities(Entity $parent, $type, $url = null, array $getParams = array())
+    public static function getLinkedEntities(Entity $parent, string $type, $url = null, array $getParams = [])
     {
         if ($url == null) {
-            $url = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $type::$relativeUrl;
+            $url = $parent->getRelativeUrl() . '/' . self::persistedEntityId($parent) . '/' . $type::$relativeUrl;
         }
 
         if ($getParams) {
@@ -211,7 +253,15 @@ abstract class Entity
         return $entities;
     }
 
-    public static function getEntity($type, $url, ?Entity $parent = null)
+    /**
+     * @template T of Entity
+     * @param class-string<T> $type
+     *
+     * @return T|false|null
+     *
+     * @psalm-suppress UnsafeInstantiation
+     */
+    public static function getEntity(string $type, string $url, ?Entity $parent = null)
     {
         $response = ApiConnector::callServer($url);
         if ($response === null) {
@@ -219,12 +269,14 @@ abstract class Entity
         }
 
         $data = json_decode($response->getBody()->getContents(), true);
-        if (!$data) {
+        if (!is_array($data) || !$data) {
             return null;
         }
         if ($parent) {
+            /** @var T $entity */
             $entity = new $type($parent);
         } else {
+            /** @var T $entity */
             $entity = new $type();
         }
 
@@ -233,7 +285,15 @@ abstract class Entity
         return $entity;
     }
 
-    public static function getEntities($type, $url, ?Entity $parent = null)
+    /**
+     * @template T of Entity
+     * @param class-string<T> $type
+     *
+     * @return list<T>|false
+     *
+     * @psalm-suppress UnsafeInstantiation
+     */
+    public static function getEntities(string $type, string $url, ?Entity $parent = null)
     {
         $response = ApiConnector::callServer($url);
         if (!$response) {
@@ -241,12 +301,21 @@ abstract class Entity
         }
 
         $dataSets = json_decode($response->getBody()->getContents(), true);
+        if (!is_array($dataSets)) {
+            throw new Exception('Penneo: Internal problem encountered');
+        }
+
         $entities = [];
 
         foreach ($dataSets as $data) {
+            if (!is_array($data)) {
+                continue;
+            }
             if ($parent) {
+                /** @var T $entity */
                 $entity = new $type($parent);
             } else {
+                /** @var T $entity */
                 $entity = new $type();
             }
             $entity->__fromArray($data);
@@ -256,9 +325,14 @@ abstract class Entity
         return $entities;
     }
 
-    public static function linkEntity(Entity $parent, Entity $child)
+    /**
+     * @return true
+     */
+    public static function linkEntity(Entity $parent, Entity $child): bool
     {
-        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $child::$relativeUrl . '/' . $child->getId();
+        $p = self::persistedEntityId($parent);
+        $c = self::persistedEntityId($child);
+        $url = $parent->getRelativeUrl() . '/' . $p . '/' . $child::$relativeUrl . '/' . $c;
 
         $response = ApiConnector::callServer($url, null, 'LINK');
         if (!$response) {
@@ -268,9 +342,14 @@ abstract class Entity
         return true;
     }
 
-    public static function unlinkEntity(Entity $parent, Entity $child)
+    /**
+     * @return true
+     */
+    public static function unlinkEntity(Entity $parent, Entity $child): bool
     {
-        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $child::$relativeUrl . '/' . $child->getId();
+        $p = self::persistedEntityId($parent);
+        $c = self::persistedEntityId($child);
+        $url = $parent->getRelativeUrl() . '/' . $p . '/' . $child::$relativeUrl . '/' . $c;
 
         $response = ApiConnector::callServer($url, null, 'UNLINK');
         if (!$response) {
@@ -280,9 +359,14 @@ abstract class Entity
         return true;
     }
 
-    public static function getAssets(Entity $parent, $assetName)
+    /**
+     * @psalm-param 'errors'|'link'|'pdf' $assetName
+     *
+     * @psalm-return list<mixed>
+     */
+    public static function getAssets(Entity $parent, string $assetName): array
     {
-        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $assetName;
+        $url  = $parent->getRelativeUrl() . '/' . self::persistedEntityId($parent) . '/' . $assetName;
 
         $response = ApiConnector::callServer($url);
         if (!$response) {
@@ -290,7 +374,10 @@ abstract class Entity
         }
 
         $assets = json_decode($response->getBody()->getContents(), true);
-        $result = array();
+        if (!is_array($assets)) {
+            throw new Exception('Penneo: Internal problem encountered fetching assets: ' . $assetName);
+        }
+        $result = [];
 
         foreach ($assets as $asset) {
             $result[] = $asset;
@@ -315,7 +402,7 @@ abstract class Entity
      */
     public static function getBinaryContent(Entity $parent, string $assetPath, array $queryParams = []): string
     {
-        $url = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $assetPath;
+        $url = $parent->getRelativeUrl() . '/' . self::persistedEntityId($parent) . '/' . $assetPath;
         if ($queryParams) {
             $url .= '?' . http_build_query($queryParams);
         }
@@ -328,9 +415,18 @@ abstract class Entity
         return $response->getBody()->getContents();
     }
 
-    public static function callAction(Entity $parent, string $actionName, string $method = 'patch', $data = null): bool
-    {
-        $url  = $parent->getRelativeUrl() . '/' . $parent->getId() . '/' . $actionName;
+    /**
+     * @param null|string[] $data
+     *
+     * @psalm-param array{token: string}|null $data
+     */
+    public static function callAction(
+        Entity $parent,
+        string $actionName,
+        string $method = 'patch',
+        ?array $data = null
+    ): bool {
+        $url  = $parent->getRelativeUrl() . '/' . self::persistedEntityId($parent) . '/' . $actionName;
 
         $response = ApiConnector::callServer($url, $data !== null ? json_encode($data) : null, $method);
         if (!$response) {
@@ -340,6 +436,9 @@ abstract class Entity
         return true;
     }
 
+    /**
+     * @return void
+     */
     public static function persist(Entity $object)
     {
         if (!ApiConnector::writeObject($object)) {
@@ -347,6 +446,9 @@ abstract class Entity
         }
     }
 
+    /**
+     * @return void
+     */
     public static function delete(Entity $object)
     {
         if (!ApiConnector::deleteObject($object)) {
@@ -356,7 +458,7 @@ abstract class Entity
         $object->id = null;
     }
 
-    public function __getMapping()
+    public function __getMapping(): ?array
     {
         $class = get_called_class();
         $mapping = $class::$propertyMapping;
@@ -366,13 +468,16 @@ abstract class Entity
         return isset($mapping['create']) ? $mapping['create'] : null;
     }
 
-    public function __fromJson($json)
+    public function __fromJson($json): void
     {
-        $data = json_decode($json, true);
+        $data = json_decode((string) $json, true);
+        if (!is_array($data)) {
+            return;
+        }
         $this->__fromArray($data);
     }
 
-    public function __fromArray(array $data)
+    public function __fromArray(array $data): void
     {
         foreach ($data as $key => $val) {
             if (property_exists($this, $key)) {
@@ -381,7 +486,15 @@ abstract class Entity
         }
     }
 
-    private function parseObjects($data, $parent)
+    /**
+     * @param mixed $data
+     * @param static $parent
+     *
+     * @return mixed
+     *
+     * @psalm-suppress UnsafeInstantiation Hydration instantiates only validated Entity subclasses.
+     */
+    private function parseObjects($data, self $parent)
     {
         // If we don't have an array, we are done.
         if (!is_array($data)) {
@@ -390,14 +503,19 @@ abstract class Entity
 
         // Check if we an object
         if (isset($data['sdkClassName'])) {
-            $class = 'Penneo\\SDK\\' . $data['sdkClassName'];
+            $class = 'Penneo\\SDK\\' . (string) $data['sdkClassName'];
+            if (!class_exists($class) || !is_subclass_of($class, self::class)) {
+                return $data;
+            }
+            /** @var class-string<Entity> $class */
+            /** @var Entity $obj */
             $obj = new $class($parent);
             $obj->__fromArray($data);
             return $obj;
         }
 
         // If we reach this point, parse all objects in the array.
-        $parsedArray = array();
+        $parsedArray = [];
         foreach ($data as $key => $element) {
             $parsedArray[$key] = $this->parseObjects($element, $parent);
         }
@@ -405,9 +523,12 @@ abstract class Entity
         return $parsedArray;
     }
 
-    public function __getRequestData()
+    /**
+     * @return string|null JSON string or null when mapping is missing
+     */
+    public function __getRequestData(): ?string
     {
-        $data = array();
+        $data = [];
         $mapping = $this->__getMapping();
         if ($mapping === null) {
             return null;
@@ -416,10 +537,14 @@ abstract class Entity
         foreach ($mapping as $key => $property) {
             // Process file entries
             $isFile = false;
-            if ($property[0] == '@') {
+            if (is_string($property) && $property !== '' && $property[0] == '@') {
                 // This is a file.
                 $isFile = true;
                 $property = ltrim($property, '@');
+            }
+
+            if (!is_string($property)) {
+                continue;
             }
 
             // Decode the property value (if needed).
@@ -434,7 +559,11 @@ abstract class Entity
                     continue;
                 }
 
-                $propValue = base64_encode(file_get_contents($propValue));
+                $raw = file_get_contents($propValue);
+                if ($raw === false) {
+                    continue;
+                }
+                $propValue = base64_encode($raw);
             }
 
             if (is_int($key)) {
@@ -444,13 +573,23 @@ abstract class Entity
             }
         }
 
-        return json_encode($data);
+        $encoded = json_encode($data);
+        if ($encoded === false) {
+            return null;
+        }
+
+        return $encoded;
     }
 
+    /**
+     * @param int|string $property Property path with optional `->` chain
+     *
+     * @return mixed
+     */
     public function __getPropertyValue($property)
     {
         // NOTE: Properties can actually be properties of properties.
-        $bits = explode('->', $property);
+        $bits = explode('->', (string) $property);
         $propValue = $this;
         foreach ($bits as $bit) {
             if (property_exists($propValue, $bit)) {
@@ -469,24 +608,33 @@ abstract class Entity
         return $propValue;
     }
 
+    /**
+     * @return int|null
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return Entity|null
+     */
     public function getParent()
     {
         return null;
     }
 
-    public function getRelativeUrl()
+    /**
+     * @return string
+     */
+    public function getRelativeUrl(): string
     {
         $class = get_called_class();
         $parent = $this->getParent();
         $url = $class::$relativeUrl;
 
         if ($parent) {
-            $url = $parent::$relativeUrl . '/' . $parent->getId() . '/' . $url;
+            $url = $parent::$relativeUrl . '/' . self::persistedEntityId($parent) . '/' . $url;
         }
 
         return $url;

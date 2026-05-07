@@ -16,7 +16,7 @@
         }
     },
     "require": {
-        "php": "^7.2|^8.0",
+        "php": "^8.1",
         "psr/log": "^1.0|^2.0|^3.0",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.2",
@@ -27,10 +27,17 @@
         "phpunit/phpunit": "^8.5|^9.0",
         "squizlabs/php_codesniffer": "*",
         "blastcloud/chassis": "1.0.4|>=1.1",
-        "blastcloud/guzzler": "2.0.2|>=2.2"
+        "blastcloud/guzzler": "2.0.2|>=2.2",
+        "vimeo/psalm": "6.16.1"
     },
     "config": {
         "bin-dir": "bin"
+    },
+    "scripts": {
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "psalm": "@php bin/psalm --no-cache",
+        "psalm:baseline": "@php bin/psalm --update-baseline"
     },
     "archive": {
         "exclude": [

@@ -40,17 +40,19 @@ class Signer extends Entity
     protected $storeAsContact;
 
 
-    /** @var CaseFile */
+    /** @var CaseFile|null */
     protected $caseFile;
     /** @var SigningRequest|null */
     protected $signingRequest = null;
 
     /**
      * @param CaseFile|SignatureLine $parent
+     *
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     *     $parent is untyped for BC; runtime can receive other Entity subclasses via hydration.
      */
     public function __construct($parent)
     {
-        $this->caseFile = null;
         if ($parent instanceof CaseFile) {
             $this->caseFile = $parent;
         } elseif ($parent instanceof SignatureLine) {
@@ -83,7 +85,7 @@ class Signer extends Entity
         return $this->name;
     }
 
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -98,7 +100,7 @@ class Signer extends Entity
         return $this->socialSecurityNumberPlain;
     }
 
-    public function setSocialSecurityNumber(string $ssn, string $ssnType = 'legacy')
+    public function setSocialSecurityNumber(string $ssn, string $ssnType = 'legacy'): void
     {
         $this->socialSecurityNumberPlain = $ssn;
         $this->ssnType = $ssnType;
@@ -123,7 +125,7 @@ class Signer extends Entity
         return $this->vatin;
     }
 
-    public function setVATIdentificationNumber(string $vatin)
+    public function setVATIdentificationNumber(string $vatin): void
     {
         $this->vatin = $vatin;
     }
@@ -133,7 +135,7 @@ class Signer extends Entity
         return $this->onBehalfOf;
     }
 
-    public function setOnBehalfOf(string $onBehalfOf)
+    public function setOnBehalfOf(string $onBehalfOf): void
     {
         $this->onBehalfOf = $onBehalfOf;
     }

@@ -10,6 +10,7 @@ class CustomerBranding extends Entity
     protected $highlightColor;
     protected $textColor;
     protected $siteUrl;
+    /** @var Image|null */
     protected $logo;
     protected $imageId;
 
@@ -20,6 +21,9 @@ class CustomerBranding extends Entity
         $this->customer = $customer;
     }
 
+    /**
+     * @return Customer|null
+     */
     public function getParent()
     {
         return $this->customer;
@@ -122,11 +126,21 @@ class CustomerBranding extends Entity
         return $this->imageId;
     }
 
-    public function getLogoUrl()
+    /**
+     * Absolute URL of the linked logo image, if {@see getImageId()} is set and the logo can be resolved.
+     */
+    public function getLogoUrl(): ?string
     {
         if ($this->logo === null) {
-            // Fetch the logo url.
-            $this->logo = self::findLinkedEntity($this->customer, Image::class, $this->imageId);
+            $customer = $this->customer;
+            if ($customer === null) {
+                return null;
+            }
+            $this->logo = self::findLinkedEntity($customer, Image::class, $this->imageId);
+        }
+
+        if (!$this->logo instanceof Image) {
+            return null;
         }
 
         return $this->logo->getUrl();

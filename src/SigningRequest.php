@@ -56,7 +56,7 @@ class SigningRequest extends Entity
         return $data[0];
     }
 
-    public function send()
+    public function send(): bool
     {
         return parent::callAction($this, 'send');
     }
@@ -66,7 +66,7 @@ class SigningRequest extends Entity
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
@@ -76,7 +76,7 @@ class SigningRequest extends Entity
         return $this->emailSubject;
     }
 
-    public function setEmailSubject($emailSubject)
+    public function setEmailSubject($emailSubject): void
     {
         $this->emailSubject = $emailSubject;
     }
@@ -86,7 +86,7 @@ class SigningRequest extends Entity
         return $this->emailText;
     }
 
-    public function setEmailText($emailText)
+    public function setEmailText($emailText): void
     {
         $this->emailText = $emailText;
     }
@@ -96,7 +96,7 @@ class SigningRequest extends Entity
         return $this->reminderEmailSubject;
     }
 
-    public function setReminderEmailSubject($reminderEmailSubject)
+    public function setReminderEmailSubject($reminderEmailSubject): void
     {
         $this->reminderEmailSubject = $reminderEmailSubject;
     }
@@ -106,7 +106,7 @@ class SigningRequest extends Entity
         return $this->reminderEmailText;
     }
 
-    public function setReminderEmailText($reminderEmailText)
+    public function setReminderEmailText($reminderEmailText): void
     {
         $this->reminderEmailText = $reminderEmailText;
     }
@@ -116,7 +116,7 @@ class SigningRequest extends Entity
         return $this->completedEmailSubject;
     }
 
-    public function setCompletedEmailSubject($completedEmailSubject)
+    public function setCompletedEmailSubject($completedEmailSubject): void
     {
         $this->completedEmailSubject = $completedEmailSubject;
     }
@@ -126,12 +126,12 @@ class SigningRequest extends Entity
         return $this->completedEmailText;
     }
 
-    public function setCompletedEmailText($completedEmailText)
+    public function setCompletedEmailText($completedEmailText): void
     {
         $this->completedEmailText = $completedEmailText;
     }
 
-    public function getStatus()
+    public function getStatus(): string
     {
         switch ($this->status) {
             case 0:
@@ -161,7 +161,7 @@ class SigningRequest extends Entity
         return $this->emailFormat;
     }
 
-    public function setEmailFormat($format)
+    public function setEmailFormat($format): void
     {
         $this->emailFormat = $format;
     }
@@ -171,7 +171,7 @@ class SigningRequest extends Entity
         return $this->successUrl;
     }
 
-    public function setSuccessUrl($url)
+    public function setSuccessUrl($url): void
     {
         $this->successUrl = $url;
     }
@@ -181,7 +181,7 @@ class SigningRequest extends Entity
         return $this->failUrl;
     }
 
-    public function setFailUrl($url)
+    public function setFailUrl($url): void
     {
         $this->failUrl = $url;
     }
@@ -191,7 +191,7 @@ class SigningRequest extends Entity
         return $this->reminderInterval;
     }
 
-    public function setReminderInterval($interval)
+    public function setReminderInterval($interval): void
     {
         $this->reminderInterval = $interval;
     }
@@ -211,7 +211,7 @@ class SigningRequest extends Entity
         return $this->enableInsecureSigning;
     }
 
-    public function setEnableInsecureSigning($enableInsecureSigning)
+    public function setEnableInsecureSigning($enableInsecureSigning): void
     {
         $this->enableInsecureSigning = $enableInsecureSigning;
     }

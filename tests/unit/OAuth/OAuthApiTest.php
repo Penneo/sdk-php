@@ -69,6 +69,9 @@ class OAuthApiTest extends TestCase
     public function testAPICallsUseCorrectHostname(string $env, string $expected, string $method, array $params = [])
     {
         $this->config->method('getEnvironment')->willReturn($env);
+        if ($method === 'postApiKeyExchange') {
+            $this->config->method('getApiSecret')->willReturn('apiSecret');
+        }
 
         $this->client->expects($this->once())
             ->method('post')

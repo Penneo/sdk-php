@@ -13,7 +13,7 @@ class LogEntry extends Entity
         return $this->eventType;
     }
 
-    public function getEventTime()
+    public function getEventTime(): \DateTime
     {
         return new \DateTime('@' . $this->eventTime);
     }

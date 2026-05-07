@@ -12,6 +12,9 @@ class SessionTokenStorage implements TokenStorage
         $this->keyInSession = $keyInSession;
     }
 
+    /**
+     * @return void
+     */
     public function saveTokens(PenneoTokens $tokens)
     {
         $_SESSION[$this->keyInSession] = $tokens->serialize();

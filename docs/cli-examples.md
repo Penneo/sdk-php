@@ -30,7 +30,7 @@ Without real credentials, programmatic fails at token exchange (e.g. HTTP 401) a
 
 ### Interactive OAuth on localhost (step by step)
 
-Penneo sends the user back to an URL you register on the OAuth client. **That URL, the address bar in the browser, and `PENNEO_OAUTH_REDIRECT_URI` must be identical** (including `http` vs `https`, `localhost` vs `127.0.0.1`, port, path, and **`/interactive_oauth_example.php`** — the file extension is required).
+Penneo sends the user back to a URL you register on the OAuth client. **That URL, the address bar in the browser, and `PENNEO_OAUTH_REDIRECT_URI` must be identical** (including `http` vs `https`, `localhost` vs `127.0.0.1`, port, path, and **`/interactive_oauth_example.php`** — the file extension is required).
 
 1. In Penneo (sandbox), add a redirect URI such as:  
    `http://127.0.0.1:8080/interactive_oauth_example.php`

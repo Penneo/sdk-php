@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
 use Penneo\SDK\ApiConnector;
 use Penneo\SDK\CaseFile;
 use Penneo\SDK\OAuth\Config\Environment;
