@@ -4,7 +4,7 @@
  * End-to-end demo: build a case file with the Penneo SDK (multiple entity types).
  *
  * Run from the repository root after `composer install`:
- *   php examples/casefile-e2e-demo.php
+ *   php docs/casefile-e2e-demo.php
  *
  * Authentication (pick one):
  *   WSSE (default API v1 sandbox):

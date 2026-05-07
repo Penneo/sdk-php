@@ -28,3 +28,5 @@ ApiConnector::initializeOAuth($penneoOAuth);
 $casefile = new CaseFile();
 $casefile->setTitle('new test casefile from PHP');
 CaseFile::persist($casefile);
+
+var_dump($casefile);
