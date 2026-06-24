@@ -46,18 +46,21 @@ class Document extends Entity
             'type',
             '@pdfFile',
             '@file',
-            'documentTypeId' => 'documentType->getId'
+            'documentTypeId' => 'documentType->getId',
+            'documentOrder',
         ),
         'update' => array(
             'title',
             'metaData',
             'options',
-            'documentTypeId' => 'documentType->getId'
+            'documentTypeId' => 'documentType->getId',
+            'documentOrder',
         )
     );
     protected static $relativeUrl = 'documents';
 
     protected $documentId;
+    protected $documentOrder = 0;
     protected $title;
     protected $metaData;
     protected $options;
@@ -241,6 +244,27 @@ class Document extends Entity
     public function getDocumentId()
     {
         return $this->documentId;
+    }
+
+    /**
+     * Order in which the document is shown to the user when signing.
+     *
+     * @return int
+     */
+    public function getDocumentOrder(): int
+    {
+        return $this->documentOrder ?? 0;
+    }
+
+    /**
+     * Set the order in which the document is shown to the user when signing.
+     *
+     * @param int $documentOrder
+     * @return void
+     */
+    public function setDocumentOrder(int $documentOrder): void
+    {
+        $this->documentOrder = $documentOrder;
     }
 
     /**

@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- `Document::getDocumentOrder()` and `Document::setDocumentOrder(int)` — expose the `documentOrder` field (display order of documents shown to signers). The field is now included in both create (`POST /documents`) and update (`PUT /documents/{id}`) requests.
 ### Changed
 ### Removed
 

@@ -21,6 +21,9 @@ $myDocument->setFile('/path/to/document.pdf');
 // Make the document signable
 $myDocument->makeSignable();
 
+// Optionally set the display order (0-indexed; controls the order signers see documents)
+$myDocument->setDocumentOrder(0);
+
 // Finally, persist the object
 Document::persist($myDocument);
 ```
@@ -122,6 +125,10 @@ Returns the date and time when the document was last modified as a _DateTime_ ob
 Returns the date and time when the document signing process was finalized as a _DateTime_ object.
 * __getDocumentId()__
 Returns the unique ID that is stamped on every page in the document for identification purposes.
+* __getDocumentOrder()__
+Returns the display order of the document (integer, 0-indexed). Controls the order in which signers see documents within a case file.
+* __setDocumentOrder($order)__
+Sets the display order. Can be called before `persist()` (create) or before `Document::persist($doc)` on an existing document (update).
 * __getFormat()__
 Returns the document format as a string (typically `"pdf"`). Returns `null` for locally created documents that have not been persisted yet.
 * __getOptions()__
