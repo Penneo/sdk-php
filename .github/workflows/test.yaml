@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Auto-fix check (PHPCBF)
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #7.0.0
 
       - name: Build PHP container
         run: docker build --build-arg "PHP_VERSION=8.3" -t php --file docker/Dockerfile docker/
@@ -45,7 +45,7 @@ jobs:
         php-version: ["8.1", "8.2", "8.3", "8.4", "8.5"]
     name: Psalm (PHP ${{ matrix.php-version }})
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #7.0.0
 
       - name: Build PHP container
         run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
@@ -71,7 +71,7 @@ jobs:
         php-version: ["8.1", "8.2", "8.3", "8.4", "8.5"]
     name: Lint (PHP ${{ matrix.php-version }})
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #7.0.0
 
       - name: Build PHP container
         run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
@@ -97,7 +97,7 @@ jobs:
         php-version: ["8.1", "8.2", "8.3", "8.4", "8.5"]
     name: PHP v${{ matrix.php-version }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #7.0.0
 
       - name: Build PHP container
         run: docker build --build-arg "PHP_VERSION=${{ matrix.php-version }}" -t php --file docker/Dockerfile docker/
