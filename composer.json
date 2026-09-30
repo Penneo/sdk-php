@@ -19,16 +19,16 @@
         "php": "^8.1",
         "psr/log": "^1.0|^2.0|^3.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.2|^8.2",
         "ext-openssl": "*"
     },
     "require-dev": {
-        "behat/behat": "^3.8",
-        "phpunit/phpunit": "^8.5|^9.0",
+        "behat/behat": "^4.0",
+        "phpunit/phpunit": "^10.0|^11.0|^12.0|^13.0",
         "squizlabs/php_codesniffer": "*",
         "blastcloud/chassis": "1.0.4|>=1.1",
         "blastcloud/guzzler": "2.0.2|>=2.2",
-        "vimeo/psalm": "6.16.1"
+        "vimeo/psalm": "^6.0"
     },
     "config": {
         "bin-dir": "bin"
@@ -36,9 +36,10 @@
     "scripts": {
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "psalm": "@php bin/psalm --no-cache",
-        "psalm:baseline": "@php bin/psalm --update-baseline"
+        "psalm": "@php bin/psalm --no-cache --threads=1",
+        "psalm:baseline": "@php bin/psalm --update-baseline --threads=1"
     },
+    "abandoned": true,
     "archive": {
         "exclude": [
             "tests/",

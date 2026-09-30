@@ -3,6 +3,8 @@
 namespace Penneo\SDK\Tests\Integration;
 
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\When;
 use Penneo\SDK\MessageTemplate;
 
 /**
@@ -15,9 +17,7 @@ class MessageTemplateContext extends AbstractContext
     protected $templates = [];
     protected $templateData = [];
 
-    /**
-     * @Given message templates exist:
-     */
+    #[Given('message templates exist:')]
     public function messageTemplatesExist(TableNode $table)
     {
         foreach ($table->getHash() as $hash) {
@@ -25,9 +25,7 @@ class MessageTemplateContext extends AbstractContext
         }
     }
 
-    /**
-     * @Given I have a message template:
-     */
+    #[Given('I have a message template:')]
     public function iHaveMessageTemplate(TableNode $table)
     {
         $this->newTemplateData = $table->getHash()[0];
@@ -38,9 +36,7 @@ class MessageTemplateContext extends AbstractContext
         $this->newTemplateData['id'] = rand(10, 50);
     }
 
-    /**
-     * @When I retrieve message template :id
-     */
+    #[When('I retrieve message template :id')]
     public function iRetrieveMessageTemplate($id)
     {
         $this->prepareGetResponse($this->templateData[$id]);
@@ -51,9 +47,7 @@ class MessageTemplateContext extends AbstractContext
         $this->flushServer();
     }
 
-    /**
-     * @When /^I persist (?:|the )message template\s?(\d+)?$/i
-     */
+    #[When('/^I persist (?:|the )message template\s?(\d+)?$/i')]
     public function iPersistMessageTemplate($id = null)
     {
         if ($id === null) {
@@ -69,9 +63,7 @@ class MessageTemplateContext extends AbstractContext
         $this->flushServer();
     }
 
-    /**
-     * @When I delete the message template :id
-     */
+    #[When('I delete the message template :id')]
     public function iDeleteMessageTemplate($id)
     {
         $template = $this->templates[$id];

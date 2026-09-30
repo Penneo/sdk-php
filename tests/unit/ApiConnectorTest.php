@@ -6,6 +6,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use Penneo\SDK\ApiConnector;
 use Penneo\SDK\OAuth\OAuth;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -30,10 +31,8 @@ class ApiConnectorTest extends TestCase
         }
     }
 
-    /**
-     * @testWith ["v3", "sandbox", "sandbox.penneo.com"]
-     *           ["v4", "production", "app.penneo.com"]
-     */
+    #[TestWith(['v3', 'sandbox', 'sandbox.penneo.com'])]
+    #[TestWith(['v4', 'production', 'app.penneo.com'])]
     public function testInitializeOAuthUsesGuzzleMiddlewareProvidedByOauth(
         string $apiVersion,
         string $environment,

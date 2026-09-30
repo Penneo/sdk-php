@@ -10,6 +10,7 @@ use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\PenneoSdkRuntimeException;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ExchangeAuthCodeTest extends TestCase
@@ -65,10 +66,8 @@ class ExchangeAuthCodeTest extends TestCase
         $this->fail('Expected exception has not been thrown.');
     }
 
-    /**
-     * @testWith ["at1", "rt1", 88, 11]
-     *           ["at2", "rt2", 6, 7]
-     */
+    #[TestWith(['at1', 'rt1', 88, 11])]
+    #[TestWith(['at2', 'rt2', 6, 7])]
     public function testRetrievesTokensFromPlutoSuccessfully(
         $accessToken,
         $refreshToken,

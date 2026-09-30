@@ -7,6 +7,7 @@ use Penneo\SDK\OAuth\PKCE\PKCE;
 use Penneo\SDK\PenneoSdkRuntimeException;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
 use Penneo\SDK\Tests\Unit\OAuth\TestsEnvironments;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class RedirectUriTest extends TestCase
@@ -29,7 +30,7 @@ class RedirectUriTest extends TestCase
         $oauth->buildRedirectUrl(['full_access'], $this->createMock(CodeChallenge::class), 'someState');
     }
 
-    /** @dataProvider environmentProvider */
+    #[DataProvider('environmentProvider')]
     public function testSuccessfullyBuildsUri(string $environment, string $expectedDomain)
     {
         $oauth = $this->build([

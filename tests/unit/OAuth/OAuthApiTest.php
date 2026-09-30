@@ -12,6 +12,8 @@ use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
 use Penneo\SDK\PenneoSdkRuntimeException;
 use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class OAuthApiTest extends TestCase
@@ -65,7 +67,7 @@ class OAuthApiTest extends TestCase
         parent::setUp();
     }
 
-    /** @dataProvider environmentAndApiMethodProvider */
+    #[DataProvider('environmentAndApiMethodProvider')]
     public function testAPICallsUseCorrectHostname(string $env, string $expected, string $method, array $params = [])
     {
         $this->config->method('getEnvironment')->willReturn($env);
@@ -81,7 +83,7 @@ class OAuthApiTest extends TestCase
         $this->api->{$method}(...$params);
     }
 
-    public function environmentAndApiMethodProvider(): \Generator
+    public static function environmentAndApiMethodProvider(): \Generator
     {
         foreach (self::environmentProvider() as $case) {
             yield array_merge($case, ['postTokenRefresh']);
@@ -107,10 +109,8 @@ class OAuthApiTest extends TestCase
         $api->postTokenRefresh();
     }
 
-    /**
-     * @testWith ["unique nonce", "secret"]
-     *           ["another unique nonce", "real secret"]
-     */
+    #[TestWith(['unique nonce', 'secret'])]
+    #[TestWith(['another unique nonce', 'real secret'])]
     public function testApiKeysExchangeGeneratesProperParameters(string $mockNonce, string $apiSecret)
     {
         $this->config->method('getEnvironment')->willReturn('sandbox');

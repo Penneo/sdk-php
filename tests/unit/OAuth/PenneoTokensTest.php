@@ -3,14 +3,13 @@
 namespace Penneo\SDK\Tests\Unit\OAuth;
 
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class PenneoTokensTest extends TestCase
 {
-    /**
-     * @testWith ["hello", "goodbye", 88, 11]
-     *           ["hi", "bye", 6, 7]
-     */
+    #[TestWith(['hello', 'goodbye', 88, 11])]
+    #[TestWith(['hi', 'bye', 6, 7])]
     public function testSerializingAndDeserializingResultsInTheSameData(
         string $accessToken,
         string $refreshToken,

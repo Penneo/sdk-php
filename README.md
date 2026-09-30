@@ -1,5 +1,10 @@
 # Penneo SDK for PHP
 
+> ⚠️ **DEPRECATED** — This SDK is no longer actively maintained. It will continue to work for existing integrations,
+> but no new features will be added. For new projects, please use the
+> [Penneo REST API](https://developer.penneo.com/reference/createcasefile) directly or contact
+> [Penneo Support](https://support.penneo.com/) for guidance on migration.
+
 Penneo is all about digitizing the process of signing documents and contacts. The Penneo SDK for PHP enables PHP
 developers to use digital signing of documents in their PHP code. Get more info at [penneo.com](https://penneo.com/)
 about how to become a customer.

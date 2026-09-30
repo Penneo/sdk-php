@@ -5,6 +5,7 @@ namespace Penneo\SDK\Tests\Unit\OAuth;
 use DateTimeImmutable;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\PenneoTokensValidator;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class PenneoTokensValidatorTest extends TestCase
@@ -57,12 +58,10 @@ class PenneoTokensValidatorTest extends TestCase
         $this->assertTrue(PenneoTokensValidator::areNotExpired($tokens));
     }
 
-    /**
-     * @testWith [5, "seconds"]
-     *           [0, "seconds"]
-     *           [-1, "day"]
-     *           [-1, "year"]
-     */
+    #[TestWith([5, 'seconds'])]
+    #[TestWith([0, 'seconds'])]
+    #[TestWith([-1, 'day'])]
+    #[TestWith([-1, 'year'])]
     public function testReturnsFalseWhenBothTokensAreExpired(int $timeDiffValue, string $timeDiffUnit)
     {
         $expiredTs = self::adjustNowByUnits($timeDiffValue, $timeDiffUnit)->getTimestamp();

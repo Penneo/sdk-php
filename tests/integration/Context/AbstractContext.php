@@ -3,16 +3,14 @@
 namespace Penneo\SDK\Tests\Integration;
 
 use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Defines application features from the specific context.
  */
-class AbstractContext extends TestCase implements Context, SnippetAcceptingContext
+class AbstractContext implements Context
 {
     /** @var BootlegServer|null */
     private static $server;
