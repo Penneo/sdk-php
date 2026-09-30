@@ -8,6 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## 4.1.0 - 2026-10-01
+### Changed
+- **Deprecated** — this SDK is no longer actively maintained. It will continue to work for existing integrations but no new features will be added. See README for migration guidance.
+- Extended Guzzle support to `^7.2|^8.2` for forward compatibility.
+- Extended Behat support to `^4.0` and PHPUnit to `^10.0–^13.0`.
+- Migrated PHPUnit test annotations (`@dataProvider`, `@testWith`) to PHP 8 attributes (`#[DataProvider]`, `#[TestWith]`) for compatibility with PHPUnit 10+.
+- Psalm updated to `^6.0`.
+
 ## 4.0.0 - 2026-05-06
 ### Added
 - Composer scripts `cs-check` / `cs-fix` (PHPCS / PHPCBF); CI job **Auto-fix check** ensures the tree matches `phpcbf` output.

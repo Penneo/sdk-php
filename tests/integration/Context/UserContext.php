@@ -3,6 +3,8 @@
 namespace Penneo\SDK\Tests\Integration;
 
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\When;
 use Penneo\SDK\User;
 
 /**
@@ -13,9 +15,7 @@ class UserContext extends AbstractContext
     protected $loggedInUser;
     protected $userData = [];
 
-    /**
-     * @Given user exist:
-     */
+    #[Given('user exist:')]
     public function userExist(TableNode $table)
     {
         foreach ($table->getHash() as $hash) {
@@ -23,17 +23,13 @@ class UserContext extends AbstractContext
         }
     }
 
-    /**
-     * @Given logged in user is :userId
-     */
+    #[Given('logged in user is :userId')]
     public function loggedInUserIs($userId)
     {
         $this->loggedInUser = $userId;
     }
 
-    /**
-     * @When I retrieve the logged in user
-     */
+    #[When('I retrieve the logged in user')]
     public function iRetrieveLoggedInUser()
     {
         $this->prepareGetResponse($this->userData[$this->loggedInUser]);

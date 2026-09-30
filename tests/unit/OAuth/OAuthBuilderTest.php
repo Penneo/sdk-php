@@ -4,6 +4,8 @@ namespace Penneo\SDK\Tests\Unit\OAuth;
 
 use Penneo\SDK\OAuth\OAuth;
 use Penneo\SDK\PenneoSdkRuntimeException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class OAuthBuilderTest extends TestCase
@@ -20,7 +22,7 @@ class OAuthBuilderTest extends TestCase
         ];
     }
 
-    /** @dataProvider providerRequiredBuildParameters */
+    #[DataProvider('providerRequiredBuildParameters')]
     public function testWhenBuildingWithMissingParameterAPenneoExceptionIsThrown(string $missingParameter)
     {
         $capitalized = ucfirst($missingParameter);
@@ -33,7 +35,7 @@ class OAuthBuilderTest extends TestCase
         ]);
     }
 
-    /** @dataProvider providerRequiredBuildParameters */
+    #[DataProvider('providerRequiredBuildParameters')]
     public function testWhenBuildingWithEmptyParameterAPenneoExceptionIsThrown(string $missingParameter)
     {
         $capitalized = ucfirst($missingParameter);
@@ -46,11 +48,9 @@ class OAuthBuilderTest extends TestCase
         ]);
     }
 
-    /**
-     * @testWith ["i dont know"]
-     *           ["local"]
-     *           ["??"]
-     */
+    #[TestWith(['i dont know'])]
+    #[TestWith(['local'])]
+    #[TestWith(['??'])]
     public function testWhenBuildingWithUnknownEnvironmentThenAPenneoExceptionIsThrown(string $unknownEnvironment)
     {
         $this->expectException(PenneoSdkRuntimeException::class);

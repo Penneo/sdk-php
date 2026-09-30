@@ -14,6 +14,7 @@ use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
 use Penneo\SDK\PenneoSdkRuntimeException;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class RefreshTokenMiddlewareTest extends TestCase
@@ -60,10 +61,8 @@ class RefreshTokenMiddlewareTest extends TestCase
         $oauth->getMiddleware();
     }
 
-    /**
-     * @testWith ["accessTokenOne"]
-     *           ["accessTokenTwo"]
-     */
+    #[TestWith(['accessTokenOne'])]
+    #[TestWith(['accessTokenTwo'])]
     public function testAppendsAccessTokenToRequests(string $accessToken)
     {
         $this->mockStorage->saveTokens(new PenneoTokens(
@@ -96,12 +95,10 @@ class RefreshTokenMiddlewareTest extends TestCase
             ->get('/');
     }
 
-    /**
-     * @testWith [5, "seconds"]
-     *           [0, "seconds"]
-     *           [-1, "day"]
-     *           [-1, "year"]
-     */
+    #[TestWith([5, 'seconds'])]
+    #[TestWith([0, 'seconds'])]
+    #[TestWith([-1, 'day'])]
+    #[TestWith([-1, 'year'])]
     public function testWhenBothTokensAreExpiredThenGetMiddlewareThenAPenneoExceptionIsThrown(
         int $timeDiffValue,
         string $timeDiffUnit
@@ -124,12 +121,10 @@ class RefreshTokenMiddlewareTest extends TestCase
         $oauth->getMiddleware();
     }
 
-    /**
-     * @testWith [5, "seconds"]
-     *           [0, "seconds"]
-     *           [-1, "day"]
-     *           [-1, "year"]
-     */
+    #[TestWith([5, 'seconds'])]
+    #[TestWith([0, 'seconds'])]
+    #[TestWith([-1, 'day'])]
+    #[TestWith([-1, 'year'])]
     public function testWhenBothTokensAreExpiredAndMakingARequestThenAPenneoExceptionIsThrown(
         int $timeDiffValue,
         string $timeDiffUnit
@@ -157,12 +152,10 @@ class RefreshTokenMiddlewareTest extends TestCase
             ->get('/');
     }
 
-    /**
-     * @testWith [5, "seconds"]
-     *           [0, "seconds"]
-     *           [-1, "day"]
-     *           [-1, "year"]
-     */
+    #[TestWith([5, 'seconds'])]
+    #[TestWith([0, 'seconds'])]
+    #[TestWith([-1, 'day'])]
+    #[TestWith([-1, 'year'])]
     public function testRefreshesTokensIfAccessTokenIsExpiredOrAboutToExpire(
         int $timeDiffValue,
         string $timeDiffUnit

@@ -4,14 +4,13 @@ namespace Penneo\SDK\Tests\Unit\OAuth;
 
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\SessionTokenStorage;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class SessionTokenStorageTest extends TestCase
 {
-    /**
-     * @testWith ["hello", "goodbye", 1, 2]
-     *           ["hi", "bye", 5, 1]
-     */
+    #[TestWith(['hello', 'goodbye', 1, 2])]
+    #[TestWith(['hi', 'bye', 5, 1])]
     public function testSetAndGetReturnsSameValues(
         string $accessToken,
         string $refreshToken,

@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Response;
 use Penneo\SDK\OAuth\Tokens\PenneoTokens;
 use Penneo\SDK\OAuth\Tokens\TokenStorage;
 use Penneo\SDK\Tests\Unit\OAuth\BuildsOAuth;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use PHPUnit\Framework\TestCase;
 
@@ -79,10 +80,8 @@ class ApiKeysMiddlewareTest extends TestCase
         $this->triggerMiddleware();
     }
 
-    /**
-     * @testWith ["accessTokenOne"]
-     *           ["accessTokenTwo"]
-     */
+    #[TestWith(['accessTokenOne'])]
+    #[TestWith(['accessTokenTwo'])]
     public function testAppendsPreExistingValidAccessTokenToRequests(string $accessToken)
     {
         $this->mockStorage->saveTokens(
@@ -112,7 +111,7 @@ class ApiKeysMiddlewareTest extends TestCase
             ->willRespond(new Response());
     }
 
-    public function apiKeysGrantRequest(): InvocationMocker
+    public function apiKeysGrantRequest(): mixed
     {
         return $this->mockAuthClient->expects($this->once())
             ->method('post')
